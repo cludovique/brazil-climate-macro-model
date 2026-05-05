@@ -4,18 +4,7 @@
 #
 # Script:  mip_energia_brasil.R
 # Dados:   Anexo 2 (48008000008202670_Camila_Anexo 2.xlsx)
-#
-# Estrutura:
-#   1. Pacotes
-#   2. Leitura e preparação dos dados
-#   3. Funções auxiliares do modelo
-#   4. Análise descritiva dos setores energéticos
-#   5. Multiplicadores de produção
-#   6. Índices de ligação (setores-chave)
-#   7. Simulações de choque
-#   8. Visualizações
-#   9. Exportar resultados
-# =============================================================================
+
 
 # 1. PACOTES
 {
