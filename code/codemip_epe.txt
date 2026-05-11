@@ -1,0 +1,36 @@
+code/mip_epe_replication.R
+│
+├── §0  Packages + constants + computation flags
+├── §1  File path
+├── §2  Data: Z, DF, x, VA, employment, labor, energy (ALPHA)
+├── §3  Sector groups (NT4, 7G, IBGE) — applied scheme
+│
+├── §4  MODELS
+│       ├── Open:    A, B (Leontief)
+│       ├── Closed:  AF, BF (endogenous consumption)
+│       └── Supply:  F_mat, G (Ghosh)   [renamed from F to avoid base R conflict]
+│
+├── §5  MULTIPLIERS
+│       ├── Production: MP, MPT, MPTT + type decomposition (direct/indirect/induced)
+│       ├── Employment: ME, MEI, MET, MEII
+│       └── Income:     MR, MRI, MRT, MRII
+│
+├── §6  LINKAGE INDICES
+│       ├── HR: BL, FL (Leontief), FLG (Ghosh)
+│       ├── Variation coefficients: Vj, Vi
+│       └── Pure linkages: PBLN, PFLN, PTL  [if (COMPUTE_SLOW)]
+│
+├── §7  HYPOTHETICAL EXTRACTION
+│       └── BLextrac, FLextrac              [if (COMPUTE_SLOW)]
+│
+├── §8  FIELD OF INFLUENCE                  [if (COMPUTE_VERY_SLOW)]
+│       └── SI matrix
+│
+├── §9  SHOCK ENGINE
+│       ├── simulate_shock() → returns named list
+│       ├── Ex1: +5% total exports (NT replication)
+│       ├── Ex2: +5% household EE (NT replication)
+│       ├── Ex3: fossil demand shock  (−Δ on S05, S19, S21, S43)
+│       └── Ex4: renewable demand shock (+Δ on S20, S22, S40, S41, S42)
+│
+└── §10 EXPORT → calls dashboard_export.R
