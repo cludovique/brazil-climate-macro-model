@@ -114,6 +114,46 @@ x <- rowSums(Z) + rowSums(demanda_final[, 1:6])
 names(x) <- setores$cod_setor
 
 cat("Dados de demanda final e producao calculados.\n")
+
+# Indicadores de energia em Usos SxS.
+# Linhas 125:130 sao fontes fisicas de energia (ktep). Transmissao nao aparece
+# como uma fonte BEN separada nessa tabela; ela e o setor S42 e precisa ser
+# calculada a partir do delta de producao setorial.
+linha_energia <- c(
+  Derivados   = 125,
+  Biodiesel   = 126,
+  Etanol      = 127,
+  EE_Central  = 128,
+  EE_Distrib  = 129,
+  Gas_Natural = 130
+)
+
+obter_linha_usos <- function(linha_r, n = N) {
+  vals <- suppressWarnings(
+    as.numeric(as.character(unlist(usos_raw[linha_r, 4:(3 + n)])))
+  )
+  vals[is.na(vals)] <- 0
+  setNames(vals, setores$cod_setor)
+}
+
+energia_base <- sapply(linha_energia, obter_linha_usos) %>% t()
+rownames(energia_base) <- names(linha_energia)
+
+x_seguro <- ifelse(x > 0, x, 1)
+alpha_energia <- sweep(energia_base, 2, x_seguro, "/")
+
+calcular_impacto_energia <- function(delta_x) {
+  delta_x <- setNames(as.numeric(delta_x), setores$cod_setor)
+  fontes <- as.vector(alpha_energia %*% delta_x)
+  names(fontes) <- rownames(alpha_energia)
+  
+  c(
+    fontes,
+    Transmissao = unname(delta_x["S42"])
+  )
+}
+
+cat("Coeficientes de energia calculados; transmissao sera reportada pelo setor S42.\n")
 }
 
 # 3. FUNÇÕES AUXILIARES
@@ -281,6 +321,16 @@ cat(sprintf("Delta Producao total:  R$ %.1f bilhoes (+%.2f%%)\n",
             sum(choque1$delta_prod) / 1e3,
             sum(choque1$delta_prod) / sum(x) * 100))
 
+energia_choque1 <- calcular_impacto_energia(delta_x_exp)
+cat("\nImpacto energetico por fonte/setor:\n")
+imprimir(data.frame(
+  item = names(energia_choque1),
+  delta = round(as.numeric(energia_choque1), 3),
+  unidade = ifelse(names(energia_choque1) == "Transmissao",
+                   "R$ milhoes (setor S42)", "ktep"),
+  stringsAsFactors = FALSE
+))
+
 cat("\nTop 10 setores mais impactados:\n")
 imprimir(choque1 %>%
            arrange(desc(delta_prod)) %>%
@@ -320,6 +370,16 @@ choque2 <- data.frame(
 cat(sprintf("Delta Producao total:  R$ %.2f bilhoes (+%.4f%%)\n",
             sum(choque2$delta_prod) / 1e3,
             sum(choque2$delta_prod) / sum(x) * 100))
+
+energia_choque2 <- calcular_impacto_energia(delta_x_elet)
+cat("\nImpacto energetico por fonte/setor:\n")
+imprimir(data.frame(
+  item = names(energia_choque2),
+  delta = round(as.numeric(energia_choque2), 3),
+  unidade = ifelse(names(energia_choque2) == "Transmissao",
+                   "R$ milhoes (setor S42)", "ktep"),
+  stringsAsFactors = FALSE
+))
 
 cat("\nSetores energeticos:\n")
 imprimir(choque2 %>%
@@ -512,6 +572,20 @@ write_xlsx(
     "Choque_Eletricidade" = choque2 %>%
       select(cod_setor, nome_setor,
              delta_prod, x_base, var_pct),
+    "Energia_Choque_Export" = data.frame(
+      item = names(energia_choque1),
+      delta = round(as.numeric(energia_choque1), 3),
+      unidade = ifelse(names(energia_choque1) == "Transmissao",
+                       "R$ milhoes (setor S42)", "ktep"),
+      stringsAsFactors = FALSE
+    ),
+    "Energia_Choque_Elet" = data.frame(
+      item = names(energia_choque2),
+      delta = round(as.numeric(energia_choque2), 3),
+      unidade = ifelse(names(energia_choque2) == "Transmissao",
+                       "R$ milhoes (setor S42)", "ktep"),
+      stringsAsFactors = FALSE
+    ),
     "Demanda_Final"       = demanda_final %>%
       mutate(across(where(is.numeric), ~ round(., 2)))
   ),
