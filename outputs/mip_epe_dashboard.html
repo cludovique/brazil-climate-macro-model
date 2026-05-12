@@ -78,8 +78,10 @@ table.dt tr:hover td{background:#1f2233}
 .sel-ex{background:#1f2233;border:1px solid var(--c-border);color:var(--c-text);
   border-radius:5px;padding:5px 10px;font-size:12px;outline:none;cursor:pointer}
 .tag-renov{color:var(--c-renov);font-weight:600}
+/* ⓘ icon on every chart title; brighter + cursor:help when a definition is set */
+.card-title::after{content:" ⓘ";font-size:9px;color:var(--c-muted);vertical-align:middle;opacity:.28;pointer-events:none}
 .card-title[title]{cursor:help}
-.card-title[title]::after{content:" ⓘ";font-size:9px;color:var(--c-muted);vertical-align:middle;opacity:.55}
+.card-title[title]::after{opacity:.65}
 @media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.full{grid-column:1}}
 </style></head>
 <body>
@@ -460,14 +462,14 @@ function enrich(data){
   });
 }
 
-// Custom Chart.js legend for single-dataset per-bar-color charts
-// (Chart.js only shows one legend item for a single dataset, so we override generateLabels)
-function makeColorLegend(lbls,colors){
-  return {display:true,labels:{
+// Custom Chart.js legend for single-dataset per-bar-color charts.
+// position:"top" keeps the legend above the bars; white text for readability.
+function makeColorLegend(lbls,colors,position="top"){
+  return {display:true,position,labels:{
     generateLabels:()=>lbls.map((l,i)=>({
       text:l.replace(/_/g," "),fillStyle:colors[i],strokeStyle:colors[i],lineWidth:0,hidden:false
     })),
-    color:"#8892a4",font:{size:11},boxWidth:12,padding:10
+    color:"#e2e8f0",font:{size:11},boxWidth:12,padding:10
   }};
 }
 
@@ -869,7 +871,8 @@ function initLinkages(){
 // ENERGY (Tab 4)
 // ════════════════════════════════════════════════════════════════════════════
 function initEnergy(){
-  const ef=D.Energia_Fluxos_ktep;
+  // enrich adds grupo_nt4 / grupo_ibge so NT4 and IBGE schemes work here too
+  const ef=enrich(D.Energia_Fluxos_ktep);
   const fontes=["Derivados","Biodiesel","Etanol","EE_Central","EE_Distrib","Gas_Natural"];
   const s=sch(); const sec=isSec();
   setTtl("ttl-e-group","Energia por Fonte e "+(sec?"Setor (top 20)":s.label)+" (ktep)");
@@ -991,20 +994,29 @@ function renderShockTable(){
 // EXTRACTION (Tab 6)
 // ════════════════════════════════════════════════════════════════════════════
 function initExtraction(){
-  const ext=D.Extr_Hipotetica||[], ipl=D.Ind_Puros||[];
+  // enrich so NT4 / IBGE group columns are available for colour coding
+  const ext=enrich(D.Extr_Hipotetica||[]), ipl=D.Ind_Puros||[];
   const setE=D.Setores.filter(s=>s.eh_energia).map(s=>s.cod);
+  const grpCol=isSec()?"grupo":scCol();
+
+  // Build legend: unique groups in current scheme + energy highlight
+  function extLegend(rows){
+    const grps=[...new Set(rows.map(r=>r[grpCol]).filter(Boolean))];
+    return makeColorLegend([...grps,"⚡ Energia"],[...grps.map(gc),"#F39C12"],"top");
+  }
+  function barColor(r){return setE.includes(r.cod)?"#F39C12":gc(r[grpCol]);}
 
   const blTop=[...ext].sort((a,b)=>b.BL_abs-a.BL_abs).slice(0,20);
   mkHBar("ch-extrac-bl",blTop.map(r=>r.cod),
     [{label:"BL (R$M)",data:blTop.map(r=>r.BL_abs),
-      backgroundColor:blTop.map(r=>setE.includes(r.cod)?"#F39C12":gc(r.grupo)),borderRadius:3}],
-    {plugins:{...CD.plugins,legend:{display:false},tooltip:TIP_SECTOR}});
+      backgroundColor:blTop.map(barColor),borderRadius:3}],
+    {plugins:{...CD.plugins,legend:extLegend(blTop),tooltip:TIP_SECTOR}});
 
   const flTop=[...ext].sort((a,b)=>b.FL_abs-a.FL_abs).slice(0,20);
   mkHBar("ch-extrac-fl",flTop.map(r=>r.cod),
     [{label:"FL (R$M)",data:flTop.map(r=>r.FL_abs),
-      backgroundColor:flTop.map(r=>setE.includes(r.cod)?"#F39C12":gc(r.grupo)),borderRadius:3}],
-    {plugins:{...CD.plugins,legend:{display:false},tooltip:TIP_SECTOR}});
+      backgroundColor:flTop.map(barColor),borderRadius:3}],
+    {plugins:{...CD.plugins,legend:extLegend(flTop),tooltip:TIP_SECTOR}});
 
   const wrap=document.getElementById("ch-ipln");
   if(ipl.length>0&&wrap){
