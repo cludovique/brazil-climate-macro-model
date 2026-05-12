@@ -130,6 +130,7 @@ table.dt tr:hover td{background:#1f2233}
 <div class="filter-bar" id="filterBar">
   <span class="filter-label">Grupos:</span>
   <div class="chips-row" id="groupChips"></div>
+  <span id="filter-badge" style="display:none;font-size:10px;color:var(--c-accent);font-weight:600;white-space:nowrap;padding:2px 8px;border-radius:8px;background:rgba(55,138,221,.15);border:1px solid rgba(55,138,221,.3)"></span>
   <button class="btn-rst" onclick="resetGroups()" title="Activar todos">&#10005;&nbsp;Todos</button>
 </div>
 
@@ -384,7 +385,7 @@ const STATE = {
   groups:    new Set(ALL_GROUPS),
   exercises: new Set(ALL_EX_KEYS),
   tab: 0,
-  filterVer: 0,          // bumped on every filter change
+  filterVer: 1,          // bumped on every filter change (start at 1 so builtVer=0 always triggers first build)
   builtVer:  {}          // tab -> filterVer when last built
 };
 
@@ -491,7 +492,7 @@ function toggleGroup(g){
     STATE.groups.add(g);
   }
   updateChip(g);
-  onFilterChange();
+  onFilterChange();   // bumps filterVer, rebuilds current tab, marks rest stale
 }
 function resetGroups(){
   ALL_GROUPS.forEach(g => STATE.groups.add(g));
@@ -538,13 +539,14 @@ function toggleExercise(k){
     STATE.exercises.add(k);
   }
   updateExToggle(k);
-  // Rebuild only shock charts (fast — no group filter loop needed)
-  rebuildShockCharts();
+  rebuildShockCharts();   // update all shock charts
+  renderShockTable();     // keep sector table in sync
 }
 function resetExercises(){
   ALL_EX_KEYS.forEach(k => STATE.exercises.add(k));
   buildExToggles();
   rebuildShockCharts();
+  renderShockTable();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -556,21 +558,26 @@ function showTab(n){
   document.querySelectorAll(".tab-panel").forEach((p,i)=>p.classList.toggle("active",i===n));
   document.querySelectorAll("#mainTabs button").forEach((b,i)=>b.classList.toggle("active",i===n));
   STATE.tab = n;
-  if((STATE.builtVer[n]||0) !== STATE.filterVer){
-    clearTabTables(n);
-    INIT_FNS[n]();
-    STATE.builtVer[n] = STATE.filterVer;
-  }
+  const stale = !(n in STATE.builtVer) || STATE.builtVer[n] !== STATE.filterVer;
+  if(stale){ clearTabTables(n); INIT_FNS[n](); STATE.builtVer[n] = STATE.filterVer; }
 }
 function clearTabTables(n){
   document.querySelectorAll(`#tab${n} table.dt tbody`).forEach(tb=>tb.innerHTML="");
 }
 function onFilterChange(){
   STATE.filterVer++;
+  updateFilterBadge();
   clearTabTables(STATE.tab);
   INIT_FNS[STATE.tab]();
   STATE.builtVer[STATE.tab] = STATE.filterVer;
-  // mark all other tabs as stale (no version bump needed — showTab checks)
+  // other tabs are stale automatically — showTab rebuilds on next visit
+}
+function updateFilterBadge(){
+  const badge = document.getElementById("filter-badge");
+  if(!badge) return;
+  const n = STATE.groups.size, total = ALL_GROUPS.length;
+  if(n === total){ badge.textContent=""; badge.style.display="none"; }
+  else { badge.textContent = n+"/"+total+" grupos"; badge.style.display="inline"; }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
