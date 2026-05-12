@@ -97,6 +97,8 @@ table.dt tr:hover td{background:#1f2233}
 .sel-ex{background:#1f2233;border:1px solid var(--c-border);color:var(--c-text);
   border-radius:5px;padding:5px 10px;font-size:12px;outline:none;cursor:pointer}
 .tag-renov{color:var(--c-renov);font-weight:600}
+.card-title[title]{cursor:help}
+.card-title[title]::after{content:" ⓘ";font-size:9px;color:var(--c-muted);vertical-align:middle;opacity:.55}
 @media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.full{grid-column:1}}
 </style></head>
 <body>
@@ -375,6 +377,11 @@ const EX_LABEL={"Choque_Ex1_NT":"+5% Exportações","Choque_Ex2_NT":"+5% Famíli
   "Choque_Ex3_Fossil":"Fóssil -20%","Choque_Ex4_Renov":"Renov +30%","Choque_Ex5_Trans":"Transição"};
 const ALL_EX=["Choque_Ex1_NT","Choque_Ex2_NT","Choque_Ex3_Fossil","Choque_Ex4_Renov","Choque_Ex5_Trans"];
 
+// Map sheet-key → exercicio string used in aggregated sheets (Choques_Grupos, Choques_Energia, Choques_Labor)
+// The aggregated sheets store long descriptive strings; sector-level sheets use the sheet key as the name.
+const _cgExStr=[...new Set((D.Choques_Grupos||[]).map(r=>r.exercicio))];
+const EX_STR=Object.fromEntries(ALL_EX.map((k,i)=>[k,_cgExStr[i]||k]));
+
 function hashColor(s){let h=0;for(let i=0;i<s.length;i++)h=s.charCodeAt(i)+((h<<5)-h);return `hsl(${Math.abs(h)%360},48%,52%)`;}
 function gc(g){return NAMED[g]||hashColor(g||"");}
 function alpha(hex,a){
@@ -386,10 +393,31 @@ function fmtN(v,d=2){return v==null?"—":Number(v).toFixed(d);}
 // full name lookup
 function secName(cod){const s=D.Setores.find(x=>x.cod===cod);return s?s.nome:cod;}
 
-// tooltip callback: show full sector name when x-axis has codes
+// Short definitions shown as a second tooltip line for known indicator labels
+const IND_DEF={
+  "MP"   :"Multiplicador de Produção: impacto total na produção da economia por R$1 de demanda final",
+  "MPT"  :"MP Truncado: efeito direto + indireto (sem induzido)",
+  "MPTT" :"MP Tipo I: efeito direto + indireto apenas dentro da estrutura IO",
+  "ME"   :"Multiplicador de Emprego: empregos gerados por R$1M de demanda final",
+  "MEI"  :"ME Tipo I: empregos diretos e indiretos (sem induzidos)",
+  "MET"  :"ME Total: inclui efeitos induzidos de renda",
+  "MR"   :"Multiplicador de Renda: renda das famílias gerada por R$1M de demanda final",
+  "MRI"  :"MR Tipo I: renda direta e indireta",
+  "BL (R$M)":"Backward Linkage (Rasmussen): poder de compra setorial — quanto o setor demanda de insumos",
+  "FL (R$M)":"Forward Linkage (Rasmussen): poder de oferta setorial — quanto o setor fornece para outros",
+  "VBP (R$ bi)":"Valor Bruto da Produção: valor total dos bens e serviços gerados pelo setor",
+  "VA/PIB":"Valor Adicionado: remuneração dos fatores (salários + lucros + outros) gerada na produção",
+  "Ocupações (mil)":"Total de ocupações formais e informais associadas à produção do setor"
+};
+// tooltip callback: show full sector name + indicator definition
 const TIP_SECTOR = {callbacks:{
   title: ctx=>{const c=ctx[0]?.label; const s=D.Setores.find(x=>x.cod===c); return s?`${c} — ${s.nome}`:c;},
-  label: ctx=>`${ctx.dataset.label||""}: ${typeof ctx.raw==="number"?ctx.raw.toFixed(2):ctx.raw}`
+  label: ctx=>{
+    const lbl=ctx.dataset.label||"";
+    const val=typeof ctx.raw==="number"?ctx.raw.toFixed(2):String(ctx.raw??"-");
+    const def=IND_DEF[lbl];
+    return def?[`${lbl}: ${val}`,`ⓘ ${def}`]:`${lbl}: ${val}`;
+  }
 }};
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -473,7 +501,22 @@ function mkDoughnut(id,labels,data,colors){
   return CHARTS[id];}
 function clrTbody(id){const t=document.querySelector("#"+id+" tbody");if(t)t.innerHTML="";}
 function clrTabTbls(n){document.querySelectorAll(`#tab${n} table.dt tbody`).forEach(t=>t.innerHTML="");}
-function setTtl(id,txt){const e=document.getElementById(id);if(e)e.textContent=txt;}
+
+// Chart-title definitions (shown as native browser tooltip on hover)
+const CARD_DEFS={
+  "ttl-vbp-group":"VBP — Valor Bruto da Produção: valor total gerado por setor/grupo no período (R$ bi).",
+  "ttl-va-decomp":"VA/PIB — Valor Adicionado: renda líquida gerada, decomposta em Salários, EOB e outros (R$ bi).",
+  "ttl-emp-group":"Ocupações: total de empregos formais e informais por grupo/setor (mil pessoas).",
+  "ttl-df-group":"Demanda Final: absorção interna e externa — Exportações, Famílias, Governo, ISFLSF, FBCF, Var. Estoques.",
+  "ttl-shock-va":"ΔVA — variação do Valor Adicionado induzida pelo choque de demanda (R$ bi).",
+  "ttl-shock-emp":"ΔEmprego — variação nas ocupações induzida pelo choque de demanda (mil pessoas)."
+};
+function setTtl(id,txt){
+  const e=document.getElementById(id);if(!e)return;
+  e.textContent=txt;
+  // restore definition tooltip (cleared by textContent assignment)
+  if(CARD_DEFS[id])e.title=CARD_DEFS[id];
+}
 
 // ════════════════════════════════════════════════════════════════════════════
 // IN-CARD GROUP FILTER  — the key UX feature
@@ -722,10 +765,15 @@ function initMultipliers(){
   const me=D.Mult_Emprego, mr=D.Mult_Renda;
   const setE=D.Setores.filter(s=>s.eh_energia).map(s=>s.cod);
 
+  // Legend: one swatch per group + orange entry for energy-sector highlight
+  const mpGrps=[...new Set(mp.map(r=>r.grupo).filter(Boolean))];
+  const mpGrpC=mpGrps.map(gc);
   mkHBar("ch-mp-all",mp.map(r=>r.cod),
     [{label:"MP",data:mp.map(r=>r.MP),
       backgroundColor:mp.map(r=>setE.includes(r.cod)?"#F39C12":gc(r.grupo)),borderRadius:2}],
-    {plugins:{...CD.plugins,legend:{display:false},tooltip:TIP_SECTOR},
+    {plugins:{...CD.plugins,
+      legend:makeColorLegend([...mpGrps,"⚡ Energia"],[...mpGrpC,"#F39C12"]),
+      tooltip:TIP_SECTOR},
      scales:{x:{...CD.scales.x,min:1},y:{...CD.scales.y,ticks:{font:{size:9}}}}});
 
   const mpE=D.Mult_Producao.filter(r=>setE.includes(r.cod));
@@ -895,15 +943,16 @@ function rebuildShockCharts(){
     attachGroupFilter("ch-shock-emp-groups",lbls,lblColors(lbls));
   }
 
+  // Note: Choques_Energia / Choques_Labor use long exercicio strings; map via EX_STR
   const fontes=[...new Set(ce.map(r=>r.fonte))];
   mkBar("ch-shock-energy",exK.map(k=>EX_LABEL[k]),
     fontes.map(f=>({label:f,backgroundColor:FONTE_C[f]||"#888",borderRadius:2,stack:"s",
-      data:exK.map(k=>{const r=ce.find(x=>x.exercicio===k&&x.fonte===f);return r?(r.delta_ktep||0):0;})})),
+      data:exK.map(k=>{const r=ce.find(x=>x.exercicio===EX_STR[k]&&x.fonte===f);return r?(r.delta_ktep||0):0;})})),
     {scales:{x:{...CD.scales.x,stacked:true},y:{...CD.scales.y,stacked:true}}});
 
   const laborG=[...new Set(cl.map(r=>r.grupo_lab))];
   mkBar("ch-shock-labor",laborG,exK.map(k=>({label:EX_LABEL[k],backgroundColor:EX_COLOR[k],borderRadius:3,
-    data:laborG.map(g=>{const r=cl.find(x=>x.exercicio===k&&x.grupo_lab===g);return r?(r.delta_emp||0)/1e3:0;})})));
+    data:laborG.map(g=>{const r=cl.find(x=>x.exercicio===EX_STR[k]&&x.grupo_lab===g);return r?(r.delta_emp||0)/1e3:0;})})));
 
   const firstEx=exK[0]; const exD=firstEx?(D[firstEx]||[]):[];
   const top15VA=[...exD].sort((a,b)=>b.delta_va-a.delta_va).slice(0,15);
@@ -980,6 +1029,8 @@ function initExtraction(){
 // BOOTSTRAP
 // ════════════════════════════════════════════════════════════════════════════
 buildSchemeSwitcher();
+// Apply definition tooltips to static card-titles that have a matching id
+Object.entries(CARD_DEFS).forEach(([id,def])=>{const e=document.getElementById(id);if(e)e.title=def;});
 showTab(0);
 </script>
 </body></html>]")
