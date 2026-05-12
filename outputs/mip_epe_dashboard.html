@@ -141,7 +141,7 @@ table.dt tr:hover td{background:#1f2233}
       <div class="chart-wrap"><canvas id="ch-va-decomp"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title" id="ttl-emp-group">Pessoal Ocupado por Grupo (mil)</div>
+      <div class="card-title" id="ttl-emp-group">Pessoal Ocupado por Grupo (milh&otilde;es)</div>
       <div class="chart-wrap"><canvas id="ch-emp-group"></canvas></div>
     </div>
   </div>
@@ -376,19 +376,38 @@ function secName(cod){const s=D.Setores.find(x=>x.cod===cod);return s?s.nome:cod
 
 // Short definitions shown as a second tooltip line for known indicator labels
 const IND_DEF={
+  // Production multipliers
   "MP"   :"Multiplicador de Produção: impacto total na produção da economia por R$1 de demanda final",
-  "MPT"  :"MP Truncado: efeito direto + indireto (sem induzido)",
-  "MPTT" :"MP Tipo I: efeito direto + indireto apenas dentro da estrutura IO",
-  "ME"   :"Multiplicador de Emprego: empregos gerados por R$1M de demanda final",
-  "MEI"  :"ME Tipo I: empregos diretos e indiretos (sem induzidos)",
-  "MET"  :"ME Total: inclui efeitos induzidos de renda",
+  "MPT"  :"MP Truncado: efeito direto + indireto (sem induzido de renda)",
+  "MPTT" :"MP Tipo I: apenas efeitos direto e indireto intra-setoriais",
+  // Employment multipliers
+  "ME"   :"Multiplicador de Emprego: total de empregos gerados por R$1M de demanda final",
+  "MEI"  :"ME Tipo I: empregos diretos e indiretos (sem efeitos induzidos)",
+  "MET"  :"ME Total (Tipo II): inclui efeitos induzidos via renda das famílias",
+  "MEII" :"ME Tipo II estendido: inclui efeitos de renda e consumo",
+  // Income multipliers
   "MR"   :"Multiplicador de Renda: renda das famílias gerada por R$1M de demanda final",
-  "MRI"  :"MR Tipo I: renda direta e indireta",
-  "BL (R$M)":"Backward Linkage (Rasmussen): poder de compra setorial — quanto o setor demanda de insumos",
-  "FL (R$M)":"Forward Linkage (Rasmussen): poder de oferta setorial — quanto o setor fornece para outros",
-  "VBP (R$ bi)":"Valor Bruto da Produção: valor total dos bens e serviços gerados pelo setor",
-  "VA/PIB":"Valor Adicionado: remuneração dos fatores (salários + lucros + outros) gerada na produção",
-  "Ocupações (mil)":"Total de ocupações formais e informais associadas à produção do setor"
+  "MRI"  :"MR Tipo I: renda direta e indireta (sem induzida)",
+  "MRT"  :"MR Total (Tipo II): inclui efeitos induzidos de consumo das famílias",
+  "MRII" :"MR Tipo II estendido: inclui efeitos de segunda ordem",
+  // Linkage indices
+  "BL (R$M)":"Backward Linkage hipotético: perda de produção total se o setor fosse eliminado (demanda por insumos)",
+  "FL (R$M)":"Forward Linkage hipotético: perda de produção total se o setor fosse eliminado (oferta para outros)",
+  // Value added components
+  "VA/PIB"  :"Valor Adicionado: remuneração dos fatores (salários + EOB + outros) gerada na produção (R$ bi)",
+  "Salários":"Salários e rendimentos pagos aos trabalhadores do setor (R$ bi)",
+  "EOB"     :"Excedente Operacional Bruto: lucros e rendas do capital antes da depreciação (R$ bi)",
+  // Final demand components
+  "Export"    :"Exportações: demanda externa pelo produto do setor (R$ bi)",
+  "Gov"       :"Consumo do Governo: compras governamentais de bens e serviços finais (R$ bi)",
+  "ISFLSF"    :"ISFLSF: consumo das Instituições Sem Fins Lucrativos a Serviço das Famílias (R$ bi)",
+  "Families"  :"Consumo das Famílias: demanda das famílias por bens e serviços finais (R$ bi)",
+  "GFCF"      :"FBCF — Formação Bruta de Capital Fixo: investimento em ativos fixos (R$ bi)",
+  "DeltaStock":"Variação de Estoques: mudança no nível de inventários (R$ bi)",
+  // Production / occupation
+  "VBP (R$ bi)" :"Valor Bruto da Produção: valor total dos bens e serviços gerados pelo setor (R$ bi)",
+  "Ocupações (M)":"Total de ocupações (empregos formais + informais) — dado absoluto em milhões",
+  "Ocupações (mil)":"Total de ocupações (empregos formais + informais) — em milhares"
 };
 // tooltip callback: show full sector name + indicator definition
 const TIP_SECTOR = {callbacks:{
@@ -485,12 +504,12 @@ function clrTabTbls(n){document.querySelectorAll(`#tab${n} table.dt tbody`).forE
 
 // Chart-title definitions (shown as native browser tooltip on hover)
 const CARD_DEFS={
-  "ttl-vbp-group":"VBP — Valor Bruto da Produção: valor total gerado por setor/grupo no período (R$ bi).",
-  "ttl-va-decomp":"VA/PIB — Valor Adicionado: renda líquida gerada, decomposta em Salários, EOB e outros (R$ bi).",
-  "ttl-emp-group":"Ocupações: total de empregos formais e informais por grupo/setor (mil pessoas).",
-  "ttl-df-group":"Demanda Final: absorção interna e externa — Exportações, Famílias, Governo, ISFLSF, FBCF, Var. Estoques.",
-  "ttl-shock-va":"ΔVA — variação do Valor Adicionado induzida pelo choque de demanda (R$ bi).",
-  "ttl-shock-emp":"ΔEmprego — variação nas ocupações induzida pelo choque de demanda (mil pessoas)."
+  "ttl-vbp-group":"VBP — Valor Bruto da Produção: valor total dos bens e serviços gerados por grupo (R$ bi).",
+  "ttl-va-decomp":"VA/PIB — Valor Adicionado: renda gerada na produção, decomposta em Salários, EOB e outros (R$ bi).",
+  "ttl-emp-group":"Ocupações: total de empregos formais e informais por grupo/setor (valores absolutos em milhões).",
+  "ttl-df-group":"Demanda Final: componentes da absorção — Exportações, Famílias, Governo, ISFLSF, FBCF e Var. de Estoques (R$ bi).",
+  "ttl-shock-va":"ΔVA — variação do Valor Adicionado induzida pelo choque de demanda final simulado (R$ bi).",
+  "ttl-shock-emp":"ΔEmprego — variação no número de ocupações induzida pelo choque de demanda (mil pessoas)."
 };
 function setTtl(id,txt){
   const e=document.getElementById(id);if(!e)return;
@@ -671,7 +690,7 @@ function initBaseline(){
   const bl=enrich(D.Baseline); const dfAll=enrich(D.Demanda_Final);
   const s=sch(); const sec=isSec(); const sfx=sec?" (top 20)":" ("+s.label+")";
   setTtl("ttl-va-decomp","Valor Adicionado por Grupo"+sfx);
-  setTtl("ttl-emp-group","Pessoal Ocupado por Grupo"+sfx);
+  setTtl("ttl-emp-group","Pessoal Ocupado por Grupo"+sfx+" (milhões)");
   setTtl("ttl-df-group", "Demanda Final por Componente"+sfx);
 
   if(sec){
@@ -683,7 +702,7 @@ function initBaseline(){
     ],{plugins:{...CD.plugins,tooltip:TIP_SECTOR}});
     const topEmp=[...bl].sort((a,b)=>b.ocupacoes-a.ocupacoes).slice(0,20);
     mkBar("ch-emp-group",topEmp.map(r=>r.cod),
-      [{label:"Ocupações (mil)",data:topEmp.map(r=>r.ocupacoes/1e3),
+      [{label:"Ocupações (M)",data:topEmp.map(r=>r.ocupacoes/1e6),
         backgroundColor:topEmp.map(r=>gc(r.grupo)),borderRadius:4}],
       {plugins:{...CD.plugins,legend:{display:false},tooltip:TIP_SECTOR}});
     const df=dfAll; const dfC=["Export","Gov","ISFLSF","Families","GFCF","DeltaStock"];
@@ -707,9 +726,9 @@ function initBaseline(){
     ]);
 
     // Employment: single dataset with per-group colours → custom generateLabels legend
-    const empVals=aggBy(bl,"ocupacoes",lbls).map(v=>v/1e3);
+    const empVals=aggBy(bl,"ocupacoes",lbls).map(v=>v/1e6);
     mkBar("ch-emp-group",lbls,
-      [{label:"Ocupações (mil)",data:empVals,backgroundColor:grpColors,borderRadius:4}],
+      [{label:"Ocupações (M)",data:empVals,backgroundColor:grpColors,borderRadius:4}],
       {plugins:{...CD.plugins,legend:makeColorLegend(lbls,grpColors)}});
 
     // Demanda Final: stacked by component — legend already shows Export / Gov / etc.
@@ -742,16 +761,18 @@ function initBaseline(){
 // MULTIPLIERS (Tab 2)
 // ════════════════════════════════════════════════════════════════════════════
 function initMultipliers(){
-  const mp=[...D.Mult_Producao].sort((a,b)=>b.MP-a.MP);
+  // Enrich so grupo_nt4 / grupo_ibge are available for colour coding
+  const mp=[...enrich(D.Mult_Producao)].sort((a,b)=>b.MP-a.MP);
   const me=D.Mult_Emprego, mr=D.Mult_Renda;
   const setE=D.Setores.filter(s=>s.eh_energia).map(s=>s.cod);
 
-  // Legend: one swatch per group + orange entry for energy-sector highlight
-  const mpGrps=[...new Set(mp.map(r=>r.grupo).filter(Boolean))];
+  // Colour by current scheme (fall back to "grupo" in 73-sector mode)
+  const grpCol=isSec()?"grupo":scCol();
+  const mpGrps=[...new Set(mp.map(r=>r[grpCol]).filter(Boolean))];
   const mpGrpC=mpGrps.map(gc);
   mkHBar("ch-mp-all",mp.map(r=>r.cod),
     [{label:"MP",data:mp.map(r=>r.MP),
-      backgroundColor:mp.map(r=>setE.includes(r.cod)?"#F39C12":gc(r.grupo)),borderRadius:2}],
+      backgroundColor:mp.map(r=>setE.includes(r.cod)?"#F39C12":gc(r[grpCol])),borderRadius:2}],
     {plugins:{...CD.plugins,
       legend:makeColorLegend([...mpGrps,"⚡ Energia"],[...mpGrpC,"#F39C12"]),
       tooltip:TIP_SECTOR},
