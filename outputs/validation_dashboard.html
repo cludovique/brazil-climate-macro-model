@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Validação MIP — EPE 2018 vs GIC-UFRJ 2021</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0f1117;--surface:#181c27;--card:#1e2330;--border:#2d3448;
+  --text:#e2e8f0;--muted:#8892a4;
+  --epe:#378ADD;--gic:#F39C12;--both:#8E44AD;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:13px}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+header h1{font-size:15px;font-weight:700}
+.badge{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:2px 9px;font-size:11px;color:var(--muted)}
+.badge.epe{border-color:var(--epe);color:var(--epe)}.badge.gic{border-color:var(--gic);color:var(--gic)}
+.badge.both{border-color:var(--both);color:var(--both)}
+nav.tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;display:flex;gap:2px}
+nav.tabs button{background:none;border:none;color:var(--muted);padding:10px 15px;cursor:pointer;font-size:12px;border-bottom:2px solid transparent}
+nav.tabs button.active{color:var(--epe);border-bottom-color:var(--epe)}
+.leg-bar{display:flex;gap:18px;align-items:center;padding:7px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-size:11px;flex-wrap:wrap}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+main{padding:14px 16px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:0}
+.card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:10px}
+.chart-wrap{position:relative;height:270px}
+.chart-wrap.tall{height:380px}
+.chart-wrap.short{height:190px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.kpi-val{font-size:22px;font-weight:700;margin-bottom:2px}
+.kpi-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.info-box{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6}
+.info-box strong{color:var(--text)}
+.r2b{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1px 7px;font-size:10px;margin-left:5px;color:var(--both)}
+/* Summary table */
+table.st{width:100%;border-collapse:collapse;font-size:11px;margin-top:4px}
+table.st th{background:var(--surface);color:var(--muted);font-weight:600;text-align:center;padding:5px 6px;border-bottom:1px solid var(--border)}
+table.st th:first-child{text-align:left}
+table.st td{padding:4px 6px;border-bottom:1px solid var(--border);text-align:center}
+table.st td:first-child,table.st td:nth-child(2){text-align:left}
+table.st tr:last-child td{border-bottom:none}
+table.st .ve{color:var(--epe)}.ve strong{color:var(--epe)}
+table.st .vg{color:var(--gic)}.vg strong{color:var(--gic)}
+table.st .ok{color:#1D9E75}.table.st .warn{color:#F39C12}.table.st .bad{color:#E24B4A}
+/* Sector table */
+.dt{width:100%;border-collapse:collapse;font-size:11px}
+.dt th{position:sticky;top:0;background:var(--surface);color:var(--muted);font-weight:600;text-align:left;padding:5px 7px;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap}
+.dt td{padding:4px 7px;border-bottom:1px solid var(--border);white-space:nowrap}
+.dt tr:hover td{background:rgba(255,255,255,.03)}
+.ok{color:#1D9E75}.warn{color:#F39C12}.bad{color:#E24B4A}
+.epe-c{color:var(--epe)}.gic-c{color:var(--gic)}
+.search-box{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:4px;font-size:11px;width:240px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>&#9878; Validação Cruzada — MIP-EPE 2018 &nbsp;vs&nbsp; GIC-UFRJ 2021</h1>
+  <span class="badge epe">&#9632; EPE/FIPE 2018 &bull; 73 setores</span>
+  <span class="badge gic">&#9632; GIC-UFRJ 2021 &bull; 67 setores</span>
+  <span class="badge both" id="matchBadge"></span>
+</header>
+
+<nav class="tabs" id="mainTabs">
+  <button class="active" onclick="showTab(0)">&#128202; Resumo Geral</button>
+  <button onclick="showTab(1)">&#128200; Multiplicadores</button>
+  <button onclick="showTab(2)">&#128279; Índices de Ligação</button>
+  <button onclick="showTab(3)">&#128300; Extração &amp; Índ. Puros</button>
+  <button onclick="showTab(4)">&#128203; Tabela Completa</button>
+</nav>
+
+<div class="leg-bar">
+  <span><span class="dot" style="background:var(--epe)"></span><strong style="color:var(--epe)">EPE 2018</strong> — MIP Energia EPE/FIPE, 73 setores</span>
+  <span><span class="dot" style="background:var(--gic)"></span><strong style="color:var(--gic)">GIC-UFRJ 2021</strong> — MIP IBGE 67 setores via IP-GIC</span>
+  <span style="margin-left:auto;color:var(--muted);font-size:10px">Pareamento posicional pela ordem IBGE (S01↔Agriculture … S67↔Domestic services) &nbsp;|&nbsp; S68–S73 EPE sem par GIC</span>
+</div>
+
+<!-- ══ TAB 0: RESUMO ══════════════════════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab0"><main>
+  <div class="info-box">
+    <strong>Objetivo:</strong> Verificar se os resultados EPE são racionais comparando ordens de grandeza, rankings setoriais e correlações com o modelo GIC-UFRJ aplicado à MIP 2021. As matrizes são de fontes e anos distintos — diferenças esperadas de ≤15% nas médias indicam consistência metodológica. Diferenças maiores em setores específicos podem indicar particularidades da MIP-Energia EPE ou setores merecedores de revisão.
+  </div>
+  <div class="kpi-row" id="kpiRow"></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Distribuição — Multiplicador Simples de Produção (MP)</div>
+      <div class="chart-wrap short"><canvas id="ch-dist-mp"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribuição — Índice de Ligação para Trás (BL Rasmussen)</div>
+      <div class="chart-wrap short"><canvas id="ch-dist-bl"></canvas></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title">Estatísticas Resumo — EPE 2018 vs GIC-UFRJ 2021 (67 setores pareados)</div>
+    <table class="st" id="summTable"></table>
+  </div>
+</main></div>
+
+<!-- ══ TAB 1: MULTIPLICADORES ════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab1"><main>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">MP Simples — Scatter EPE vs GIC <span class="r2b" id="r2-mp"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-mp"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">MPT (modelo fechado) — Scatter <span class="r2b" id="r2-mpt"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-mpt"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Top 15 MP — EPE (azul) vs GIC (laranja), ranked por EPE</div>
+      <div class="chart-wrap tall"><canvas id="ch-top-mp"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 15 MPT — EPE vs GIC</div>
+      <div class="chart-wrap tall"><canvas id="ch-top-mpt"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Mult. Emprego Tipo I (MEI) — Scatter <span class="r2b" id="r2-mei"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-mei"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Mult. Renda Tipo I (MRI) — Scatter <span class="r2b" id="r2-mri"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-mri"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Top 15 MEI — EPE vs GIC</div>
+      <div class="chart-wrap tall"><canvas id="ch-top-mei"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 15 MRI — EPE vs GIC</div>
+      <div class="chart-wrap tall"><canvas id="ch-top-mri"></canvas></div>
+    </div>
+  </div>
+</main></div>
+
+<!-- ══ TAB 2: ÍNDICES DE LIGAÇÃO ══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab2"><main>
+  <div class="info-box">
+    <strong>Leitura:</strong> Setores-chave têm BL&gt;1 (forte encadeamento para trás, demanda) E FLG&gt;1 (forte encadeamento para frente, oferta). Os dois modelos devem classificar setores de indústria de base (química, metalurgia, refino) como chave em ambas as matrizes.
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">BL vs FLG — EPE 2018 (setores coloridos por grupo)</div>
+      <div class="chart-wrap tall"><canvas id="ch-cv-epe"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">BL vs FLG — GIC-UFRJ 2021</div>
+      <div class="chart-wrap tall"><canvas id="ch-cv-gic"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">BL Rasmussen — Scatter EPE vs GIC <span class="r2b" id="r2-bl"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-bl"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">FLG Ghosh — Scatter EPE vs GIC <span class="r2b" id="r2-flg"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-flg"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Top 15 BL — EPE vs GIC</div>
+      <div class="chart-wrap tall"><canvas id="ch-top-bl"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 15 FLG — EPE vs GIC</div>
+      <div class="chart-wrap tall"><canvas id="ch-top-flg"></canvas></div>
+    </div>
+  </div>
+</main></div>
+
+<!-- ══ TAB 3: EXTRAÇÃO & IPLN ══════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab3"><main>
+  <div class="info-box">
+    <strong>Extração Hipotética BL%</strong>: impacto da remoção do setor na produção total (demanda). <strong>FL%</strong>: impacto pelo lado da oferta. <strong>PBLN/PFLN</strong>: Índices Puros de Ligação Normalizados — medem contribuição absoluta do setor ao produto total.
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Extração BL% — Scatter EPE vs GIC <span class="r2b" id="r2-blpct"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-blpct"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Extração FL% — Scatter EPE vs GIC <span class="r2b" id="r2-flpct"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-flpct"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Top 15 Extração BL% — EPE vs GIC</div>
+      <div class="chart-wrap tall"><canvas id="ch-top-blpct"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 15 Extração FL% — EPE vs GIC</div>
+      <div class="chart-wrap tall"><canvas id="ch-top-flpct"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">PBLN — Scatter EPE vs GIC <span class="r2b" id="r2-pbln"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-pbln"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">PFLN — Scatter EPE vs GIC <span class="r2b" id="r2-pfln"></span></div>
+      <div class="chart-wrap"><canvas id="ch-sc-pfln"></canvas></div>
+    </div>
+  </div>
+</main></div>
+
+<!-- ══ TAB 4: TABELA ═══════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab4"><main>
+  <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap">
+    <input class="search-box" placeholder="Buscar setor (cod, nome, grupo)..." oninput="filterTbl(this.value)">
+    <span style="color:var(--muted);font-size:10px">&#9650;&#9660; cabeçalho para ordenar &nbsp;|&nbsp; verde=Δ&lt;5% &nbsp; laranja=5-15% &nbsp; vermelho=&gt;15%</span>
+  </div>
+  <div style="overflow-x:auto;max-height:78vh;overflow-y:auto">
+  <table class="dt" id="tblS">
+    <thead><tr>
+      <th onclick="sortT(0)">Cod</th>
+      <th onclick="sortT(1)">Setor EPE</th>
+      <th onclick="sortT(2)">Setor GIC</th>
+      <th onclick="sortT(3)" class="epe-c">MP_E</th>
+      <th onclick="sortT(4)" class="gic-c">MP_G</th>
+      <th onclick="sortT(5)">Δ%</th>
+      <th onclick="sortT(6)" class="epe-c">MPT_E</th>
+      <th onclick="sortT(7)" class="gic-c">MPT_G</th>
+      <th onclick="sortT(8)" class="epe-c">MEI_E</th>
+      <th onclick="sortT(9)" class="gic-c">MEI_G</th>
+      <th onclick="sortT(10)" class="epe-c">MRI_E</th>
+      <th onclick="sortT(11)" class="gic-c">MRI_G</th>
+      <th onclick="sortT(12)" class="epe-c">BL_E</th>
+      <th onclick="sortT(13)" class="gic-c">BL_G</th>
+      <th onclick="sortT(14)" class="epe-c">FLG_E</th>
+      <th onclick="sortT(15)" class="gic-c">FLG_G</th>
+      <th onclick="sortT(16)" class="epe-c">BLext_E%</th>
+      <th onclick="sortT(17)" class="gic-c">BLext_G%</th>
+    </tr></thead>
+    <tbody id="tblSbody"></tbody>
+  </table>
+  </div>
+</main></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const D = {"meta":{"epe_n":73,"gic_n":67,"matched_n":67,"epe_year":2018,"gic_year":2021},"pairs":[{"cod":"S01","epe_nome":"Agricultura, inclusive o apoio à agricultura e a pós-colheita","gic_nome":"Agriculture","grupo":"Agropecuaria","MP_E":1.7209,"MPT_E":2.7717,"MPTT_E":2.4324,"direct_E":0.3747,"indirect_E":1.3462,"induced_E":1.0508,"MP_G":1.670747,"MPT_G":2.571477,"MPTT_G":2.338687,"ME_E":20.3533,"MEI_E":1.2114,"MET_E":26.8839,"MEII_E":1.6001,"ME_G":11.330765,"MEI_G":1.256822,"MET_G":15.37915,"MEII_G":1.705873,"MR_E":0.194,"MRI_E":2.2474,"MRT_E":0.3393,"MRII_E":3.931,"MR_G":0.128153,"MRI_G":2.597375,"MRT_G":0.232789,"MRII_G":4.718111,"BL_E":0.9397,"FL_E":1.9123,"FLG_E":0.8939,"Vj_E":5.1543,"Vi_E":3.1496,"BL_G":0.901637,"FL_G":2.035465,"FLG_G":0.908884,"PBLN_E":2.5052,"PFLN_E":2.9212,"PTLN_E":2.7128,"PBLN_G":2.833436,"PFLN_G":3.691313,"BLpct_E":2.3261,"FLpct_E":2.3529,"BLpct_G":-12.550524,"FLpct_G":3.255748,"quad":"Independente"},{"cod":"S02","epe_nome":"Pecuária, inclusive o apoio à pecuária","gic_nome":"Livestock","grupo":"Agropecuaria","MP_E":1.8761,"MPT_E":3.4192,"MPTT_E":2.9209,"direct_E":0.448,"indirect_E":1.4281,"induced_E":1.5431,"MP_G":1.868815,"MPT_G":3.277689,"MPTT_G":2.913572,"ME_E":45.9417,"MEI_E":1.185,"MET_E":55.532,"MEII_E":1.4324,"ME_G":24.483306,"MEI_G":1.235888,"MET_G":30.815578,"MEII_G":1.555534,"MR_E":0.2849,"MRI_E":1.9484,"MRT_E":0.4983,"MRII_E":3.4081,"MR_G":0.200451,"MRI_G":2.168954,"MRT_G":0.364117,"MRII_G":3.939888,"BL_E":1.0245,"FL_E":0.8626,"FLG_E":0.9711,"Vj_E":4.8027,"Vi_E":5.9063,"BL_G":1.008527,"FL_G":0.932069,"FLG_G":1.031877,"PBLN_E":0.6895,"PFLN_E":1.6575,"PTLN_E":1.1727,"PBLN_G":0.680604,"PFLN_G":2.179168,"BLpct_E":1.057,"FLpct_E":1.0599,"BLpct_G":-14.520198,"FLpct_G":1.495119,"quad":"Demanda acima da media"},{"cod":"S03","epe_nome":"Produção florestal; pesca e aquicultura","gic_nome":"Forestry","grupo":"Agropecuaria","MP_E":1.3857,"MPT_E":2.0341,"MPTT_E":1.8247,"direct_E":0.2159,"indirect_E":1.1698,"induced_E":0.6484,"MP_G":1.416951,"MPT_G":2.159754,"MPTT_G":1.96778,"ME_E":24.5389,"MEI_E":1.16,"MET_E":28.5685,"MEII_E":1.3505,"ME_G":17.320721,"MEI_G":1.162487,"MET_G":20.659292,"MEII_G":1.386556,"MR_E":0.1197,"MRI_E":2.0101,"MRT_E":0.2094,"MRII_E":3.516,"MR_G":0.105684,"MRI_G":2.007443,"MRT_G":0.191974,"MRII_G":3.646504,"BL_E":0.7567,"FL_E":0.7038,"FLG_E":0.9097,"Vj_E":6.5114,"Vi_E":7.0134,"BL_G":0.764673,"FL_G":0.685621,"FLG_G":0.927528,"PBLN_E":0.12,"PFLN_E":0.2467,"PTLN_E":0.1833,"PBLN_G":0.136914,"PFLN_G":0.226627,"BLpct_E":0.115,"FLpct_E":0.2264,"BLpct_G":-16.099414,"FLpct_G":0.238688,"quad":"Independente"},{"cod":"S04","epe_nome":"Extração de carvão mineral e de minerais não-metálicos","gic_nome":"Coal mining","grupo":"Ind_Extrativa","MP_E":1.8772,"MPT_E":3.8383,"MPTT_E":3.205,"direct_E":0.4678,"indirect_E":1.4095,"induced_E":1.961,"MP_G":1.956665,"MPT_G":4.10575,"MPTT_G":3.550329,"ME_E":10.6622,"MEI_E":1.8039,"MET_E":22.8499,"MEII_E":3.866,"ME_G":7.607942,"MEI_G":2.078096,"MET_G":17.267134,"MEII_G":4.716488,"MR_E":0.362,"MRI_E":1.7558,"MRT_E":0.6332,"MRII_E":3.0711,"MR_G":0.305766,"MRI_G":1.88401,"MRT_G":0.555421,"MRII_G":3.422289,"BL_E":1.0251,"FL_E":0.6795,"FLG_E":1.4719,"Vj_E":4.6386,"Vi_E":6.9563,"BL_G":1.055936,"FL_G":0.650075,"FLG_G":1.366773,"PBLN_E":0.0217,"PFLN_E":0.31,"PTLN_E":0.1656,"PBLN_G":0.044236,"PFLN_G":0.247866,"BLpct_E":0.1441,"FLpct_E":0.3035,"BLpct_G":-16.076699,"FLpct_G":0.284332,"quad":"Setor-Chave"},{"cod":"S05","epe_nome":"Extração de petróleo e gás, inclusive as atividades de apoio","gic_nome":"Oil gas","grupo":"Energia_Fossil","MP_E":1.6736,"MPT_E":2.812,"MPTT_E":2.4444,"direct_E":0.3841,"indirect_E":1.2895,"induced_E":1.1385,"MP_G":1.56729,"MPT_G":2.554262,"MPTT_G":2.299183,"ME_E":4.1772,"MEI_E":18.8214,"MET_E":11.2527,"MEII_E":50.7021,"ME_G":2.59134,"MEI_G":19.094135,"MET_G":7.027345,"MEII_G":51.780567,"MR_E":0.2102,"MRI_E":2.8069,"MRT_E":0.3676,"MRII_E":4.9098,"MR_G":0.140424,"MRI_G":2.68856,"MRT_G":0.255078,"MRII_G":4.883749,"BL_E":0.9138,"FL_E":1.8886,"FLG_E":1.285,"Vj_E":5.3151,"Vi_E":3.0082,"BL_G":0.845805,"FL_G":1.33935,"FLG_G":1.189121,"PBLN_E":0.9632,"PFLN_E":2.1449,"PTLN_E":1.5531,"PBLN_G":0.979087,"PFLN_G":2.135392,"BLpct_E":1.2144,"FLpct_E":2.6788,"BLpct_G":-14.731365,"FLpct_G":2.972106,"quad":"Oferta acima da media"},{"cod":"S06","epe_nome":"Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","gic_nome":"Iron ore","grupo":"Ind_Extrativa","MP_E":1.7532,"MPT_E":2.8152,"MPTT_E":2.4723,"direct_E":0.4143,"indirect_E":1.3389,"induced_E":1.062,"MP_G":1.59885,"MPT_G":2.399991,"MPTT_G":2.19294,"ME_E":5.0088,"MEI_E":13.0487,"MET_E":11.6092,"MEII_E":30.2436,"ME_G":2.920036,"MEI_G":19.034898,"MET_G":6.520811,"MEII_G":42.507343,"MR_E":0.1961,"MRI_E":4.0207,"MRT_E":0.3429,"MRII_E":7.0328,"MR_G":0.113984,"MRI_G":5.506807,"MRT_G":0.207051,"MRII_G":10.003071,"BL_E":0.9573,"FL_E":0.7047,"FLG_E":0.7396,"Vj_E":4.9793,"Vi_E":6.7909,"BL_G":0.862837,"FL_G":0.833497,"FLG_G":0.790477,"PBLN_E":0.8969,"PFLN_E":0.2928,"PTLN_E":0.5954,"PBLN_G":1.158185,"PFLN_G":0.5927,"BLpct_E":0.5671,"FLpct_E":0.3242,"BLpct_G":-15.190618,"FLpct_G":0.815477,"quad":"Independente"},{"cod":"S07","epe_nome":"Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","gic_nome":"Metal mining","grupo":"Ind_Extrativa","MP_E":1.9006,"MPT_E":3.5741,"MPTT_E":3.0337,"direct_E":0.485,"indirect_E":1.4156,"induced_E":1.6735,"MP_G":1.783316,"MPT_G":3.396421,"MPTT_G":2.979522,"ME_E":6.5756,"MEI_E":4.1506,"MET_E":16.9762,"MEII_E":10.7156,"ME_G":4.555622,"MEI_G":3.987809,"MET_G":11.80582,"MEII_G":10.334341,"MR_E":0.3089,"MRI_E":2.1654,"MRT_E":0.5404,"MRII_E":3.7876,"MR_G":0.229508,"MRI_G":2.116076,"MRT_G":0.416899,"MRII_G":3.843836,"BL_E":1.0378,"FL_E":0.6677,"FLG_E":1.0307,"Vj_E":4.7244,"Vi_E":7.332,"BL_G":0.962386,"FL_G":0.627806,"FLG_G":0.918046,"PBLN_E":0.1415,"PFLN_E":0.1321,"PTLN_E":0.1368,"PBLN_G":0.124761,"PFLN_G":0.10988,"BLpct_E":0.1308,"FLpct_E":0.1444,"BLpct_G":-16.12071,"FLpct_G":0.132008,"quad":"Setor-Chave"},{"cod":"S08","epe_nome":"Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","gic_nome":"Meat dairy","grupo":"Ind_Transform","MP_E":2.4828,"MPT_E":4.4445,"MPTT_E":3.8111,"direct_E":0.7739,"indirect_E":1.7089,"induced_E":1.9616,"MP_G":2.676144,"MPT_G":4.795769,"MPTT_G":4.247962,"ME_E":23.6153,"MEI_E":9.0241,"MET_E":35.8068,"MEII_E":13.6828,"ME_G":15.684442,"MEI_G":9.028155,"MET_G":25.21123,"MEII_G":14.511889,"MR_E":0.3621,"MRI_E":3.5159,"MRT_E":0.6334,"MRII_E":6.1499,"MR_G":0.301574,"MRI_G":3.716169,"MRT_G":0.547807,"MRII_G":6.750392,"BL_E":1.3557,"FL_E":0.7495,"FLG_E":0.6429,"Vj_E":3.9397,"Vi_E":6.7745,"BL_G":1.444211,"FL_G":0.836915,"FLG_G":0.681364,"PBLN_E":5.4888,"PFLN_E":0.5815,"PTLN_E":3.0394,"PBLN_G":7.083185,"PFLN_G":0.660899,"BLpct_E":3.317,"FLpct_E":0.5452,"BLpct_G":-10.290503,"FLpct_G":0.778382,"quad":"Demanda acima da media"},{"cod":"S09","epe_nome":"Fabricação e refino de açúcar","gic_nome":"Sugar","grupo":"Ind_Transform","MP_E":2.3814,"MPT_E":4.3694,"MPTT_E":3.7275,"direct_E":0.7891,"indirect_E":1.5923,"induced_E":1.9881,"MP_G":2.327467,"MPT_G":4.172077,"MPTT_G":3.695346,"ME_E":17.1237,"MEI_E":5.6431,"MET_E":29.4795,"MEII_E":9.7149,"ME_G":9.472248,"MEI_G":6.413096,"MET_G":17.76296,"MEII_G":12.026243,"MR_E":0.367,"MRI_E":2.1774,"MRT_E":0.642,"MRII_E":3.8085,"MR_G":0.262446,"MRI_G":2.635457,"MRT_G":0.476731,"MRII_G":4.787286,"BL_E":1.3003,"FL_E":0.6842,"FLG_E":0.8873,"Vj_E":4.1611,"Vi_E":6.9215,"BL_G":1.256044,"FL_G":0.700405,"FLG_G":0.963682,"PBLN_E":0.7581,"PFLN_E":0.2964,"PTLN_E":0.5276,"PBLN_G":0.827737,"PFLN_G":0.395434,"BLpct_E":0.5829,"FLpct_E":0.3023,"BLpct_G":-15.332125,"FLpct_G":0.458893,"quad":"Demanda acima da media"},{"cod":"S10","epe_nome":"Outros produtos alimentares","gic_nome":"Food products","grupo":"Ind_Transform","MP_E":2.2971,"MPT_E":4.0814,"MPTT_E":3.5052,"direct_E":0.7052,"indirect_E":1.5919,"induced_E":1.7843,"MP_G":2.418584,"MPT_G":4.250435,"MPTT_G":3.777001,"ME_E":15.6751,"MEI_E":3.9634,"MET_E":26.7644,"MEII_E":6.7673,"ME_G":10.850832,"MEI_G":4.3819,"MET_G":19.0842,"MEII_G":7.706788,"MR_E":0.3294,"MRI_E":3.0217,"MRT_E":0.5762,"MRII_E":5.2854,"MR_G":0.260631,"MRI_G":3.416288,"MRT_G":0.473434,"MRII_G":6.205661,"BL_E":1.2543,"FL_E":1.0048,"FLG_E":0.7659,"Vj_E":4.2325,"Vi_E":5.1452,"BL_G":1.305215,"FL_G":1.153527,"FLG_G":0.861169,"PBLN_E":4.3955,"PFLN_E":1.3505,"PTLN_E":2.8756,"PBLN_G":5.281212,"PFLN_G":1.735965,"BLpct_E":3.1826,"FLpct_E":1.1818,"BLpct_G":-10.721755,"FLpct_G":1.738531,"quad":"Demanda acima da media"},{"cod":"S11","epe_nome":"Fabricação de bebidas","gic_nome":"Beverages","grupo":"Ind_Transform","MP_E":2.1325,"MPT_E":4.0722,"MPTT_E":3.4459,"direct_E":0.6021,"indirect_E":1.5304,"induced_E":1.9397,"MP_G":2.376396,"MPT_G":4.701048,"MPTT_G":4.100252,"ME_E":10.2935,"MEI_E":4.2339,"MET_E":22.3486,"MEII_E":9.1924,"ME_G":8.475205,"MEI_G":4.943597,"MET_G":18.923497,"MEII_G":11.038097,"MR_E":0.3581,"MRI_E":2.8258,"MRT_E":0.6263,"MRII_E":4.9428,"MR_G":0.330745,"MRI_G":3.195373,"MRT_G":0.600796,"MRII_G":5.80437,"BL_E":1.1645,"FL_E":0.6892,"FLG_E":0.8149,"Vj_E":4.3918,"Vi_E":7.4145,"BL_G":1.282448,"FL_G":0.707387,"FLG_G":0.819183,"PBLN_E":0.7605,"PFLN_E":0.5165,"PTLN_E":0.6387,"PBLN_G":1.230809,"PFLN_G":0.365312,"BLpct_E":0.6778,"FLpct_E":0.345,"BLpct_G":-15.033351,"FLpct_G":0.329406,"quad":"Demanda acima da media"},{"cod":"S12","epe_nome":"Fabricação de produtos do fumo","gic_nome":"Tobacco","grupo":"Ind_Transform","MP_E":2.1353,"MPT_E":3.8398,"MPTT_E":3.2894,"direct_E":0.6697,"indirect_E":1.4656,"induced_E":1.7045,"MP_G":2.391566,"MPT_G":4.47717,"MPTT_G":3.938155,"ME_E":12.995,"MEI_E":11.4678,"MET_E":23.5884,"MEII_E":20.8162,"ME_G":9.842051,"MEI_G":10.481518,"MET_G":19.215925,"MEII_G":20.464439,"MR_E":0.3147,"MRI_E":2.8862,"MRT_E":0.5504,"MRII_E":5.0484,"MR_G":0.296734,"MRI_G":2.784193,"MRT_G":0.539015,"MRII_G":5.057465,"BL_E":1.166,"FL_E":0.5574,"FLG_E":0.5315,"Vj_E":4.3053,"Vi_E":8.5352,"BL_G":1.290635,"FL_G":0.57595,"FLG_G":0.568067,"PBLN_E":0.2859,"PFLN_E":0.0013,"PTLN_E":0.1438,"PBLN_G":0.559811,"PFLN_G":0.001208,"BLpct_E":0.1455,"FLpct_E":0.0036,"BLpct_G":-15.86202,"FLpct_G":0.008104,"quad":"Demanda acima da media"},{"cod":"S13","epe_nome":"Fabricação de produtos têxteis","gic_nome":"Textiles","grupo":"Ind_Transform","MP_E":2.015,"MPT_E":4.1079,"MPTT_E":3.4321,"direct_E":0.5543,"indirect_E":1.4608,"induced_E":2.0929,"MP_G":2.12408,"MPT_G":4.26463,"MPTT_G":3.711415,"ME_E":20.2877,"MEI_E":1.7585,"MET_E":33.2948,"MEII_E":2.8859,"ME_G":14.38416,"MEI_G":1.866081,"MET_G":24.004994,"MEII_G":3.114208,"MR_E":0.3864,"MRI_E":1.8798,"MRT_E":0.6758,"MRII_E":3.288,"MR_G":0.304551,"MRI_G":2.002049,"MRT_G":0.553215,"MRII_G":3.636707,"BL_E":1.1003,"FL_E":0.9033,"FLG_E":0.9658,"Vj_E":5.0689,"Vi_E":6.2321,"BL_G":1.146283,"FL_G":0.951993,"FLG_G":1.003232,"PBLN_E":0.3131,"PFLN_E":0.4707,"PTLN_E":0.3918,"PBLN_G":0.555618,"PFLN_G":0.678605,"BLpct_E":0.3908,"FLpct_E":0.3343,"BLpct_G":-15.365088,"FLpct_G":0.3745,"quad":"Demanda acima da media"},{"cod":"S14","epe_nome":"Confecção de artefatos do vestuário e acessórios","gic_nome":"Apparel","grupo":"Ind_Transform","MP_E":1.8202,"MPT_E":4.2791,"MPTT_E":3.4851,"direct_E":0.4471,"indirect_E":1.3731,"induced_E":2.4589,"MP_G":1.976372,"MPT_G":4.814486,"MPTT_G":4.080989,"ME_E":33.5197,"MEI_E":1.3282,"MET_E":48.8019,"MEII_E":1.9337,"ME_G":27.768591,"MEI_G":1.353038,"MET_G":40.524671,"MEII_G":1.974584,"MR_E":0.4539,"MRI_E":1.6263,"MRT_E":0.794,"MRII_E":2.8446,"MR_G":0.403799,"MRI_G":1.703157,"MRT_G":0.733498,"MRII_G":3.093772,"BL_E":0.9939,"FL_E":0.5895,"FLG_E":0.588,"Vj_E":4.9511,"Vi_E":8.1054,"BL_G":1.066571,"FL_G":0.609521,"FLG_G":0.652084,"PBLN_E":0.8035,"PFLN_E":0.0757,"PTLN_E":0.4403,"PBLN_G":1.316965,"PFLN_G":0.087485,"BLpct_E":0.4427,"FLpct_E":0.0742,"BLpct_G":-15.261263,"FLpct_G":0.109993,"quad":"Independente"},{"cod":"S15","epe_nome":"Fabricação de calçados e de artefatos de couro","gic_nome":"Leather","grupo":"Ind_Transform","MP_E":1.9483,"MPT_E":4.4003,"MPTT_E":3.6085,"direct_E":0.5081,"indirect_E":1.4402,"induced_E":2.452,"MP_G":2.142425,"MPT_G":5.054812,"MPTT_G":4.302119,"ME_E":18.7497,"MEI_E":1.7547,"MET_E":33.9888,"MEII_E":3.1809,"ME_G":16.343093,"MEI_G":1.81994,"MET_G":29.432994,"MEII_G":3.277611,"MR_E":0.4527,"MRI_E":1.7965,"MRT_E":0.7918,"MRII_E":3.1424,"MR_G":0.414366,"MRI_G":1.923913,"MRT_G":0.752693,"MRII_G":3.494773,"BL_E":1.0638,"FL_E":0.6106,"FLG_E":0.5881,"Vj_E":4.8847,"Vi_E":8.4405,"BL_G":1.156184,"FL_G":0.658114,"FLG_G":0.661815,"PBLN_E":0.5508,"PFLN_E":0.0123,"PTLN_E":0.282,"PBLN_G":0.690437,"PFLN_G":0.013893,"BLpct_E":0.3134,"FLpct_E":0.0455,"BLpct_G":-15.678853,"FLpct_G":0.064591,"quad":"Demanda acima da media"},{"cod":"S16","epe_nome":"Fabricação de produtos da madeira","gic_nome":"Wood","grupo":"Ind_Transform","MP_E":1.9636,"MPT_E":4.0305,"MPTT_E":3.3631,"direct_E":0.5353,"indirect_E":1.4283,"induced_E":2.067,"MP_G":2.10678,"MPT_G":4.198347,"MPTT_G":3.657791,"ME_E":19.4616,"MEI_E":1.6901,"MET_E":32.3079,"MEII_E":2.8057,"ME_G":12.560651,"MEI_G":1.984332,"MET_G":21.961328,"MEII_G":3.469451,"MR_E":0.3816,"MRI_E":1.8773,"MRT_E":0.6674,"MRII_E":3.2837,"MR_G":0.297582,"MRI_G":2.239275,"MRT_G":0.540556,"MRII_G":4.067625,"BL_E":1.0722,"FL_E":0.7223,"FLG_E":1.0612,"Vj_E":4.8955,"Vi_E":7.2558,"BL_G":1.136947,"FL_G":0.737753,"FLG_G":0.990477,"PBLN_E":0.1572,"PFLN_E":0.3374,"PTLN_E":0.2472,"PBLN_G":0.245701,"PFLN_G":0.351124,"BLpct_E":0.2335,"FLpct_E":0.2551,"BLpct_G":-15.840045,"FLpct_G":0.281804,"quad":"Setor-Chave"},{"cod":"S17","epe_nome":"Fabricação de celulose, papel e produtos de papel","gic_nome":"Paper","grupo":"Ind_Transform","MP_E":2.0513,"MPT_E":3.7844,"MPTT_E":3.2248,"direct_E":0.5732,"indirect_E":1.478,"induced_E":1.7331,"MP_G":2.264186,"MPT_G":4.358953,"MPTT_G":3.81757,"ME_E":8.3027,"MEI_E":4.5096,"MET_E":19.074,"MEII_E":10.36,"ME_G":7.536179,"MEI_G":5.461274,"MET_G":16.951239,"MEII_G":12.284124,"MR_E":0.3199,"MRI_E":2.4996,"MRT_E":0.5596,"MRII_E":4.3722,"MR_G":0.298038,"MRI_G":2.889882,"MRT_G":0.541383,"MRII_G":5.249448,"BL_E":1.1201,"FL_E":1.0733,"FLG_E":1.0398,"Vj_E":4.9654,"Vi_E":5.1538,"BL_G":1.221893,"FL_G":1.162523,"FLG_G":1.133659,"PBLN_E":0.7074,"PFLN_E":0.8513,"PTLN_E":0.7792,"PBLN_G":0.675832,"PFLN_G":0.945831,"BLpct_E":0.8052,"FLpct_E":0.7747,"BLpct_G":-15.026207,"FLpct_G":0.911243,"quad":"Setor-Chave"},{"cod":"S18","epe_nome":"Impressão e reprodução de gravações","gic_nome":"Printing","grupo":"Ind_Transform","MP_E":1.7419,"MPT_E":3.9886,"MPTT_E":3.2631,"direct_E":0.4091,"indirect_E":1.3328,"induced_E":2.2466,"MP_G":1.949995,"MPT_G":4.755005,"MPTT_G":4.030064,"ME_E":13.1568,"MEI_E":1.5542,"MET_E":27.1196,"MEII_E":3.2036,"ME_G":12.161353,"MEI_G":1.611144,"MET_G":24.768643,"MEII_G":3.281366,"MR_E":0.4147,"MRI_E":1.5621,"MRT_E":0.7255,"MRII_E":2.7324,"MR_G":0.399089,"MRI_G":1.669624,"MRT_G":0.724942,"MRII_G":3.032859,"BL_E":0.9512,"FL_E":0.7231,"FLG_E":1.4572,"Vj_E":5.1627,"Vi_E":6.7722,"BL_G":1.052336,"FL_G":0.675495,"FLG_G":1.484338,"PBLN_E":0.0119,"PFLN_E":0.3395,"PTLN_E":0.1754,"PBLN_G":0.019339,"PFLN_G":0.178349,"BLpct_E":0.1254,"FLpct_E":0.3075,"BLpct_G":-16.142574,"FLpct_G":0.234083,"quad":"Oferta acima da media"},{"cod":"S19","epe_nome":"Derivados de petróleo","gic_nome":"Refining","grupo":"Energia_Fossil","MP_E":2.3024,"MPT_E":3.2649,"MPTT_E":2.9541,"direct_E":0.6616,"indirect_E":1.6408,"induced_E":0.9625,"MP_G":2.361023,"MPT_G":3.292936,"MPTT_G":3.052087,"ME_E":4.6342,"MEI_E":106.691,"MET_E":10.6159,"MEII_E":244.4037,"ME_G":2.953142,"MEI_G":89.097205,"MET_G":7.141682,"MEII_G":215.46674,"MR_E":0.1777,"MRI_E":8.9161,"MRT_E":0.3108,"MRII_E":15.5957,"MR_G":0.13259,"MRI_G":7.431073,"MRT_G":0.240849,"MRII_G":13.498486,"BL_E":1.2572,"FL_E":3.1287,"FLG_E":1.3186,"Vj_E":5.23,"Vi_E":2.2958,"BL_G":1.274152,"FL_G":2.820607,"FLG_G":1.429194,"PBLN_E":2.0286,"PFLN_E":4.1095,"PTLN_E":3.0672,"PBLN_G":2.488986,"PFLN_G":3.910582,"BLpct_E":3.4243,"FLpct_E":4.0773,"BLpct_G":-11.08894,"FLpct_G":4.911601,"quad":"Setor-Chave"},{"cod":"S20","epe_nome":"Biodiesel","gic_nome":"Biofuels","grupo":"Energia_Renov","MP_E":2.289,"MPT_E":3.2341,"MPTT_E":2.9289,"direct_E":0.6629,"indirect_E":1.6261,"induced_E":0.9451,"MP_G":2.430706,"MPT_G":4.137872,"MPTT_G":3.696663,"ME_E":4.4272,"MEI_E":17.5672,"MET_E":10.3009,"MEII_E":40.8743,"ME_G":9.059131,"MEI_G":8.858219,"MET_G":16.73209,"MEII_G":16.361009,"MR_E":0.1745,"MRI_E":8.1512,"MRT_E":0.3052,"MRII_E":14.2578,"MR_G":0.242891,"MRI_G":3.165723,"MRT_G":0.441209,"MRII_G":5.750511,"BL_E":1.2499,"FL_E":0.6138,"FLG_E":1.5152,"Vj_E":4.2011,"Vi_E":7.5984,"BL_G":1.311758,"FL_G":0.816613,"FLG_G":1.269201,"PBLN_E":0.0097,"PFLN_E":0.1666,"PTLN_E":0.088,"PBLN_G":0.755864,"PFLN_G":0.697267,"BLpct_E":0.1113,"FLpct_E":0.1668,"BLpct_G":-15.061615,"FLpct_G":0.873173,"quad":"Setor-Chave"},{"cod":"S21","epe_nome":"Coquerias","gic_nome":"Chemicals","grupo":"Energia_Fossil","MP_E":3.5332,"MPT_E":4.6598,"MPTT_E":4.296,"direct_E":0.9483,"indirect_E":2.5849,"induced_E":1.1267,"MP_G":1.927171,"MPT_G":3.073744,"MPTT_G":2.777418,"ME_E":5.4684,"MEI_E":69.3137,"MET_E":12.4705,"MEII_E":158.0692,"ME_G":3.464854,"MEI_G":10.892624,"MET_G":8.618194,"MEII_G":27.093423,"MR_E":0.208,"MRI_E":27.6173,"MRT_E":0.3638,"MRII_E":48.307,"MR_G":0.163131,"MRI_G":3.608564,"MRT_G":0.296326,"MRII_G":6.554928,"BL_E":1.9293,"FL_E":0.9313,"FLG_E":1.8081,"Vj_E":4.4066,"Vi_E":8.3116,"BL_G":1.04002,"FL_G":2.108454,"FLG_G":1.518979,"PBLN_E":0.0093,"PFLN_E":0.0472,"PTLN_E":0.0282,"PBLN_G":0.321889,"PFLN_G":3.331831,"BLpct_E":0.042,"FLpct_E":0.0414,"BLpct_G":-14.247779,"FLpct_G":3.207009,"quad":"Setor-Chave"},{"cod":"S22","epe_nome":"Fabricação de biocombustíveis","gic_nome":"Chemical products","grupo":"Energia_Renov","MP_E":2.3204,"MPT_E":4.0613,"MPTT_E":3.4992,"direct_E":0.7286,"indirect_E":1.5918,"induced_E":1.7409,"MP_G":2.029016,"MPT_G":3.699121,"MPTT_G":3.26749,"ME_E":14.4755,"MEI_E":8.0494,"MET_E":25.295,"MEII_E":14.0659,"ME_G":4.875727,"MEI_G":6.910913,"MET_G":12.382119,"MEII_G":17.55056,"MR_E":0.3214,"MRI_E":2.5038,"MRT_E":0.5621,"MRII_E":4.3795,"MR_G":0.237618,"MRI_G":2.77523,"MRT_G":0.431631,"MRII_G":5.041183,"BL_E":1.2671,"FL_E":0.7501,"FLG_E":1.0389,"Vj_E":4.0603,"Vi_E":6.2863,"BL_G":1.094981,"FL_G":1.090554,"FLG_G":1.356866,"PBLN_E":0.6563,"PFLN_E":0.4044,"PTLN_E":0.5306,"PBLN_G":0.226498,"PFLN_G":1.203519,"BLpct_E":0.5935,"FLpct_E":0.4538,"BLpct_G":-15.32228,"FLpct_G":1.181603,"quad":"Setor-Chave"},{"cod":"S23","epe_nome":"Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","gic_nome":"Personal products","grupo":"Ind_Transform","MP_E":1.9871,"MPT_E":3.2251,"MPTT_E":2.8253,"direct_E":0.5219,"indirect_E":1.4652,"induced_E":1.238,"MP_G":2.302222,"MPT_G":4.413882,"MPTT_G":3.868133,"ME_E":4.9866,"MEI_E":9.6996,"MET_E":12.6808,"MEII_E":24.6658,"ME_G":8.121571,"MEI_G":3.990786,"MET_G":17.612554,"MEII_G":8.654474,"MR_E":0.2285,"MRI_E":3.1795,"MRT_E":0.3998,"MRII_E":5.5615,"MR_G":0.300441,"MRI_G":2.791066,"MRT_G":0.545749,"MRII_G":5.069949,"BL_E":1.085,"FL_E":1.9379,"FLG_E":1.4808,"Vj_E":5.3081,"Vi_E":3.0206,"BL_G":1.24242,"FL_G":0.634324,"FLG_G":0.805356,"PBLN_E":0.2989,"PFLN_E":2.4972,"PTLN_E":1.3961,"PBLN_G":1.269559,"PFLN_G":0.168745,"BLpct_E":1.198,"FLpct_E":2.263,"BLpct_G":-15.228333,"FLpct_G":0.210642,"quad":"Setor-Chave"},{"cod":"S24","epe_nome":"Fabricação de defensivos, desinfestantes, tintas e químicos diversos","gic_nome":"Pharmaceuticals","grupo":"Ind_Transform","MP_E":2.0485,"MPT_E":3.6479,"MPTT_E":3.1315,"direct_E":0.5681,"indirect_E":1.4804,"induced_E":1.5994,"MP_G":1.67245,"MPT_G":3.703067,"MPTT_G":3.178264,"ME_E":6.5365,"MEI_E":6.7661,"MET_E":16.477,"MEII_E":17.0558,"ME_G":4.979043,"MEI_G":4.356839,"MET_G":14.105774,"MEII_G":12.34305,"MR_E":0.2953,"MRI_E":2.7798,"MRT_E":0.5165,"MRII_E":4.8623,"MR_G":0.28891,"MRI_G":1.818222,"MRT_G":0.524803,"MRII_G":3.302785,"BL_E":1.1186,"FL_E":1.1095,"FLG_E":1.3241,"Vj_E":4.751,"Vi_E":4.7065,"BL_G":0.902556,"FL_G":0.610909,"FLG_G":0.722813,"PBLN_E":0.2353,"PFLN_E":1.188,"PTLN_E":0.7108,"PBLN_G":0.952001,"PFLN_G":0.256832,"BLpct_E":0.6862,"FLpct_E":1.0219,"BLpct_G":-15.480734,"FLpct_G":0.218405,"quad":"Setor-Chave"},{"cod":"S25","epe_nome":"Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","gic_nome":"Rubber plastics","grupo":"Ind_Transform","MP_E":2.139,"MPT_E":4.008,"MPTT_E":3.4045,"direct_E":0.5902,"indirect_E":1.5487,"induced_E":1.8691,"MP_G":2.113149,"MPT_G":4.112159,"MPTT_G":3.595524,"ME_E":9.8308,"MEI_E":3.5886,"MET_E":21.4471,"MEII_E":7.829,"ME_G":6.447899,"MEI_G":2.868825,"MET_G":15.432575,"MEII_G":6.866324,"MR_E":0.345,"MRI_E":2.526,"MRT_E":0.6035,"MRII_E":4.4183,"MR_G":0.284414,"MRI_G":2.173103,"MRT_G":0.516635,"MRII_G":3.947424,"BL_E":1.168,"FL_E":0.6242,"FLG_E":0.7209,"Vj_E":4.1118,"Vi_E":7.6134,"BL_G":1.140384,"FL_G":1.257083,"FLG_G":1.284283,"PBLN_E":0.7367,"PFLN_E":0.1671,"PTLN_E":0.4524,"PBLN_G":0.5067,"PFLN_G":1.69344,"BLpct_E":0.4664,"FLpct_E":0.1615,"BLpct_G":-14.725042,"FLpct_G":1.496531,"quad":"Demanda acima da media"},{"cod":"S26","epe_nome":"Fabricação de produtos farmoquímicos e farmacêuticos","gic_nome":"Nonmet minerals","grupo":"Ind_Transform","MP_E":1.7377,"MPT_E":3.5284,"MPTT_E":2.9502,"direct_E":0.4267,"indirect_E":1.311,"induced_E":1.7906,"MP_G":2.145358,"MPT_G":4.58023,"MPTT_G":3.950948,"ME_E":6.6032,"MEI_E":4.8356,"MET_E":17.7319,"MEII_E":12.9853,"ME_G":9.302562,"MEI_G":2.182373,"MET_G":20.246242,"MEII_G":4.749751,"MR_E":0.3306,"MRI_E":1.9853,"MRT_E":0.5782,"MRII_E":3.4726,"MR_G":0.346427,"MRI_G":2.088549,"MRT_G":0.629281,"MRII_G":3.793833,"BL_E":0.9489,"FL_E":0.635,"FLG_E":0.7071,"Vj_E":5.1351,"Vi_E":7.6567,"BL_G":1.157766,"FL_G":0.849421,"FLG_G":1.164127,"PBLN_E":0.641,"PFLN_E":0.3139,"PTLN_E":0.4778,"PBLN_G":0.289146,"PFLN_G":1.12157,"BLpct_E":0.449,"FLpct_E":0.2239,"BLpct_G":-15.253692,"FLpct_G":0.934752,"quad":"Independente"},{"cod":"S27","epe_nome":"Fabricação de produtos de borracha e de material plástico","gic_nome":"Steel","grupo":"Ind_Transform","MP_E":2.0401,"MPT_E":4.0571,"MPTT_E":3.4058,"direct_E":0.5535,"indirect_E":1.4865,"induced_E":2.017,"MP_G":2.030823,"MPT_G":3.324017,"MPTT_G":2.989797,"ME_E":9.1988,"MEI_E":2.5078,"MET_E":21.7345,"MEII_E":5.9254,"ME_G":4.302451,"MEI_G":9.997747,"MET_G":10.114792,"MEII_G":23.504073,"MR_E":0.3724,"MRI_E":1.9695,"MRT_E":0.6513,"MRII_E":3.445,"MR_G":0.183992,"MRI_G":3.755224,"MRT_G":0.33422,"MRII_G":6.821334,"BL_E":1.114,"FL_E":1.1863,"FLG_E":1.2266,"Vj_E":4.8376,"Vi_E":4.4556,"BL_G":1.095956,"FL_G":1.524908,"FLG_G":1.251164,"PBLN_E":0.3985,"PFLN_E":1.5169,"PTLN_E":0.9568,"PBLN_G":0.737993,"PFLN_G":2.327886,"BLpct_E":0.9202,"FLpct_E":1.2146,"BLpct_G":-14.196853,"FLpct_G":2.253833,"quad":"Setor-Chave"},{"cod":"S28","epe_nome":"Fabricação de produtos de minerais não-metálicos","gic_nome":"Nonfer metals","grupo":"Ind_Transform","MP_E":2.0632,"MPT_E":4.4084,"MPTT_E":3.6511,"direct_E":0.5721,"indirect_E":1.4911,"induced_E":2.3452,"MP_G":2.034753,"MPT_G":3.556905,"MPTT_G":3.163512,"ME_E":13.0923,"MEI_E":1.9489,"MET_E":27.6677,"MEII_E":4.1186,"ME_G":5.371992,"MEI_G":6.026306,"MET_G":12.213399,"MEII_G":13.701004,"MR_E":0.4329,"MRI_E":1.8965,"MRT_E":0.7573,"MRII_E":3.3173,"MR_G":0.216568,"MRI_G":3.389601,"MRT_G":0.393393,"MRII_G":6.157183,"BL_E":1.1266,"FL_E":0.8363,"FLG_E":1.194,"Vj_E":4.5253,"Vi_E":6.0652,"BL_G":1.098077,"FL_G":0.901642,"FLG_G":1.020226,"PBLN_E":0.1818,"PFLN_E":1.2017,"PTLN_E":0.6908,"PBLN_G":0.479061,"PFLN_G":0.604355,"BLpct_E":0.682,"FLpct_E":0.8401,"BLpct_G":-15.505137,"FLpct_G":0.585611,"quad":"Setor-Chave"},{"cod":"S29","epe_nome":"Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","gic_nome":"Metal products","grupo":"Ind_Transform","MP_E":2.1026,"MPT_E":3.6052,"MPTT_E":3.12,"direct_E":0.5998,"indirect_E":1.5028,"induced_E":1.5026,"MP_G":2.173534,"MPT_G":4.283495,"MPTT_G":3.738186,"ME_E":6.4697,"MEI_E":7.9056,"MET_E":15.8084,"MEII_E":19.3167,"ME_G":8.106744,"MEI_G":2.187193,"MET_G":17.59009,"MEII_G":4.745792,"MR_E":0.2774,"MRI_E":3.1062,"MRT_E":0.4852,"MRII_E":5.4333,"MR_G":0.300199,"MRI_G":2.102825,"MRT_G":0.54531,"MRII_G":3.819765,"BL_E":1.1481,"FL_E":1.2446,"FLG_E":1.1164,"Vj_E":4.5482,"Vi_E":4.2528,"BL_G":1.172972,"FL_G":1.162674,"FLG_G":1.212349,"PBLN_E":0.9489,"PFLN_E":1.4194,"PTLN_E":1.1838,"PBLN_G":0.591939,"PFLN_G":1.602859,"BLpct_E":1.2359,"FLpct_E":1.2997,"BLpct_G":-14.639502,"FLpct_G":1.338517,"quad":"Setor-Chave"},{"cod":"S30","epe_nome":"Metalurgia de metais não-ferosos e a fundição de metais","gic_nome":"Electronics","grupo":"Ind_Transform","MP_E":2.0918,"MPT_E":3.5601,"MPTT_E":3.086,"direct_E":0.5775,"indirect_E":1.5143,"induced_E":1.4684,"MP_G":1.595664,"MPT_G":2.867785,"MPTT_G":2.539011,"ME_E":6.9821,"MEI_E":5.0966,"MET_E":16.1079,"MEII_E":11.7582,"ME_G":3.868383,"MEI_G":4.611513,"MET_G":9.586008,"MEII_G":11.427514,"MR_E":0.2711,"MRI_E":3.174,"MRT_E":0.4741,"MRII_E":5.5519,"MR_G":0.180994,"MRI_G":2.466543,"MRT_G":0.328774,"MRII_G":4.480457,"BL_E":1.1422,"FL_E":1.0035,"FLG_E":1.1509,"Vj_E":4.8936,"Vi_E":5.5574,"BL_G":0.861118,"FL_G":0.706095,"FLG_G":0.721922,"PBLN_E":0.4202,"PFLN_E":0.6605,"PTLN_E":0.5401,"PBLN_G":1.043112,"PFLN_G":0.204367,"BLpct_E":0.556,"FLpct_E":0.6246,"BLpct_G":-15.306292,"FLpct_G":0.292349,"quad":"Setor-Chave"},{"cod":"S31","epe_nome":"Fabricação de produtos de metal, exceto máquinas e equipamentos","gic_nome":"Electrical equipment","grupo":"Ind_Transform","MP_E":2.0469,"MPT_E":4.225,"MPTT_E":3.5217,"direct_E":0.5423,"indirect_E":1.5046,"induced_E":2.178,"MP_G":2.079855,"MPT_G":4.220962,"MPTT_G":3.667603,"ME_E":12.1248,"MEI_E":1.8465,"MET_E":25.6612,"MEII_E":3.9079,"ME_G":6.282499,"MEI_G":3.793367,"MET_G":15.905833,"MEII_G":9.603927,"MR_E":0.4021,"MRI_E":1.8598,"MRT_E":0.7033,"MRII_E":3.2531,"MR_G":0.304631,"MRI_G":2.256909,"MRT_G":0.553359,"MRII_G":4.099657,"BL_E":1.1177,"FL_E":1.0663,"FLG_E":1.1751,"Vj_E":4.6133,"Vi_E":4.7257,"BL_G":1.122417,"FL_G":0.830023,"FLG_G":0.969736,"PBLN_E":0.3993,"PFLN_E":1.2463,"PTLN_E":0.8221,"PBLN_G":1.162727,"PFLN_G":0.588046,"BLpct_E":0.8185,"FLpct_E":0.9954,"BLpct_G":-14.969966,"FLpct_G":0.617125,"quad":"Setor-Chave"},{"cod":"S32","epe_nome":"Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","gic_nome":"Machinery","grupo":"Ind_Transform","MP_E":1.8228,"MPT_E":3.2434,"MPTT_E":2.7847,"direct_E":0.4725,"indirect_E":1.3503,"induced_E":1.4207,"MP_G":2.00906,"MPT_G":4.198037,"MPTT_G":3.632306,"ME_E":6.5468,"MEI_E":5.3279,"MET_E":15.3764,"MEII_E":12.5135,"ME_G":6.4914,"MEI_G":3.61292,"MET_G":16.329889,"MEII_G":9.088731,"MR_E":0.2623,"MRI_E":2.7782,"MRT_E":0.4588,"MRII_E":4.8594,"MR_G":0.311441,"MRI_G":2.153344,"MRT_G":0.565731,"MRII_G":3.911532,"BL_E":0.9953,"FL_E":0.7889,"FLG_E":0.78,"Vj_E":5.6551,"Vi_E":7.0988,"BL_G":1.084212,"FL_G":0.833183,"FLG_G":0.767476,"PBLN_E":0.7472,"PFLN_E":0.2802,"PTLN_E":0.5141,"PBLN_G":2.216614,"PFLN_G":0.452043,"BLpct_E":0.5895,"FLpct_E":0.3646,"BLpct_G":-14.27267,"FLpct_G":0.602919,"quad":"Independente"},{"cod":"S33","epe_nome":"Fabricação de máquinas e equipamentos elétricos","gic_nome":"Vehicles","grupo":"Ind_Transform","MP_E":2.0357,"MPT_E":4.0933,"MPTT_E":3.4289,"direct_E":0.5489,"indirect_E":1.4868,"induced_E":2.0576,"MP_G":2.295421,"MPT_G":4.392342,"MPTT_G":3.850402,"ME_E":8.1839,"MEI_E":3.2988,"MET_E":20.9718,"MEII_E":8.4535,"ME_G":6.10398,"MEI_G":9.497198,"MET_G":15.52872,"MEII_G":24.161174,"MR_E":0.3798,"MRI_E":2.0755,"MRT_E":0.6644,"MRII_E":3.6304,"MR_G":0.298344,"MRI_G":3.527798,"MRT_G":0.54194,"MRII_G":6.408218,"BL_E":1.1116,"FL_E":0.8751,"FLG_E":0.9985,"Vj_E":4.6484,"Vi_E":5.8539,"BL_G":1.238749,"FL_G":0.584291,"FLG_G":0.570384,"PBLN_E":0.62,"PFLN_E":0.6032,"PTLN_E":0.6117,"PBLN_G":4.171018,"PFLN_G":0.046598,"BLpct_E":0.6254,"FLpct_E":0.5625,"BLpct_G":-13.255091,"FLpct_G":0.113572,"quad":"Demanda acima da media"},{"cod":"S34","epe_nome":"Fabricação de máquinas e equipamentos mecânicos","gic_nome":"Auto parts","grupo":"Ind_Transform","MP_E":1.988,"MPT_E":4.2659,"MPTT_E":3.5303,"direct_E":0.5344,"indirect_E":1.4536,"induced_E":2.2779,"MP_G":2.15195,"MPT_G":4.449008,"MPTT_G":3.855344,"ME_E":9.2587,"MEI_E":3.1642,"MET_E":23.4157,"MEII_E":8.0024,"ME_G":6.723361,"MEI_G":3.213644,"MET_G":17.04763,"MEII_G":8.148457,"MR_E":0.4205,"MRI_E":1.9688,"MRT_E":0.7355,"MRII_E":3.4437,"MR_G":0.326819,"MRI_G":2.098097,"MRT_G":0.593664,"MRII_G":3.811177,"BL_E":1.0855,"FL_E":0.9163,"FLG_E":0.8224,"Vj_E":4.8578,"Vi_E":5.7346,"BL_G":1.161324,"FL_G":0.919924,"FLG_G":1.199273,"PBLN_E":1.2732,"PFLN_E":0.4926,"PTLN_E":0.8836,"PBLN_G":0.303579,"PFLN_G":1.286721,"BLpct_E":0.9446,"FLpct_E":0.565,"BLpct_G":-15.124449,"FLpct_G":0.993226,"quad":"Demanda acima da media"},{"cod":"S35","epe_nome":"Fabricação de automóveis, caminhões e ônibus, exceto peças","gic_nome":"Transport equipment","grupo":"Ind_Transform","MP_E":2.2729,"MPT_E":4.2791,"MPTT_E":3.6313,"direct_E":0.6673,"indirect_E":1.6056,"induced_E":2.0063,"MP_G":1.692271,"MPT_G":3.645116,"MPTT_G":3.140412,"ME_E":8.46,"MEI_E":9.8975,"MET_E":20.9288,"MEII_E":24.4849,"ME_G":4.81771,"MEI_G":2.791518,"MET_G":13.594889,"MEII_G":7.877265,"MR_E":0.3704,"MRI_E":3.3978,"MRT_E":0.6478,"MRII_E":5.9433,"MR_G":0.277845,"MRI_G":1.700767,"MRT_G":0.504704,"MRII_G":3.08943,"BL_E":1.2411,"FL_E":0.5863,"FLG_E":0.551,"Vj_E":4.0046,"Vi_E":8.2428,"BL_G":0.913253,"FL_G":0.586281,"FLG_G":0.617841,"PBLN_E":3.6913,"PFLN_E":0.0474,"PTLN_E":1.8725,"PBLN_G":0.794745,"PFLN_G":0.028965,"BLpct_E":1.9218,"FLpct_E":0.0994,"BLpct_G":-15.65543,"FLpct_G":0.049198,"quad":"Demanda acima da media"},{"cod":"S36","epe_nome":"Fabricação de peças e acessórios para veículos automotores","gic_nome":"Furniture","grupo":"Ind_Transform","MP_E":2.0481,"MPT_E":4.175,"MPTT_E":3.4882,"direct_E":0.5468,"indirect_E":1.5013,"induced_E":2.1269,"MP_G":1.911505,"MPT_G":4.188056,"MPTT_G":3.599692,"ME_E":8.6911,"MEI_E":3.0201,"MET_E":21.9098,"MEII_E":7.6135,"ME_G":11.502358,"MEI_G":1.682268,"MET_G":21.734457,"MEII_G":3.178756,"MR_E":0.3926,"MRI_E":1.9955,"MRT_E":0.6868,"MRII_E":3.4905,"MR_G":0.323901,"MRI_G":1.802575,"MRT_G":0.588364,"MRII_G":3.274363,"BL_E":1.1184,"FL_E":0.9638,"FLG_E":1.1478,"Vj_E":4.6963,"Vi_E":5.5785,"BL_G":1.031565,"FL_G":0.642168,"FLG_G":0.719393,"PBLN_E":0.295,"PFLN_E":1.4079,"PTLN_E":0.8505,"PBLN_G":1.394735,"PFLN_G":0.282711,"BLpct_E":0.8227,"FLpct_E":0.9578,"BLpct_G":-15.113026,"FLpct_G":0.243428,"quad":"Setor-Chave"},{"cod":"S37","epe_nome":"Fabricação de outros equipamentos de transporte, exceto veículos automotores","gic_nome":"Equipment services","grupo":"Ind_Transform","MP_E":1.6226,"MPT_E":3.3799,"MPTT_E":2.8125,"direct_E":0.3396,"indirect_E":1.283,"induced_E":1.7574,"MP_G":1.756739,"MPT_G":3.849635,"MPTT_G":3.308736,"ME_E":5.9319,"MEI_E":3.0494,"MET_E":16.8539,"MEII_E":8.664,"ME_G":9.662018,"MEI_G":1.54957,"MET_G":19.068668,"MEII_G":3.058184,"MR_E":0.3244,"MRI_E":1.6429,"MRT_E":0.5675,"MRII_E":2.8736,"MR_G":0.297771,"MRI_G":1.729227,"MRT_G":0.540899,"MRII_G":3.141127,"BL_E":0.886,"FL_E":0.5653,"FLG_E":0.5607,"Vj_E":5.3138,"Vi_E":8.348,"BL_G":0.948044,"FL_G":1.070382,"FLG_G":1.375483,"PBLN_E":0.4052,"PFLN_E":0.0284,"PTLN_E":0.2171,"PBLN_G":0.158431,"PFLN_G":0.87144,"BLpct_E":0.2142,"FLpct_E":0.0291,"BLpct_G":-15.708298,"FLpct_G":1.028448,"quad":"Independente"},{"cod":"S38","epe_nome":"Fabricação de móveis e de produtos de indústrias diversas","gic_nome":"Utilities","grupo":"Ind_Transform","MP_E":1.8408,"MPT_E":3.9442,"MPTT_E":3.265,"direct_E":0.4521,"indirect_E":1.3887,"induced_E":2.1034,"MP_G":2.045561,"MPT_G":3.063144,"MPTT_G":2.800155,"ME_E":16.0031,"MEI_E":1.6176,"MET_E":29.0757,"MEII_E":2.939,"ME_G":2.498089,"MEI_G":6.511293,"MET_G":7.071681,"MEII_G":18.432401,"MR_E":0.3883,"MRI_E":1.7548,"MRT_E":0.6792,"MRII_E":3.0694,"MR_G":0.144779,"MRI_G":3.256746,"MRT_G":0.26299,"MRII_G":5.915854,"BL_E":1.0052,"FL_E":0.6418,"FLG_E":0.7,"Vj_E":4.7822,"Vi_E":7.4564,"BL_G":1.10391,"FL_G":2.056477,"FLG_G":1.3885,"PBLN_E":0.7597,"PFLN_E":0.2999,"PTLN_E":0.5302,"PBLN_G":0.655735,"PFLN_G":2.412312,"BLpct_E":0.5127,"FLpct_E":0.216,"BLpct_G":-14.098428,"FLpct_G":2.782435,"quad":"Demanda acima da media"},{"cod":"S39","epe_nome":"Manutenção, reparação e instalação de máquinas e equipamentos","gic_nome":"Water waste","grupo":"Ind_Transform","MP_E":1.8028,"MPT_E":3.5864,"MPTT_E":3.0105,"direct_E":0.4281,"indirect_E":1.3747,"induced_E":1.7836,"MP_G":1.610214,"MPT_G":3.958048,"MPTT_G":3.351261,"ME_E":11.5053,"MEI_E":1.7275,"MET_E":22.5904,"MEII_E":3.3919,"ME_G":8.620473,"MEI_G":1.521042,"MET_G":19.172956,"MEII_G":3.382978,"MR_E":0.3293,"MRI_E":2.0166,"MRT_E":0.5759,"MRII_E":3.5274,"MR_G":0.334043,"MRI_G":1.429794,"MRT_G":0.606787,"MRII_G":2.59721,"BL_E":0.9844,"FL_E":1.2132,"FLG_E":1.366,"Vj_E":4.8722,"Vi_E":3.9024,"BL_G":0.86897,"FL_G":0.787909,"FLG_G":1.068791,"PBLN_E":0.1903,"PFLN_E":1.0813,"PTLN_E":0.6351,"PBLN_G":0.237915,"PFLN_G":0.581401,"BLpct_E":0.5229,"FLpct_E":1.07,"BLpct_G":-15.859572,"FLpct_G":0.652022,"quad":"Oferta acima da media"},{"cod":"S40","epe_nome":"Geração centralizada de energia elétrica","gic_nome":"Construction","grupo":"Energia_Renov","MP_E":2.0058,"MPT_E":3.1313,"MPTT_E":2.7679,"direct_E":0.551,"indirect_E":1.4549,"induced_E":1.1255,"MP_G":1.956528,"MPT_G":4.335081,"MPTT_G":3.720355,"ME_E":3.8892,"MEI_E":8.7933,"MET_E":10.8842,"MEII_E":24.6084,"ME_G":16.615661,"MEI_G":1.415625,"MET_G":27.306214,"MEII_G":2.326441,"MR_E":0.2078,"MRI_E":3.3231,"MRT_E":0.3634,"MRII_E":5.8126,"MR_G":0.338414,"MRI_G":1.831247,"MRT_G":0.614726,"MRII_G":3.326445,"BL_E":1.0953,"FL_E":1.6197,"FLG_E":1.1748,"Vj_E":5.659,"Vi_E":3.8032,"BL_G":1.055862,"FL_G":0.809262,"FLG_G":0.645,"PBLN_E":0.9441,"PFLN_E":1.9889,"PTLN_E":1.4656,"PBLN_G":4.721794,"PFLN_G":0.562021,"BLpct_E":1.4584,"FLpct_E":1.8452,"BLpct_G":-12.334914,"FLpct_G":0.868081,"quad":"Setor-Chave"},{"cod":"S41","epe_nome":"Geração distribuída de energia elétrica","gic_nome":"Trade","grupo":"Energia_Renov","MP_E":2.0028,"MPT_E":3.0211,"MPTT_E":2.6923,"direct_E":0.5267,"indirect_E":1.4762,"induced_E":1.0183,"MP_G":1.624595,"MPT_G":4.433219,"MPTT_G":3.707343,"ME_E":3.9645,"MEI_E":8.4021,"MET_E":10.2934,"MEII_E":21.8152,"ME_G":14.653119,"MEI_G":1.298466,"MET_G":27.276651,"MEII_G":2.417083,"MR_E":0.188,"MRI_E":3.8318,"MRT_E":0.3288,"MRII_E":6.7023,"MR_G":0.399603,"MRI_G":1.412962,"MRT_G":0.725876,"MRII_G":2.566635,"BL_E":1.0936,"FL_E":0.8988,"FLG_E":1.3711,"Vj_E":5.758,"Vi_E":6.9898,"BL_G":0.876731,"FL_G":3.67323,"FLG_G":0.915608,"PBLN_E":0.0834,"PFLN_E":0.4045,"PTLN_E":0.2437,"PBLN_G":1.029952,"PFLN_G":7.511019,"BLpct_E":0.2132,"FLpct_E":0.3514,"BLpct_G":-12.353579,"FLpct_G":7.060966,"quad":"Setor-Chave"},{"cod":"S42","epe_nome":"Transmissão","gic_nome":"Land transport","grupo":"Energia_Renov","MP_E":1.4875,"MPT_E":2.5999,"MPTT_E":2.2407,"direct_E":0.2771,"indirect_E":1.2104,"induced_E":1.1124,"MP_G":2.144457,"MPT_G":4.529315,"MPTT_G":3.91296,"ME_E":3.9349,"MEI_E":5.2877,"MET_E":10.8482,"MEII_E":14.5778,"ME_G":12.343527,"MEI_G":1.515761,"MET_G":23.062418,"MEII_G":2.832019,"MR_E":0.2054,"MRI_E":2.1134,"MRT_E":0.3592,"MRII_E":3.6967,"MR_G":0.339311,"MRI_G":1.777646,"MRT_G":0.616356,"MRII_G":3.22908,"BL_E":0.8123,"FL_E":0.6627,"FLG_E":1.6871,"Vj_E":5.7324,"Vi_E":7.053,"BL_G":1.15728,"FL_G":2.336502,"FLG_G":1.339287,"PBLN_E":0.0004,"PFLN_E":0.2803,"PTLN_E":0.1401,"PBLN_G":0.80148,"PFLN_G":3.915881,"BLpct_E":0.068,"FLpct_E":0.3157,"BLpct_G":-12.901881,"FLpct_G":4.062008,"quad":"Oferta acima da media"},{"cod":"S43","epe_nome":"Gás Natural","gic_nome":"Water transport","grupo":"Energia_Fossil","MP_E":1.6137,"MPT_E":2.5891,"MPTT_E":2.2741,"direct_E":0.3402,"indirect_E":1.2734,"induced_E":0.9754,"MP_G":1.793321,"MPT_G":4.063678,"MPTT_G":3.476915,"ME_E":2.808,"MEI_E":4.1519,"MET_E":8.8704,"MEII_E":13.1154,"ME_G":4.996303,"MEI_G":3.548587,"MET_G":15.200562,"MEII_G":10.796086,"MR_E":0.1801,"MRI_E":1.962,"MRT_E":0.315,"MRII_E":3.4319,"MR_G":0.32302,"MRI_G":1.73219,"MRT_G":0.586763,"MRII_G":3.146509,"BL_E":0.8811,"FL_E":0.8067,"FLG_E":1.3346,"Vj_E":5.4614,"Vi_E":5.8897,"BL_G":0.967786,"FL_G":0.680038,"FLG_G":1.469923,"PBLN_E":0.0995,"PFLN_E":0.4979,"PTLN_E":0.2984,"PBLN_G":0.011411,"PFLN_G":0.32472,"BLpct_E":0.2006,"FLpct_E":0.517,"BLpct_G":-16.084373,"FLpct_G":0.371176,"quad":"Oferta acima da media"},{"cod":"S44","epe_nome":"Água, esgoto e gestão de resíduos","gic_nome":"Air transport","grupo":"Infraestrutura","MP_E":1.5643,"MPT_E":3.6695,"MPTT_E":2.9897,"direct_E":0.3152,"indirect_E":1.2491,"induced_E":2.1052,"MP_G":2.039304,"MPT_G":4.530308,"MPTT_G":3.886519,"ME_E":10.5264,"MEI_E":1.5348,"MET_E":23.6099,"MEII_E":3.4424,"ME_G":5.794518,"MEI_G":4.001318,"MET_G":16.990489,"MEII_G":11.732528,"MR_E":0.3886,"MRI_E":1.3897,"MRT_E":0.6798,"MRII_E":2.4308,"MR_G":0.354413,"MRI_G":1.896126,"MRT_G":0.643788,"MRII_G":3.444297,"BL_E":0.8542,"FL_E":0.8131,"FLG_E":1.0257,"Vj_E":5.5331,"Vi_E":5.795,"BL_G":1.100533,"FL_G":0.626684,"FLG_G":1.085947,"PBLN_E":0.3135,"PFLN_E":0.7975,"PTLN_E":0.5551,"PBLN_G":0.14038,"PFLN_G":0.201943,"BLpct_E":0.3807,"FLpct_E":0.664,"BLpct_G":-16.027167,"FLpct_G":0.227814,"quad":"Oferta acima da media"},{"cod":"S45","epe_nome":"Construção","gic_nome":"Logistics","grupo":"Infraestrutura","MP_E":1.8894,"MPT_E":3.876,"MPTT_E":3.2345,"direct_E":0.4684,"indirect_E":1.4211,"induced_E":1.9865,"MP_G":1.640276,"MPT_G":4.424045,"MPTT_G":3.704593,"ME_E":20.3395,"MEI_E":1.474,"MET_E":32.6856,"MEII_E":2.3687,"ME_G":8.925985,"MEI_G":1.790152,"MET_G":21.437804,"MEII_G":4.299461,"MR_E":0.3667,"MRI_E":1.9361,"MRT_E":0.6415,"MRII_E":3.3865,"MR_G":0.396067,"MRI_G":1.534987,"MRT_G":0.719452,"MRII_G":2.788292,"BL_E":1.0317,"FL_E":0.9129,"FLG_E":0.6616,"Vj_E":5.0612,"Vi_E":5.6944,"BL_G":0.885193,"FL_G":1.219251,"FLG_G":1.242971,"PBLN_E":5.7035,"PFLN_E":0.9491,"PTLN_E":3.3304,"PBLN_G":0.298412,"PFLN_G":1.277827,"BLpct_E":3.6556,"FLpct_E":1.1499,"BLpct_G":-15.506492,"FLpct_G":1.468498,"quad":"Demanda acima da media"},{"cod":"S46","epe_nome":"Comércio e reparação de veículos automotores e motocicletas","gic_nome":"Accommodation","grupo":"Servicos","MP_E":1.6239,"MPT_E":3.8573,"MPTT_E":3.1361,"direct_E":0.351,"indirect_E":1.2728,"induced_E":2.2334,"MP_G":1.769765,"MPT_G":5.078909,"MPTT_G":4.223676,"ME_E":20.8489,"MEI_E":1.2296,"MET_E":34.7292,"MEII_E":2.0482,"ME_G":17.08592,"MEI_G":1.347363,"MET_G":31.959071,"MEII_G":2.520231,"MR_E":0.4123,"MRI_E":1.4678,"MRT_E":0.7212,"MRII_E":2.5675,"MR_G":0.470816,"MRI_G":1.35923,"MRT_G":0.855233,"MRII_G":2.46903,"BL_E":0.8867,"FL_E":0.8493,"FLG_E":0.7788,"Vj_E":5.4937,"Vi_E":5.7246,"BL_G":0.955073,"FL_G":0.624959,"FLG_G":1.128326,"PBLN_E":1.1638,"PFLN_E":0.8251,"PTLN_E":0.9948,"PBLN_G":0.078166,"PFLN_G":0.208892,"BLpct_E":0.8716,"FLpct_E":0.7077,"BLpct_G":-16.103846,"FLpct_G":0.217681,"quad":"Independente"},{"cod":"S47","epe_nome":"Comércio por atacado e a varejo, exceto veículos automotores","gic_nome":"Food services","grupo":"Servicos","MP_E":1.5704,"MPT_E":3.9309,"MPTT_E":3.1687,"direct_E":0.3388,"indirect_E":1.2317,"induced_E":2.3604,"MP_G":2.008203,"MPT_G":4.436285,"MPTT_G":3.808758,"ME_E":18.4377,"MEI_E":1.268,"MET_E":33.1077,"MEII_E":2.2769,"ME_G":22.825997,"MEI_G":1.31679,"MET_G":33.739159,"MEII_G":1.94635,"MR_E":0.4358,"MRI_E":1.3851,"MRT_E":0.7622,"MRII_E":2.4228,"MR_G":0.345461,"MRI_G":1.727207,"MRT_G":0.627526,"MRII_G":3.137458,"BL_E":0.8575,"FL_E":3.7815,"FLG_E":0.8918,"Vj_E":5.6331,"Vi_E":1.2765,"BL_G":1.083749,"FL_G":0.699094,"FLG_G":0.656419,"PBLN_E":5.6784,"PFLN_E":7.4043,"PTLN_E":6.5399,"PBLN_G":2.367441,"PFLN_G":0.450217,"BLpct_E":5.1278,"FLpct_E":6.5182,"BLpct_G":-14.322684,"FLpct_G":0.422882,"quad":"Independente"},{"cod":"S48","epe_nome":"Transporte terrestre","gic_nome":"Publishing","grupo":"Infraestrutura","MP_E":2.0144,"MPT_E":4.0797,"MPTT_E":3.4128,"direct_E":0.5092,"indirect_E":1.5052,"induced_E":2.0652,"MP_G":1.752864,"MPT_G":5.312621,"MPTT_G":4.392618,"ME_E":15.3664,"MEI_E":1.5033,"MET_E":28.2019,"MEII_E":2.759,"ME_G":11.606382,"MEI_G":1.610858,"MET_G":27.605925,"MEII_G":3.831445,"MR_E":0.3813,"MRI_E":1.7303,"MRT_E":0.6669,"MRII_E":3.0265,"MR_G":0.506472,"MRI_G":1.44381,"MRT_G":0.920003,"MRII_G":2.622669,"BL_E":1.1,"FL_E":2.3205,"FLG_E":1.1546,"Vj_E":4.958,"Vi_E":2.2436,"BL_G":0.945953,"FL_G":0.585869,"FLG_G":1.08384,"PBLN_E":1.9361,"PFLN_E":4.0564,"PTLN_E":2.9944,"PBLN_G":0.089099,"PFLN_G":0.097204,"BLpct_E":2.9568,"FLpct_E":3.5954,"BLpct_G":-16.156238,"FLpct_G":0.111758,"quad":"Setor-Chave"},{"cod":"S49","epe_nome":"Transporte aquaviário","gic_nome":"Media","grupo":"Infraestrutura","MP_E":1.7696,"MPT_E":3.8357,"MPTT_E":3.1686,"direct_E":0.434,"indirect_E":1.3356,"induced_E":2.0661,"MP_G":1.899019,"MPT_G":5.216093,"MPTT_G":4.358811,"ME_E":6.4254,"MEI_E":2.8076,"MET_E":19.2662,"MEII_E":8.4185,"ME_G":9.390377,"MEI_G":2.835489,"MET_G":24.299167,"MEII_G":7.337301,"MR_E":0.3814,"MRI_E":1.7109,"MRT_E":0.6672,"MRII_E":2.9925,"MR_G":0.471944,"MRI_G":1.808776,"MRT_G":0.857282,"MRII_G":3.285627,"BL_E":0.9663,"FL_E":0.6819,"FLG_E":1.2443,"Vj_E":5.0827,"Vi_E":7.1279,"BL_G":1.024827,"FL_G":0.954633,"FLG_G":1.85516,"PBLN_E":0.0964,"PFLN_E":0.2472,"PTLN_E":0.1717,"PBLN_G":0.020789,"PFLN_G":0.42585,"BLpct_E":0.1414,"FLpct_E":0.2586,"BLpct_G":-16.0223,"FLpct_G":0.604693,"quad":"Oferta acima da media"},{"cod":"S50","epe_nome":"Transporte aéreo","gic_nome":"Telecom","grupo":"Infraestrutura","MP_E":1.8955,"MPT_E":3.7398,"MPTT_E":3.1442,"direct_E":0.4911,"indirect_E":1.4044,"induced_E":1.8442,"MP_G":1.801024,"MPT_G":4.091543,"MPTT_G":3.499569,"ME_E":6.2005,"MEI_E":4.5899,"MET_E":17.6624,"MEII_E":13.0747,"ME_G":7.296155,"MEI_G":4.1228,"MET_G":17.59103,"MEII_G":9.940071,"MR_E":0.3405,"MRI_E":2.0362,"MRT_E":0.5955,"MRII_E":3.5616,"MR_G":0.325888,"MRI_G":2.546976,"MRT_G":0.591974,"MRII_G":4.626561,"BL_E":1.035,"FL_E":0.7012,"FLG_E":1.0452,"Vj_E":4.6204,"Vi_E":6.6506,"BL_G":0.971943,"FL_G":0.864343,"FLG_G":0.907255,"PBLN_E":0.2708,"PFLN_E":0.4455,"PTLN_E":0.358,"PBLN_G":0.870285,"PFLN_G":0.595014,"BLpct_E":0.3332,"FLpct_E":0.3803,"BLpct_G":-15.268502,"FLpct_G":0.707615,"quad":"Setor-Chave"},{"cod":"S51","epe_nome":"Armazenamento, atividades auxiliares dos transportes e correio","gic_nome":"IT services","grupo":"Infraestrutura","MP_E":1.5954,"MPT_E":4.1007,"MPTT_E":3.2917,"direct_E":0.3607,"indirect_E":1.2348,"induced_E":2.5052,"MP_G":1.464622,"MPT_G":4.435852,"MPTT_G":3.667952,"ME_E":10.3118,"MEI_E":1.7709,"MET_E":25.8817,"MEII_E":4.4448,"ME_G":6.633056,"MEI_G":1.843103,"MET_G":19.987435,"MEII_G":5.553836,"MR_E":0.4625,"MRI_E":1.4582,"MRT_E":0.8089,"MRII_E":2.5505,"MR_G":0.422738,"MRI_G":1.384059,"MRT_G":0.767901,"MRII_G":2.514132,"BL_E":0.8712,"FL_E":1.2627,"FLG_E":1.1732,"Vj_E":5.5783,"Vi_E":3.8495,"BL_G":0.790399,"FL_G":1.067376,"FLG_G":0.987722,"PBLN_E":0.4009,"PFLN_E":1.5579,"PTLN_E":0.9784,"PBLN_G":0.513476,"PFLN_G":1.048896,"BLpct_E":0.659,"FLpct_E":1.405,"BLpct_G":-15.513286,"FLpct_G":1.283517,"quad":"Oferta acima da media"},{"cod":"S52","epe_nome":"Alojamento","gic_nome":"Finance","grupo":"Servicos","MP_E":1.6989,"MPT_E":4.6433,"MPTT_E":3.6925,"direct_E":0.4022,"indirect_E":1.2968,"induced_E":2.9443,"MP_G":1.501958,"MPT_G":4.418737,"MPTT_G":3.664909,"ME_E":21.1642,"MEI_E":1.3408,"MET_E":39.4633,"MEII_E":2.5001,"ME_G":4.855612,"MEI_G":2.293669,"MET_G":17.965254,"MEII_G":8.486336,"MR_E":0.5435,"MRI_E":1.3358,"MRT_E":0.9508,"MRII_E":2.3365,"MR_G":0.414991,"MRI_G":1.480963,"MRT_G":0.753828,"MRII_G":2.690157,"BL_E":0.9277,"FL_E":0.6238,"FLG_E":0.9516,"Vj_E":5.0201,"Vi_E":7.4725,"BL_G":0.810548,"FL_G":1.679957,"FLG_G":0.977207,"PBLN_E":0.1522,"PFLN_E":0.2473,"PTLN_E":0.1997,"PBLN_G":1.143018,"PFLN_G":2.774341,"BLpct_E":0.1616,"FLpct_E":0.1944,"BLpct_G":-14.19843,"FLpct_G":3.108305,"quad":"Independente"},{"cod":"S53","epe_nome":"Alimentação","gic_nome":"Real estate","grupo":"Servicos","MP_E":1.85,"MPT_E":3.8642,"MPTT_E":3.2138,"direct_E":0.4361,"indirect_E":1.4138,"induced_E":2.0142,"MP_G":1.09747,"MPT_G":1.344211,"MPTT_G":1.280442,"ME_E":26.9664,"MEI_E":1.3283,"MET_E":39.4847,"MEII_E":1.9449,"ME_G":1.123606,"MEI_G":1.644056,"MET_G":2.232597,"MEII_G":3.266726,"MR_E":0.3718,"MRI_E":1.713,"MRT_E":0.6504,"MRII_E":2.9962,"MR_G":0.035106,"MRI_G":2.759796,"MRT_G":0.063769,"MRII_G":5.013148,"BL_E":1.0102,"FL_E":0.7093,"FLG_E":0.6235,"Vj_E":4.6568,"Vi_E":6.5707,"BL_G":0.592262,"FL_G":0.989656,"FLG_G":0.664156,"PBLN_E":3.3551,"PFLN_E":0.6745,"PTLN_E":2.0171,"PBLN_G":0.535569,"PFLN_G":0.892786,"BLpct_E":1.9577,"FLpct_E":0.475,"BLpct_G":-15.827702,"FLpct_G":1.180769,"quad":"Demanda acima da media"},{"cod":"S54","epe_nome":"Edição e edição integrada à impressão","gic_nome":"Business services","grupo":"Servicos","MP_E":1.7364,"MPT_E":4.7117,"MPTT_E":3.751,"direct_E":0.4312,"indirect_E":1.3053,"induced_E":2.9753,"MP_G":1.409377,"MPT_G":4.06978,"MPTT_G":3.382211,"ME_E":12.9393,"MEI_E":1.7019,"MET_E":31.4307,"MEII_E":4.1341,"ME_G":10.43057,"MEI_G":1.347565,"MET_G":22.387915,"MEII_G":2.892379,"MR_E":0.5493,"MRI_E":1.4465,"MRT_E":0.9607,"MRII_E":2.5302,"MR_G":0.378515,"MRI_G":1.346765,"MRT_G":0.687569,"MRII_G":2.446389,"BL_E":0.9482,"FL_E":0.5941,"FLG_E":0.9402,"Vj_E":4.9583,"Vi_E":7.8831,"BL_G":0.760586,"FL_G":1.688179,"FLG_G":1.390303,"PBLN_E":0.1107,"PFLN_E":0.1478,"PTLN_E":0.1292,"PBLN_G":0.128777,"PFLN_G":2.381596,"BLpct_E":0.1093,"FLpct_E":0.1215,"BLpct_G":-15.534712,"FLpct_G":2.605191,"quad":"Independente"},{"cod":"S55","epe_nome":"Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","gic_nome":"Engineering","grupo":"Servicos","MP_E":1.8588,"MPT_E":4.4725,"MPTT_E":3.6285,"direct_E":0.5098,"indirect_E":1.349,"induced_E":2.6137,"MP_G":1.497,"MPT_G":4.255251,"MPTT_G":3.542394,"ME_E":10.8865,"MEI_E":2.8669,"MET_E":27.1307,"MEII_E":7.1446,"ME_G":12.304741,"MEI_G":1.347443,"MET_G":24.701867,"MEII_G":2.705003,"MR_E":0.4825,"MRI_E":1.8128,"MRT_E":0.844,"MRII_E":3.1708,"MR_G":0.392436,"MRI_G":1.388473,"MRT_G":0.712857,"MRII_G":2.522151,"BL_E":1.015,"FL_E":1.0624,"FLG_E":1.8144,"Vj_E":5.3363,"Vi_E":5.2826,"BL_G":0.807873,"FL_G":0.753125,"FLG_G":1.054324,"PBLN_E":0.029,"PFLN_E":0.6745,"PTLN_E":0.3512,"PBLN_G":0.156891,"PFLN_G":0.500867,"BLpct_E":0.2701,"FLpct_E":0.7894,"BLpct_G":-15.986488,"FLpct_G":0.494421,"quad":"Setor-Chave"},{"cod":"S56","epe_nome":"Telecomunicações","gic_nome":"Professional services","grupo":"Servicos","MP_E":1.795,"MPT_E":3.4989,"MPTT_E":2.9487,"direct_E":0.4854,"indirect_E":1.3096,"induced_E":1.704,"MP_G":1.971584,"MPT_G":4.729846,"MPTT_G":4.016986,"ME_E":7.8488,"MEI_E":5.1954,"MET_E":18.4389,"MEII_E":12.2054,"ME_G":11.282017,"MEI_G":1.941662,"MET_G":23.679196,"MEII_G":4.075246,"MR_E":0.3146,"MRI_E":2.7324,"MRT_E":0.5502,"MRII_E":4.7793,"MR_G":0.392438,"MRI_G":2.537145,"MRT_G":0.71286,"MRII_G":4.608703,"BL_E":0.9801,"FL_E":0.9215,"FLG_E":0.8707,"Vj_E":5.3637,"Vi_E":5.6499,"BL_G":1.063987,"FL_G":1.193346,"FLG_G":1.422188,"PBLN_E":1.1381,"PFLN_E":0.8805,"PTLN_E":1.0095,"PBLN_G":0.069237,"PFLN_G":1.342651,"BLpct_E":0.9835,"FLpct_E":0.8466,"BLpct_G":-15.348143,"FLpct_G":1.420145,"quad":"Independente"},{"cod":"S57","epe_nome":"Desenvolvimento de sistemas e outros serviços de informação","gic_nome":"Leasing","grupo":"Servicos","MP_E":1.4251,"MPT_E":3.8816,"MPTT_E":3.0884,"direct_E":0.2709,"indirect_E":1.1542,"induced_E":2.4565,"MP_G":1.446182,"MPT_G":3.461373,"MPTT_G":2.940556,"ME_E":7.6996,"MEI_E":1.714,"MET_E":22.9666,"MEII_E":5.1127,"ME_G":6.733194,"MEI_G":1.581677,"MET_G":15.790592,"MEII_G":3.709326,"MR_E":0.4535,"MRI_E":1.3275,"MRT_E":0.7932,"MRII_E":2.3221,"MR_G":0.286716,"MRI_G":1.442266,"MRT_G":0.520817,"MRII_G":2.619865,"BL_E":0.7782,"FL_E":1.0309,"FLG_E":0.9896,"Vj_E":6.4239,"Vi_E":4.8346,"BL_G":0.780448,"FL_G":0.850149,"FLG_G":1.320149,"PBLN_E":0.4921,"PFLN_E":1.2905,"PTLN_E":0.8906,"PBLN_G":0.05939,"PFLN_G":0.576658,"BLpct_E":0.5519,"FLpct_E":1.187,"BLpct_G":-16.051859,"FLpct_G":0.668453,"quad":"Independente"},{"cod":"S58","epe_nome":"Intermediação financeira, seguros e previdência complementar","gic_nome":"Admin services","grupo":"Servicos","MP_E":1.4619,"MPT_E":3.5172,"MPTT_E":2.8535,"direct_E":0.302,"indirect_E":1.1598,"induced_E":2.0553,"MP_G":1.447256,"MPT_G":5.296873,"MPTT_G":4.301957,"ME_E":4.8664,"MEI_E":2.5447,"MET_E":17.6402,"MEII_E":9.2243,"ME_G":16.915261,"MEI_G":1.188791,"MET_G":34.217598,"MEII_G":2.404785,"MR_E":0.3794,"MRI_E":1.4905,"MRT_E":0.6637,"MRII_E":2.6071,"MR_G":0.547713,"MRI_G":1.20199,"MRT_G":0.994916,"MRII_G":2.183405,"BL_E":0.7983,"FL_E":2.2739,"FLG_E":0.9876,"Vj_E":6.7361,"Vi_E":2.2936,"BL_G":0.781028,"FL_G":1.482314,"FLG_G":1.239676,"PBLN_E":1.5402,"PFLN_E":5.012,"PTLN_E":3.2731,"PBLN_G":0.221142,"PFLN_G":2.340424,"BLpct_E":2.1616,"FLpct_E":4.2612,"BLpct_G":-15.403266,"FLpct_G":2.511625,"quad":"Independente"},{"cod":"S59","epe_nome":"Atividades imobiliárias","gic_nome":"Security","grupo":"Servicos","MP_E":1.1103,"MPT_E":1.3185,"MPTT_E":1.2513,"direct_E":0.0696,"indirect_E":1.0407,"induced_E":0.2082,"MP_G":1.296682,"MPT_G":6.64072,"MPTT_G":5.259578,"ME_E":1.3268,"MEI_E":1.82,"MET_E":2.6206,"MEII_E":3.5945,"ME_G":18.629126,"MEI_G":1.112213,"MET_G":42.64823,"MEII_G":2.546224,"MR_E":0.0384,"MRI_E":3.103,"MRT_E":0.0672,"MRII_E":5.4276,"MR_G":0.760335,"MRI_G":1.09417,"MRT_G":1.381142,"MRII_G":1.98755,"BL_E":0.6063,"FL_E":1.0475,"FLG_E":0.6433,"Vj_E":7.7199,"Vi_E":4.435,"BL_G":0.699769,"FL_G":0.70701,"FLG_G":1.400082,"PBLN_E":0.9787,"PFLN_E":1.4811,"PTLN_E":1.2295,"PBLN_G":0.001489,"PFLN_G":0.429326,"BLpct_E":0.5856,"FLpct_E":1.2975,"BLpct_G":-16.179779,"FLpct_G":0.466729,"quad":"Independente"},{"cod":"S60","epe_nome":"Atividades jurídicas, contábeis, consultoria e sedes de empresas","gic_nome":"Public administration","grupo":"Servicos","MP_E":1.4328,"MPT_E":3.4914,"MPTT_E":2.8267,"direct_E":0.275,"indirect_E":1.1579,"induced_E":2.0586,"MP_G":1.389697,"MPT_G":6.307247,"MPTT_G":5.036329,"ME_E":11.5191,"MEI_E":1.395,"MET_E":24.3132,"MEII_E":2.9444,"ME_G":7.194757,"MEI_G":1.522988,"MET_G":29.296985,"MEII_G":6.201594,"MR_E":0.38,"MRI_E":1.4027,"MRT_E":0.6647,"MRII_E":2.4535,"MR_G":0.699655,"MRI_G":1.150583,"MRT_G":1.270918,"MRII_G":2.090026,"BL_E":0.7824,"FL_E":1.9433,"FLG_E":1.3685,"Vj_E":6.453,"Vi_E":2.5533,"BL_G":0.749966,"FL_G":0.681926,"FLG_G":0.557795,"PBLN_E":0.1853,"PFLN_E":3.2354,"PTLN_E":1.7077,"PBLN_G":3.263195,"PFLN_G":0.280844,"BLpct_E":0.7593,"FLpct_E":2.8899,"BLpct_G":-13.926476,"FLpct_G":0.342505,"quad":"Oferta acima da media"},{"cod":"S61","epe_nome":"Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","gic_nome":"Public education","grupo":"Servicos","MP_E":1.4857,"MPT_E":3.7105,"MPTT_E":2.9921,"direct_E":0.2998,"indirect_E":1.1858,"induced_E":2.2248,"MP_G":1.23677,"MPT_G":7.260246,"MPTT_G":5.703506,"ME_E":13.6294,"MEI_E":1.3594,"MET_E":27.4564,"MEII_E":2.7385,"ME_G":12.291775,"MEI_G":1.1759,"MET_G":39.364655,"MEII_G":3.765843,"MR_E":0.4107,"MRI_E":1.3898,"MRT_E":0.7184,"MRII_E":2.431,"MR_G":0.857003,"MRI_G":1.072409,"MRT_G":1.556739,"MRII_G":1.948022,"BL_E":0.8112,"FL_E":0.769,"FLG_E":0.9854,"Vj_E":5.9133,"Vi_E":6.2152,"BL_G":0.667437,"FL_G":0.547637,"FLG_G":0.531035,"PBLN_E":0.2265,"PFLN_E":0.5428,"PTLN_E":0.3844,"PBLN_G":0.834824,"PFLN_G":0.016109,"BLpct_E":0.2471,"FLpct_E":0.4612,"BLpct_G":-15.69017,"FLpct_G":0.016143,"quad":"Independente"},{"cod":"S62","epe_nome":"Outras atividades profissionais, científicas e técnicas","gic_nome":"Private education","grupo":"Servicos","MP_E":1.9894,"MPT_E":4.1849,"MPTT_E":3.4759,"direct_E":0.5684,"indirect_E":1.421,"induced_E":2.1955,"MP_G":1.450816,"MPT_G":6.216596,"MPTT_G":4.984902,"ME_E":12.2485,"MEI_E":2.0944,"MET_E":25.8935,"MEII_E":4.4276,"ME_G":21.053843,"MEI_G":1.14877,"MET_G":42.473931,"MEII_G":2.317523,"MR_E":0.4053,"MRI_E":2.7535,"MRT_E":0.7089,"MRII_E":4.8163,"MR_G":0.678062,"MRI_G":1.165701,"MRT_G":1.231694,"MRII_G":2.117487,"BL_E":1.0863,"FL_E":1.2075,"FLG_E":1.3824,"Vj_E":4.702,"Vi_E":3.9948,"BL_G":0.782949,"FL_G":0.638411,"FLG_G":0.684521,"PBLN_E":0.0788,"PFLN_E":1.6324,"PTLN_E":0.8543,"PBLN_G":0.519237,"PFLN_G":0.195002,"BLpct_E":0.8273,"FLpct_E":1.3999,"BLpct_G":-15.848224,"FLpct_G":0.26954,"quad":"Setor-Chave"},{"cod":"S63","epe_nome":"Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","gic_nome":"Public health","grupo":"Servicos","MP_E":1.5002,"MPT_E":3.3531,"MPTT_E":2.7548,"direct_E":0.2959,"indirect_E":1.2043,"induced_E":1.8529,"MP_G":1.587953,"MPT_G":6.248954,"MPTT_G":5.04434,"ME_E":9.597,"MEI_E":1.5589,"MET_E":21.1127,"MEII_E":3.4294,"ME_G":12.616478,"MEI_G":1.526772,"MET_G":33.565631,"MEII_G":4.061915,"MR_E":0.3421,"MRI_E":1.4618,"MRT_E":0.5983,"MRII_E":2.5569,"MR_G":0.663154,"MRI_G":1.235642,"MRT_G":1.204614,"MRII_G":2.244534,"BL_E":0.8192,"FL_E":0.8554,"FLG_E":1.3203,"Vj_E":5.7807,"Vi_E":5.5189,"BL_G":0.856956,"FL_G":0.54112,"FLG_G":0.528866,"PBLN_E":0.0723,"PFLN_E":0.6593,"PTLN_E":0.3653,"PBLN_G":1.434475,"PFLN_G":0.005191,"BLpct_E":0.1983,"FLpct_E":0.616,"BLpct_G":-15.277751,"FLpct_G":0.004225,"quad":"Oferta acima da media"},{"cod":"S64","epe_nome":"Outras atividades administrativas e serviços complementares","gic_nome":"Private health","grupo":"Servicos","MP_E":1.4586,"MPT_E":4.4734,"MPTT_E":3.4999,"direct_E":0.2733,"indirect_E":1.1853,"induced_E":3.0148,"MP_G":1.54934,"MPT_G":4.688154,"MPTT_G":3.876942,"ME_E":19.2645,"MEI_E":1.2066,"MET_E":38.0014,"MEII_E":2.3801,"ME_G":14.388363,"MEI_G":1.407659,"MET_G":28.495957,"MEII_G":2.78785,"MR_E":0.5566,"MRI_E":1.2302,"MRT_E":0.9735,"MRII_E":2.1518,"MR_G":0.446582,"MRI_G":1.397327,"MRT_G":0.811212,"MRII_G":2.538234,"BL_E":0.7965,"FL_E":1.5484,"FLG_E":1.1685,"Vj_E":6.0463,"Vi_E":3.0776,"BL_G":0.836118,"FL_G":0.61687,"FLG_G":0.602636,"PBLN_E":0.4144,"PFLN_E":3.3445,"PTLN_E":1.877,"PBLN_G":1.226356,"PFLN_G":0.002974,"BLpct_E":0.965,"FLpct_E":2.6525,"BLpct_G":-15.130893,"FLpct_G":0.287713,"quad":"Oferta acima da media"},{"cod":"S65","epe_nome":"Atividades de vigilância, segurança e investigação","gic_nome":"Arts","grupo":"Servicos","MP_E":1.2511,"MPT_E":5.4764,"MPTT_E":4.112,"direct_E":0.1546,"indirect_E":1.0965,"induced_E":4.2253,"MP_G":1.639786,"MPT_G":4.686744,"MPTT_G":3.899271,"ME_E":19.9273,"MEI_E":1.0983,"MET_E":46.1874,"MEII_E":2.5457,"ME_G":25.406318,"MEI_G":1.16039,"MET_G":39.101056,"MEII_G":1.785873,"MR_E":0.78,"MRI_E":1.0818,"MRT_E":1.3644,"MRII_E":1.8922,"MR_G":0.433513,"MRI_G":1.373164,"MRT_G":0.787472,"MRII_G":2.494342,"BL_E":0.6832,"FL_E":0.7556,"FLG_E":1.3569,"Vj_E":6.8315,"Vi_E":6.1576,"BL_G":0.884929,"FL_G":0.60382,"FLG_G":0.70405,"PBLN_E":0.0022,"PFLN_E":0.7141,"PTLN_E":0.3575,"PBLN_G":0.260167,"PFLN_G":0.062407,"BLpct_E":0.0899,"FLpct_E":0.5819,"BLpct_G":-16.056558,"FLpct_G":0.084845,"quad":"Oferta acima da media"},{"cod":"S66","epe_nome":"Administração pública, defesa e seguridade social","gic_nome":"Associations","grupo":"Servicos","MP_E":1.3895,"MPT_E":5.2685,"MPTT_E":4.016,"direct_E":0.2417,"indirect_E":1.1478,"induced_E":3.879,"MP_G":1.751065,"MPT_G":4.498822,"MPTT_G":3.788677,"ME_E":8.6541,"MEI_E":1.5402,"MET_E":32.7623,"MEII_E":5.8308,"ME_G":28.810898,"MEI_G":1.229424,"MET_G":41.160856,"MEII_G":1.756424,"MR_E":0.7161,"MRI_E":1.1631,"MRT_E":1.2526,"MRII_E":2.0345,"MR_G":0.390943,"MRI_G":1.637341,"MRT_G":0.710145,"MRII_G":2.974217,"BL_E":0.7587,"FL_E":0.7303,"FLG_E":0.5465,"Vj_E":6.1638,"Vi_E":6.3805,"BL_G":0.944982,"FL_G":0.678192,"FLG_G":0.692876,"PBLN_E":5.3697,"PFLN_E":0.4098,"PTLN_E":2.894,"PBLN_G":1.001431,"PFLN_G":0.308796,"BLpct_E":2.7759,"FLpct_E":0.4072,"BLpct_G":-15.413502,"FLpct_G":0.348344,"quad":"Independente"},{"cod":"S67","epe_nome":"Educação pública","gic_nome":"Domestic services","grupo":"Servicos","MP_E":1.2236,"MPT_E":5.9057,"MPTT_E":4.3938,"direct_E":0.1342,"indirect_E":1.0894,"induced_E":4.6821,"MP_G":1,"MPT_G":8.028535,"MPTT_G":6.212042,"ME_E":14.1105,"MEI_E":1.179,"MET_E":43.2097,"MEII_E":3.6103,"ME_G":91.792475,"MEI_G":1,"MET_G":123.382653,"MEII_G":1.344148,"MR_E":0.8643,"MRI_E":1.0758,"MRT_E":1.5119,"MRII_E":1.8817,"MR_G":1,"MRI_G":1,"MRT_G":1.816492,"MRII_G":1.816492,"BL_E":0.6681,"FL_E":0.5577,"FLG_E":0.5208,"Vj_E":6.9689,"Vi_E":8.3642,"BL_G":0.539661,"FL_G":0.539661,"FLG_G":0.527542,"PBLN_E":1.3072,"PFLN_E":0.0246,"PTLN_E":0.667,"PBLN_G":0,"PFLN_G":0,"BLpct_E":0.6535,"FLpct_E":0.022,"BLpct_G":-16.268035,"FLpct_G":0,"quad":"Independente"}],"epe_only":[{"cod":"S68","nome":"Educação privada","grupo":"Servicos","MP":1.3849,"MPT":5.2651,"BL":0.7562,"FL":0.6532,"FLG":0.6391},{"cod":"S69","nome":"Saúde pública","grupo":"Servicos","MP":1.4616,"MPT":5.5012,"BL":0.7981,"FL":0.5476,"FLG":0.5183},{"cod":"S70","nome":"Saúde privada","grupo":"Servicos","MP":1.593,"MPT":3.9876,"BL":0.8698,"FL":0.6204,"FLG":0.5869},{"cod":"S71","nome":"Atividades artísticas, criativas e de espetáculos","grupo":"Servicos","MP":1.5831,"MPT":4.0036,"BL":0.8645,"FL":0.6268,"FLG":0.7094},{"cod":"S72","nome":"Organizações associativas e outros serviços pessoais","grupo":"Servicos","MP":1.6731,"MPT":3.9293,"BL":0.9136,"FL":0.7199,"FLG":0.6687},{"cod":"S73","nome":"Serviços domésticos","grupo":"Servicos","MP":1,"MPT":6.4169,"BL":0.546,"FL":0.546,"FLG":0.5169}],"summary":{"MP":{"epe":{"min":1.1103,"q1":1.6233,"median":1.8761,"mean":1.8656,"q3":2.0475,"max":3.5332},"gic":{"min":1,"q1":1.5973,"median":1.899,"mean":1.853,"q3":2.11,"max":2.6761}},"MPT":{"epe":{"min":1.3185,"q1":3.4951,"median":3.8642,"mean":3.8107,"q3":4.18,"max":5.9057},"gic":{"min":1.3442,"q1":3.7764,"median":4.2835,"mean":4.3038,"q3":4.6874,"max":8.0285}},"MPTT":{"epe":{"min":1.2513,"q1":2.9388,"median":3.2138,"mean":3.1826,"q3":3.4937,"max":4.3938},"gic":{"min":1.2804,"q1":3.2881,"median":3.7046,"mean":3.6704,"q3":3.9446,"max":6.212}},"MEI":{"epe":{"min":1.0983,"q1":1.5472,"median":2.5447,"mean":6.5371,"q3":5.2416,"max":106.691},"gic":{"min":1,"q1":1.4116,"median":1.9843,"mean":4.9645,"q3":4.3694,"max":89.0972}},"MEII":{"epe":{"min":1.3505,"q1":3.0626,"median":6.7673,"mean":15.1076,"q3":13.03,"max":244.4037},"gic":{"min":1.3441,"q1":2.8622,"median":4.7458,"mean":11.5846,"q3":11.2328,"max":215.4667}},"MRI":{"epe":{"min":1.0758,"q1":1.6346,"median":1.9695,"mean":2.6983,"q3":2.779,"max":27.6173},"gic":{"min":1,"q1":1.4624,"median":1.9239,"mean":2.215,"q3":2.662,"max":7.4311}},"MRII":{"epe":{"min":1.8817,"q1":2.8591,"median":3.445,"mean":4.7197,"q3":4.8608,"max":48.307},"gic":{"min":1.8165,"q1":2.6564,"median":3.4948,"mean":4.0235,"q3":4.8355,"max":13.4985}},"BL":{"epe":{"min":0.6063,"q1":0.8864,"median":1.0245,"mean":1.0187,"q3":1.118,"max":1.9293},"gic":{"min":0.5397,"q1":0.862,"median":1.0248,"mean":1,"q3":1.1387,"max":1.4442}},"FLG":{"epe":{"min":0.5208,"q1":0.7794,"median":1.0257,"mean":1.0352,"q3":1.2647,"max":1.8144},"gic":{"min":0.5275,"q1":0.7117,"median":0.9877,"mean":1,"q3":1.2471,"max":1.8552}},"PBLN":{"epe":{"min":0.0004,"q1":0.1695,"median":0.4202,"mean":0.9949,"q3":0.956,"max":5.7035},"gic":{"min":0,"q1":0.2238,"median":0.6557,"mean":1,"q3":1.1506,"max":7.0832}},"PFLN":{"epe":{"min":0.0013,"q1":0.2946,"median":0.6032,"mean":1.0768,"q3":1.3792,"max":7.4043},"gic":{"min":0,"q1":0.2066,"median":0.562,"mean":1,"q3":1.2823,"max":7.511}},"BLpct":{"epe":{"min":0.042,"q1":0.2403,"median":0.5895,"mean":0.9324,"q3":0.9743,"max":5.1278},"gic":{"min":-16.268,"q1":-15.8441,"median":-15.3223,"mean":-14.9656,"q3":-14.6823,"max":-10.2905}},"FLpct":{"epe":{"min":0.0036,"q1":0.2804,"median":0.5625,"mean":0.9615,"q3":1.1658,"max":6.5182},"gic":{"min":0,"q1":0.2411,"median":0.6029,"mean":1.049,"q3":1.311,"max":7.061}}}};
+
+// ── COLOURS ───────────────────────────────────────────────────────────────────
+const C_EPE="#378ADD", C_GIC="#F39C12", C_BOTH="#8E44AD";
+const NAMED={Agropecuaria:"#3B6D11",Ind_Extrativa:"#888780",Energia_Fossil:"#E24B4A",
+  Energia_Renov:"#1D9E75",Ind_Transform:"#378ADD",Infraestrutura:"#534AB7",
+  Servicos:"#B4B2A9",Energeticos:"#F39C12"};
+function gc(g){return NAMED[g]||"#6c7a9c";}
+
+// ── CHART DEFAULTS ────────────────────────────────────────────────────────────
+const CDx={color:"#8892a4",grid:{color:"rgba(255,255,255,.05)"},ticks:{color:"#8892a4",font:{size:10}}};
+const PLG={legend:{labels:{color:"#e2e8f0",font:{size:11},boxWidth:11}},
+           tooltip:{backgroundColor:"#1e2330",titleColor:"#e2e8f0",bodyColor:"#8892a4",borderColor:"#2d3448",borderWidth:1}};
+
+const _charts={};
+function mkC(id,type,labels,datasets,opts){
+  const el=document.getElementById(id); if(!el) return;
+  if(_charts[id]) _charts[id].destroy();
+  _charts[id]=new Chart(el,{type,data:{labels,datasets},
+    options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:PLG,
+      scales:type==="scatter"||type==="bar"?{x:CDx,y:CDx}:{}},opts||{})});
+}
+
+// ── STATS HELPERS ─────────────────────────────────────────────────────────────
+function r(xs,ys){
+  const v=(a,m)=>a.reduce((s,x)=>s+(x-m)**2,0);
+  const cov=(a,b,ma,mb)=>a.reduce((s,x,i)=>s+(x-ma)*(b[i]-mb),0);
+  const n=xs.length; if(n<3) return 0;
+  const mx=xs.reduce((a,b)=>a+b,0)/n, my=ys.reduce((a,b)=>a+b,0)/n;
+  const denom=Math.sqrt(v(xs,mx)*v(ys,my));
+  return denom?cov(xs,ys,mx,my)/denom:0;
+}
+function setR2(id,xs,ys){
+  const rc=r(xs.filter((_,i)=>ys[i]!=null),ys.filter(v=>v!=null));
+  const el=document.getElementById(id);
+  if(el) el.textContent=`r=${rc.toFixed(3)} R²=${(rc*rc).toFixed(3)}`;
+}
+function histBins(vals,nbins=14){
+  vals=vals.filter(v=>v!=null&&isFinite(v));
+  const mn=Math.min(...vals),mx=Math.max(...vals),w=(mx-mn)/nbins||1;
+  const bins=Array.from({length:nbins},(_,i)=>({x:mn+i*w,y:0}));
+  vals.forEach(v=>{const i=Math.min(Math.floor((v-mn)/w),nbins-1);bins[i].y++;});
+  return {labels:bins.map(b=>b.x.toFixed(2)),counts:bins.map(b=>b.y)};
+}
+
+// ── TAB SYSTEM ────────────────────────────────────────────────────────────────
+const INITS=[initSummary,initMult,initLinkage,initExtraction,initTable];
+const ST={tab:0,built:{}};
+function showTab(n){
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  document.getElementById("tab"+n).classList.add("active");
+  document.querySelectorAll("#mainTabs button").forEach((b,i)=>b.classList.toggle("active",i===n));
+  if(!ST.built[n]){INITS[n]();ST.built[n]=true;}
+  ST.tab=n;
+}
+
+// tooltip for scatter
+function tipPair(xk,yk){
+  return {callbacks:{label:ctx=>{
+    const p=D.pairs[ctx.dataIndex];
+    return [`${p.cod} — ${(p.epe_nome||"").substring(0,30)}`,
+            `EPE: ${(p[xk]??0).toFixed(4)}   GIC: ${(p[yk]??0).toFixed(4)}`];
+  }}};
+}
+
+function scatter(id,xk,yk,xlab,ylab,r2id){
+  const p=D.pairs;
+  mkC(id,"scatter",null,
+    [{label:"Setores",data:p.map(r2=>({x:r2[xk]??0,y:r2[yk]??0})),
+      backgroundColor:p.map(r2=>gc(r2.grupo)+"bb"),pointRadius:5,pointHoverRadius:7}],
+    {plugins:{...PLG,tooltip:{...PLG.tooltip,...tipPair(xk,yk)}},
+     scales:{x:{...CDx,title:{display:true,text:xlab,color:"#8892a4"}},
+             y:{...CDx,title:{display:true,text:ylab,color:"#8892a4"}}}});
+  if(r2id) setR2(r2id,p.map(r2=>r2[xk]??0),p.map(r2=>r2[yk]??0));
+}
+
+function topBar(id,sortKey_E,sortKey_G,lbl,n=15){
+  const p=[...D.pairs].filter(r2=>r2[sortKey_E]!=null).sort((a,b)=>(b[sortKey_E]??0)-(a[sortKey_E]??0)).slice(0,n);
+  mkC(id,"bar",p.map(r2=>r2.cod),
+    [{label:`${lbl} EPE`,data:p.map(r2=>r2[sortKey_E]??0),backgroundColor:C_EPE+"cc",borderRadius:2},
+     {label:`${lbl} GIC`,data:p.map(r2=>r2[sortKey_G]??0),backgroundColor:C_GIC+"cc",borderRadius:2}],
+    {indexAxis:"y",
+     plugins:{...PLG,tooltip:{...PLG.tooltip,callbacks:{label:ctx=>{
+       const r2=p[ctx.dataIndex];return `${r2.epe_nome?.substring(0,32)}: ${ctx.parsed.x?.toFixed(3)}`;}}}},
+     scales:{x:{...CDx,title:{display:true,text:lbl,color:"#8892a4"}},y:{...CDx}}});
+}
+
+// ── TAB 0: SUMMARY ────────────────────────────────────────────────────────────
+function initSummary(){
+  const p=D.pairs;
+  document.getElementById("matchBadge").textContent=
+    `${D.meta.matched_n} pares | ${D.meta.epe_n} EPE | ${D.meta.gic_n} GIC`;
+
+  // KPIs
+  const avg=(arr,k)=>arr.reduce((s,r)=>s+(r[k]??0),0)/arr.length;
+  const rc_mp=r(p.map(r2=>r2.MP_E),p.map(r2=>r2.MP_G));
+  const rc_bl=r(p.map(r2=>r2.BL_E),p.map(r2=>r2.BL_G));
+  const nke=p.filter(r2=>r2.BL_E>1&&r2.FLG_E>1).length;
+  const nkg=p.filter(r2=>r2.BL_G>1&&r2.FLG_G>1).length;
+  const kpis=[
+    {l:"MP Médio — EPE",v:avg(p,"MP_E").toFixed(3),s:"Mult. Simples Produção 2018",c:C_EPE},
+    {l:"MP Médio — GIC",v:avg(p,"MP_G").toFixed(3),s:"Mult. Simples Produção 2021",c:C_GIC},
+    {l:"Correlação MP",v:rc_mp.toFixed(3),s:`R² = ${(rc_mp**2).toFixed(3)}`,c:C_BOTH},
+    {l:"Correlação BL",v:rc_bl.toFixed(3),s:`R² = ${(rc_bl**2).toFixed(3)}`,c:C_BOTH},
+    {l:"Setores-chave EPE",v:nke,s:"BL>1 e FLG>1",c:C_EPE},
+    {l:"Setores-chave GIC",v:nkg,s:"BL>1 e FLG>1",c:C_GIC},
+    {l:"BL Médio — EPE",v:avg(p,"BL_E").toFixed(3),s:"Rasmussen backward 2018",c:C_EPE},
+    {l:"BL Médio — GIC",v:avg(p,"BL_G").toFixed(3),s:"Rasmussen backward 2021",c:C_GIC},
+  ];
+  document.getElementById("kpiRow").innerHTML=kpis.map(k=>
+    `<div class="kpi"><div class="kpi-val" style="color:${k.c}">${k.v}</div>
+     <div class="kpi-lbl">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join("");
+
+  // Histograms
+  const hE=histBins(p.map(r2=>r2.MP_E)), hG=histBins(p.map(r2=>r2.MP_G));
+  mkC("ch-dist-mp","bar",hE.labels,
+    [{label:"EPE 2018",data:hE.counts,backgroundColor:C_EPE+"aa",borderRadius:2},
+     {label:"GIC 2021",data:hG.counts,backgroundColor:C_GIC+"aa",borderRadius:2}],
+    {scales:{x:{...CDx,title:{display:true,text:"MP",color:"#8892a4"}},
+             y:{...CDx,title:{display:true,text:"Nº setores",color:"#8892a4"}}}});
+
+  const bE=histBins(p.map(r2=>r2.BL_E)), bG=histBins(p.map(r2=>r2.BL_G));
+  mkC("ch-dist-bl","bar",bE.labels,
+    [{label:"EPE 2018",data:bE.counts,backgroundColor:C_EPE+"aa",borderRadius:2},
+     {label:"GIC 2021",data:bG.counts,backgroundColor:C_GIC+"aa",borderRadius:2}],
+    {scales:{x:{...CDx,title:{display:true,text:"BL",color:"#8892a4"}},
+             y:{...CDx,title:{display:true,text:"Nº setores",color:"#8892a4"}}}});
+
+  // Summary stats table
+  const ROWS=[
+    ["Mult. Produção Simples (MP)","MP"],["Mult. Produção Total (MPT)","MPT"],
+    ["Mult. Produção Total Truncado (MPTT)","MPTT"],
+    ["Mult. Emprego Tipo I (MEI)","MEI"],["Mult. Emprego Tipo II (MEII)","MEII"],
+    ["Mult. Renda Tipo I (MRI)","MRI"],["Mult. Renda Tipo II (MRII)","MRII"],
+    ["BL Rasmussen","BL"],["FLG Ghosh","FLG"],
+    ["PBLN (Índ. Puro Ligação Trás)","PBLN"],["PFLN (Índ. Puro Ligação Frente)","PFLN"],
+    ["Extração BL%","BLpct"],["Extração FL%","FLpct"]
+  ];
+  const f4=(v)=>v==null||isNaN(v)?"—":v.toFixed(4);
+  const diffCls=(a,b)=>{const d=Math.abs((a-b)/((a+b)/2||1))*100; return d<5?"ok":d<15?"warn":"bad";};
+  let h=`<tr><th>Indicador</th><th>Modelo</th><th>Mín</th><th>Q1</th><th>Mediana</th><th>Média</th><th>Q3</th><th>Máx</th></tr>`;
+  ROWS.forEach(([lbl,key])=>{
+    const se=D.summary[key]?.epe, sg=D.summary[key]?.gic;
+    if(!se||!sg) return;
+    const cls=diffCls(se.mean,sg.mean);
+    h+=`<tr><td rowspan="2" style="font-weight:600">${lbl}</td>
+      <td class="ve">EPE 2018</td>
+      <td>${f4(se.min)}</td><td>${f4(se.q1)}</td><td>${f4(se.median)}</td>
+      <td><strong>${f4(se.mean)}</strong></td><td>${f4(se.q3)}</td><td>${f4(se.max)}</td></tr>
+    <tr><td class="vg">GIC 2021</td>
+      <td>${f4(sg.min)}</td><td>${f4(sg.q1)}</td><td>${f4(sg.median)}</td>
+      <td><strong class="${cls}">${f4(sg.mean)}</strong></td><td>${f4(sg.q3)}</td><td>${f4(sg.max)}</td></tr>`;
+  });
+  document.getElementById("summTable").innerHTML=h;
+}
+
+// ── TAB 1: MULTIPLICADORES ────────────────────────────────────────────────────
+function initMult(){
+  scatter("ch-sc-mp", "MP_E","MP_G", "MP EPE 2018","MP GIC 2021","r2-mp");
+  scatter("ch-sc-mpt","MPT_E","MPT_G","MPT EPE","MPT GIC","r2-mpt");
+  scatter("ch-sc-mei","MEI_E","MEI_G","MEI EPE","MEI GIC","r2-mei");
+  scatter("ch-sc-mri","MRI_E","MRI_G","MRI EPE","MRI GIC","r2-mri");
+  topBar("ch-top-mp", "MP_E", "MP_G", "MP");
+  topBar("ch-top-mpt","MPT_E","MPT_G","MPT");
+  topBar("ch-top-mei","MEI_E","MEI_G","MEI");
+  topBar("ch-top-mri","MRI_E","MRI_G","MRI");
+}
+
+// ── TAB 2: ÍNDICES DE LIGAÇÃO ─────────────────────────────────────────────────
+function initLinkage(){
+  const p=D.pairs;
+  // BL vs FLG scatter — EPE
+  mkC("ch-cv-epe","scatter",null,
+    [{label:"Setores EPE",data:p.map(r2=>({x:r2.FLG_E,y:r2.BL_E})),
+      backgroundColor:p.map(r2=>gc(r2.grupo)+"bb"),pointRadius:4,pointHoverRadius:7}],
+    {plugins:{...PLG,tooltip:{...PLG.tooltip,callbacks:{label:ctx=>{
+      const p2=p[ctx.dataIndex];
+      return [`${p2.cod} ${(p2.epe_nome||"").substring(0,25)}`,
+              `BL=${p2.BL_E?.toFixed(3)} FLG=${p2.FLG_E?.toFixed(3)}`];}}}},
+     scales:{
+       x:{...CDx,min:0.4,max:2.5,title:{display:true,text:"FLG Ghosh",color:"#8892a4"}},
+       y:{...CDx,min:0.4,max:2.5,title:{display:true,text:"BL Rasmussen",color:"#8892a4"}}}});
+
+  // BL vs FLG scatter — GIC
+  mkC("ch-cv-gic","scatter",null,
+    [{label:"Setores GIC",data:p.map(r2=>({x:r2.FLG_G,y:r2.BL_G})),
+      backgroundColor:p.map(r2=>gc(r2.grupo)+"bb"),pointRadius:4,pointHoverRadius:7}],
+    {plugins:{...PLG,tooltip:{...PLG.tooltip,callbacks:{label:ctx=>{
+      const p2=p[ctx.dataIndex];
+      return [`${p2.cod} ${p2.gic_nome||""}`,
+              `BL=${p2.BL_G?.toFixed(3)} FLG=${p2.FLG_G?.toFixed(3)}`];}}}},
+     scales:{
+       x:{...CDx,min:0.4,max:2.5,title:{display:true,text:"FLG Ghosh",color:"#8892a4"}},
+       y:{...CDx,min:0.4,max:2.5,title:{display:true,text:"BL Rasmussen",color:"#8892a4"}}}});
+
+  scatter("ch-sc-bl", "BL_E","BL_G",  "BL EPE",  "BL GIC",  "r2-bl");
+  scatter("ch-sc-flg","FLG_E","FLG_G","FLG EPE","FLG GIC","r2-flg");
+  topBar("ch-top-bl", "BL_E", "BL_G", "BL");
+  topBar("ch-top-flg","FLG_E","FLG_G","FLG");
+}
+
+// ── TAB 3: EXTRAÇÃO & IPLN ────────────────────────────────────────────────────
+function initExtraction(){
+  scatter("ch-sc-blpct","BLpct_E","BLpct_G","BLext% EPE","BLext% GIC","r2-blpct");
+  scatter("ch-sc-flpct","FLpct_E","FLpct_G","FLext% EPE","FLext% GIC","r2-flpct");
+  scatter("ch-sc-pbln", "PBLN_E", "PBLN_G", "PBLN EPE",  "PBLN GIC",  "r2-pbln");
+  scatter("ch-sc-pfln", "PFLN_E", "PFLN_G", "PFLN EPE",  "PFLN GIC",  "r2-pfln");
+  topBar("ch-top-blpct","BLpct_E","BLpct_G","BL Ext%");
+  topBar("ch-top-flpct","FLpct_E","FLpct_G","FL Ext%");
+}
+
+// ── TAB 4: TABLE ──────────────────────────────────────────────────────────────
+let _td=[];
+function initTable(){
+  _td=D.pairs.map(r2=>({
+    cod:r2.cod, epe:r2.epe_nome||"", gic:r2.gic_nome||"", grp:r2.grupo||"",
+    mp_e:r2.MP_E, mp_g:r2.MP_G,
+    dmp:r2.MP_E&&r2.MP_G?((r2.MP_E-r2.MP_G)/((r2.MP_E+r2.MP_G)/2)*100):null,
+    mpt_e:r2.MPT_E, mpt_g:r2.MPT_G,
+    mei_e:r2.MEI_E, mei_g:r2.MEI_G,
+    mri_e:r2.MRI_E, mri_g:r2.MRI_G,
+    bl_e:r2.BL_E,   bl_g:r2.BL_G,
+    flg_e:r2.FLG_E, flg_g:r2.FLG_G,
+    blx_e:r2.BLpct_E, blx_g:r2.BLpct_G
+  }));
+  renderT();
+}
+function renderT(data){
+  data=data||_td;
+  const f=(v,d=3)=>v==null||isNaN(v)?"—":Number(v).toFixed(d);
+  const dc=d=>d==null?"":Math.abs(d)<5?"ok":Math.abs(d)<15?"warn":"bad";
+  document.getElementById("tblSbody").innerHTML=data.map(r2=>`<tr>
+    <td>${r2.cod}</td>
+    <td style="max-width:190px;overflow:hidden;text-overflow:ellipsis" title="${r2.epe}">${r2.epe.substring(0,30)}</td>
+    <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis" title="${r2.gic}">${r2.gic}</td>
+    <td class="epe-c">${f(r2.mp_e)}</td><td class="gic-c">${f(r2.mp_g)}</td>
+    <td class="${dc(r2.dmp)}">${r2.dmp!=null?r2.dmp.toFixed(1)+"%":"—"}</td>
+    <td class="epe-c">${f(r2.mpt_e)}</td><td class="gic-c">${f(r2.mpt_g)}</td>
+    <td class="epe-c">${f(r2.mei_e)}</td><td class="gic-c">${f(r2.mei_g)}</td>
+    <td class="epe-c">${f(r2.mri_e)}</td><td class="gic-c">${f(r2.mri_g)}</td>
+    <td class="epe-c">${f(r2.bl_e)}</td><td class="gic-c">${f(r2.bl_g)}</td>
+    <td class="epe-c">${f(r2.flg_e)}</td><td class="gic-c">${f(r2.flg_g)}</td>
+    <td class="epe-c">${f(r2.blx_e)}</td><td class="gic-c">${f(r2.blx_g)}</td>
+  </tr>`).join("");
+}
+function filterTbl(q){
+  q=q.toLowerCase();
+  renderT(_td.filter(r2=>[r2.cod,r2.epe,r2.gic,r2.grp].some(s=>(s||"").toLowerCase().includes(q))));
+}
+let _tSort={col:0,asc:true};
+function sortT(col){
+  _tSort.asc=_tSort.col===col?!_tSort.asc:true; _tSort.col=col;
+  const ks=["cod","epe","gic","mp_e","mp_g","dmp","mpt_e","mpt_g","mei_e","mei_g",
+             "mri_e","mri_g","bl_e","bl_g","flg_e","flg_g","blx_e","blx_g"];
+  const k=ks[col];
+  _td.sort((a,b)=>{const va=a[k]??"",vb=b[k]??"";
+    return(typeof va==="number"?(va-vb):((""+va)<(""+vb)?-1:(""+va)>(""+vb)?1:0))*(_tSort.asc?1:-1);});
+  renderT();
+}
+
+// ── BOOT ─────────────────────────────────────────────────────────────────────
+showTab(0);
+</script>
+</body>
+</html>
+
