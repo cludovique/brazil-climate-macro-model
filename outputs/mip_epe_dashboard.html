@@ -110,11 +110,10 @@ table.dt tr:hover td{background:#1f2233}
 
 <!-- ══ TAB 0: VISÃO GERAL ═══════════════════════════════════════════════════ -->
 <div class="tab-panel active" id="tab0">
-  <div class="grid-4">
+  <div class="grid-3">
     <div class="card kpi"><div class="val" id="kpi-vbp">—</div><div class="lbl">VBP Total (R$ T)</div><div class="sub">grupos vis&iacute;veis</div></div>
     <div class="card kpi"><div class="val" id="kpi-va">—</div><div class="lbl">VA / PIB (R$ T)</div><div class="sub">grupos vis&iacute;veis</div></div>
     <div class="card kpi"><div class="val" id="kpi-emp">—</div><div class="lbl">Ocupados (M)</div><div class="sub">grupos vis&iacute;veis</div></div>
-    <div class="card kpi"><div class="val" id="kpi-nsect">—</div><div class="lbl">Setores Activos</div><div class="sub">de 73</div></div>
   </div>
   <div class="grid-2">
     <div class="card">
@@ -463,14 +462,36 @@ function enrich(data){
 }
 
 // Custom Chart.js legend for single-dataset per-bar-color charts.
-// position:"top" keeps the legend above the bars; white text for readability.
+// position:"top" keeps the legend above the bars.
+// fontColor is set both globally (labels.color) AND per-item (Chart.js 4 uses both).
 function makeColorLegend(lbls,colors,position="top"){
   return {display:true,position,labels:{
     generateLabels:()=>lbls.map((l,i)=>({
-      text:l.replace(/_/g," "),fillStyle:colors[i],strokeStyle:colors[i],lineWidth:0,hidden:false
+      text:l.replace(/_/g," "),
+      fillStyle:colors[i],strokeStyle:colors[i],lineWidth:0,hidden:false,
+      fontColor:"#e2e8f0"
     })),
     color:"#e2e8f0",font:{size:11},boxWidth:12,padding:10
   }};
+}
+
+// Smart group legend: all-energy groups are shown in orange with ⚡ prefix;
+// avoids duplicating "⚡ Energia" when the scheme already groups energy together.
+function buildGroupLegend(rows,grpC,setES,pos="top"){
+  const grps=[...new Set(rows.map(r=>r[grpC]).filter(Boolean))];
+  const lbls=[],cols=[];
+  let mixedE=false;
+  grps.forEach(g=>{
+    const inG=rows.filter(r=>r[grpC]===g);
+    if(inG.length>0&&inG.every(r=>setES.has(r.cod))){
+      lbls.push("⚡ "+g.replace(/_/g," ")); cols.push("#F39C12");
+    } else {
+      lbls.push(g); cols.push(gc(g));
+      if(inG.some(r=>setES.has(r.cod))) mixedE=true;
+    }
+  });
+  if(mixedE){lbls.push("⚡ Energia"); cols.push("#F39C12");}
+  return makeColorLegend(lbls,cols,pos);
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -504,7 +525,41 @@ function mkDoughnut(id,labels,data,colors){
 function clrTbody(id){const t=document.querySelector("#"+id+" tbody");if(t)t.innerHTML="";}
 function clrTabTbls(n){document.querySelectorAll(`#tab${n} table.dt tbody`).forEach(t=>t.innerHTML="");}
 
-// Chart-title definitions (shown as native browser tooltip on hover)
+// Static chart-title definitions (text-fragment → definition).
+// Applied at bootstrap by scanning all .card-title elements.
+const STATIC_DEFS={
+  "Comparativo de Choques":"ΔVA por exercício: compara os efeitos macroeconômicos de cada cenário simulado de demanda.",
+  "Top 12 MP":"12 setores com maior Multiplicador de Produção — geram mais produção agregada por R$1 de demanda final.",
+  "Resumo dos Exerc":"Tabela-resumo dos 5 exercícios: impacto em produção, VA, emprego e energia por cenário.",
+  "Top 15 Setores por VBP":"Os 15 maiores setores em Valor Bruto da Produção (R$ bi).",
+  "Indicadores de Base":"Tabela completa com VBP, VA/PIB, salários, EOB e ocupações por setor.",
+  "Multiplicadores de Produ":"MP ordenado: impacto total na produção de toda a economia por R$1 de demanda final.",
+  "MP vs MPT vs MPTT":"Decomposição do multiplicador de produção em Tipo I, Truncado e Total — setores energéticos.",
+  "Multiplicadores de Emprego":"ME, MEI e MET: empregos gerados por R$1M de demanda final nos setores energéticos.",
+  "Efeito Direto vs Indireto":"Decomposição do MP em efeitos direto, indireto e induzido para os top-15 setores.",
+  "Multiplicadores de Renda":"MR, MRI e MRT: renda das famílias gerada por R$1M de demanda final — setores energéticos.",
+  "Tabela de Multiplicadores":"Tabela completa de MP, ME e MR para todos os setores activos.",
+  "Rasmussen-Hirschman":"Diagrama BL × FLG: setores-chave têm BL>1 e FLG>1, sendo centrais nas cadeias produtivas.",
+  "Top 20 BL":"20 maiores Backward Linkages — poder de arrastar outros setores via demanda por insumos.",
+  "Top 20 FLG":"20 maiores Forward Linkages (Ghosh) — poder de oferta para outros setores.",
+  "Distribui":"Proporção de setores por quadrante no diagrama Rasmussen-Hirschman.",
+  "Coeficientes de Varia":"Vi (coluna) e Vj (linha): dispersão dos coeficientes de ligação — dependência estrutural.",
+  "Fontes Energ":"Participação de cada fonte energética no consumo intermediário total (ktep).",
+  "Top 15 Setores por Consumo":"Maiores consumidores de energia intermediária, por fonte (ktep).",
+  "Intensidade Energ":"Alpha (ktep/R$M): consumo de energia por unidade de produto — eficiência energética setorial.",
+  "Energia por Fonte":"Consumo energético intermediário por fonte e agrupamento (ktep).",
+  "ΔEnergia por Fonte":"Variação no consumo energético por fonte de energia em resposta a cada choque (ktep).",
+  "ΔEmprego por Categoria":"Variação nas ocupações por categoria laboral (formal/informal, gênero, escolaridade).",
+  "Top 15 Setores ΔVA":"Setores com maior variação de Valor Adicionado no primeiro exercício activo.",
+  "Ex3 vs Ex4":"Comparação do impacto na produção dos setores energéticos: contração fóssil vs expansão renovável.",
+  "Detalhamento Setorial":"Tabela com impacto setorial detalhado (ΔX, ΔVA, ΔEmp) para o exercício selecionado.",
+  "Extração Hipotética — Top 20 BL":"BL hipotético: perda de produção estimada se o setor fosse retirado da economia (demanda).",
+  "Extração Hipotética — Top 20 FL":"FL hipotético: perda de produção estimada se o setor fosse retirado como fornecedor (oferta).",
+  "PBLN":"PBLN × PFLN: Índices Puros Normalizados — PBLN mede poder de demanda; PFLN poder de oferta.",
+  "Índices Puros":"Tabela completa de Índices Puros de Ligação: PBL, PFL, PTL e versões normalizadas por setor."
+};
+
+// Dynamic chart-title definitions (shown as native browser tooltip on hover)
 const CARD_DEFS={
   "ttl-vbp-group":"VBP — Valor Bruto da Produção: valor total dos bens e serviços gerados por grupo (R$ bi).",
   "ttl-va-decomp":"VA/PIB — Valor Adicionado: renda gerada na produção, decomposta em Salários, EOB e outros (R$ bi).",
@@ -649,7 +704,6 @@ function initOverview(){
   document.getElementById("kpi-vbp").textContent=(tot("vbp")/1e6).toFixed(2)+" T";
   document.getElementById("kpi-va").textContent =(tot("va_pib")/1e6).toFixed(2)+" T";
   document.getElementById("kpi-emp").textContent=(tot("ocupacoes")/1e6).toFixed(1)+" M";
-  document.getElementById("kpi-nsect").textContent="73 / 73";
 
   const s=sch(); const sec=isSec();
   setTtl("ttl-vbp-group","VBP por "+(sec?"Setor (top 30)":s.label)+" (R$ bi)");
@@ -770,13 +824,12 @@ function initMultipliers(){
 
   // Colour by current scheme (fall back to "grupo" in 73-sector mode)
   const grpCol=isSec()?"grupo":scCol();
-  const mpGrps=[...new Set(mp.map(r=>r[grpCol]).filter(Boolean))];
-  const mpGrpC=mpGrps.map(gc);
+  const setES=new Set(setE);
   mkHBar("ch-mp-all",mp.map(r=>r.cod),
     [{label:"MP",data:mp.map(r=>r.MP),
-      backgroundColor:mp.map(r=>setE.includes(r.cod)?"#F39C12":gc(r[grpCol])),borderRadius:2}],
+      backgroundColor:mp.map(r=>setES.has(r.cod)?"#F39C12":gc(r[grpCol])),borderRadius:2}],
     {plugins:{...CD.plugins,
-      legend:makeColorLegend([...mpGrps,"⚡ Energia"],[...mpGrpC,"#F39C12"]),
+      legend:buildGroupLegend(mp,grpCol,setES,"top"),
       tooltip:TIP_SECTOR},
      scales:{x:{...CD.scales.x,min:1},y:{...CD.scales.y,ticks:{font:{size:9}}}}});
 
@@ -998,13 +1051,9 @@ function initExtraction(){
   const ext=enrich(D.Extr_Hipotetica||[]), ipl=D.Ind_Puros||[];
   const setE=D.Setores.filter(s=>s.eh_energia).map(s=>s.cod);
   const grpCol=isSec()?"grupo":scCol();
-
-  // Build legend: unique groups in current scheme + energy highlight
-  function extLegend(rows){
-    const grps=[...new Set(rows.map(r=>r[grpCol]).filter(Boolean))];
-    return makeColorLegend([...grps,"⚡ Energia"],[...grps.map(gc),"#F39C12"],"top");
-  }
-  function barColor(r){return setE.includes(r.cod)?"#F39C12":gc(r[grpCol]);}
+  const setES=new Set(setE);
+  function barColor(r){return setES.has(r.cod)?"#F39C12":gc(r[grpCol]);}
+  function extLegend(rows){return buildGroupLegend(rows,grpCol,setES,"top");}
 
   const blTop=[...ext].sort((a,b)=>b.BL_abs-a.BL_abs).slice(0,20);
   mkHBar("ch-extrac-bl",blTop.map(r=>r.cod),
@@ -1043,8 +1092,14 @@ function initExtraction(){
 // BOOTSTRAP
 // ════════════════════════════════════════════════════════════════════════════
 buildSchemeSwitcher();
-// Apply definition tooltips to static card-titles that have a matching id
+// Apply CARD_DEFS (id-based, dynamic titles)
 Object.entries(CARD_DEFS).forEach(([id,def])=>{const e=document.getElementById(id);if(e)e.title=def;});
+// Apply STATIC_DEFS (text-match, static titles) to all card-titles without a title yet
+document.querySelectorAll(".card-title:not([title])").forEach(el=>{
+  const txt=el.textContent.trim();
+  const found=Object.entries(STATIC_DEFS).find(([k])=>txt.includes(k));
+  if(found)el.title=found[1];
+});
 showTab(0);
 </script>
 </body></html>
