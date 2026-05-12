@@ -116,8 +116,8 @@ table.dt tr:hover td{background:#1f2233}
   <button onclick="showTab(2)">&#128200; Multiplicadores</button>
   <button onclick="showTab(3)">&#128279; &Iacute;ndices de Liga&ccedil;&atilde;o</button>
   <button onclick="showTab(4)">&#9889; Matriz Energ&eacute;tica</button>
-  <button onclick="showTab(5)">&#128293; Choques de Demanda</button>
-  <button onclick="showTab(6)">&#128300; Extra&ccedil;&atilde;o &amp; &Iacute;nd. Puros</button>
+  <button onclick="showTab(5)">&#128300; Extra&ccedil;&atilde;o &amp; &Iacute;nd. Puros</button>
+  <button onclick="showTab(6)">&#128293; Choques de Demanda</button>
 </nav>
 
 <!-- SCHEME BAR: controls aggregation level for all group charts -->
@@ -271,7 +271,7 @@ table.dt tr:hover td{background:#1f2233}
 </div>
 
 <!-- ══ TAB 5: CHOQUES ═══════════════════════════════════════════════════════ -->
-<div class="tab-panel" id="tab5">
+<div class="tab-panel" id="tab6">
   <div class="ex-bar">
     <span class="scheme-label">Exerc&iacute;cios:</span>
     <div id="exToggles" style="display:flex;gap:5px;flex-wrap:wrap"></div>
@@ -327,8 +327,8 @@ table.dt tr:hover td{background:#1f2233}
   </div>
 </div>
 
-<!-- ══ TAB 6: EXTRAÇÃO ══════════════════════════════════════════════════════ -->
-<div class="tab-panel" id="tab6">
+<!-- ══ TAB 5: EXTRAÇÃO ══════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab5">
   <div class="grid-2">
     <div class="card"><div class="card-title">Extra&ccedil;&atilde;o Hipot&eacute;tica — Top 20 BL (demanda)</div>
       <div class="chart-wrap"><canvas id="ch-extrac-bl"></canvas></div></div>
@@ -681,7 +681,7 @@ function activeEx(){return ALL_EX.filter(k=>STATE.exercises.has(k));}
 // ════════════════════════════════════════════════════════════════════════════
 // TAB NAV & LAZY REBUILD
 // ════════════════════════════════════════════════════════════════════════════
-const INITS=[initOverview,initBaseline,initMultipliers,initLinkages,initEnergy,initShocks,initExtraction];
+const INITS=[initOverview,initBaseline,initMultipliers,initLinkages,initEnergy,initExtraction,initShocks];
 function showTab(n){
   document.querySelectorAll(".tab-panel").forEach((p,i)=>p.classList.toggle("active",i===n));
   document.querySelectorAll("#mainTabs button").forEach((b,i)=>b.classList.toggle("active",i===n));
@@ -975,16 +975,18 @@ function initEnergy(){
     {plugins:{...CD.plugins,legend:{display:false},tooltip:TIP_SECTOR}});
 
   const al=D.Energia_Alpha; const setE=D.Setores.filter(s=>s.eh_energia).map(s=>s.cod);
-  const alE=al.filter(r=>setE.includes(r.cod));
-  mkBar("ch-alpha-energy",alE.map(r=>r.cod),
+  const alE=[...al.filter(r=>setE.includes(r.cod))]
+    .map(r=>({...r,tot:fontes.reduce((s,f)=>s+(r[f]||0),0)}))
+    .sort((a,b)=>b.tot-a.tot);
+  mkHBar("ch-alpha-energy",alE.map(r=>r.cod),
     fontes.map(f=>({label:f,data:alE.map(r=>r[f]||0),backgroundColor:FONTE_C[f]||"#888",borderRadius:2,stack:"s"})),
-    {scales:{x:{...CD.scales.x,stacked:true},y:{...CD.scales.y,stacked:true,
-      title:{display:true,text:"ktep/R$M",color:"#8892a4"}}},
+    {scales:{x:{...CD.scales.x,stacked:true,title:{display:true,text:"ktep/R$M",color:"#8892a4"}},
+             y:{...CD.scales.y,stacked:true}},
      plugins:{...CD.plugins,tooltip:TIP_SECTOR}});
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// SHOCKS (Tab 5)
+// SHOCKS (Tab 6)
 // ════════════════════════════════════════════════════════════════════════════
 function initShocks(){buildExToggles(); rebuildShockCharts(); renderShockTable();}
 
