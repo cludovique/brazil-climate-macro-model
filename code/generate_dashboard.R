@@ -120,7 +120,7 @@ table.dt tr:hover td{background:#1f2233}
 <div class="scheme-bar">
   <span class="scheme-label">Agrupamento:</span>
   <div class="scheme-ctrl" id="schemeCtrl"></div>
-  <span style="font-size:10px;color:var(--c-muted);margin-left:6px" id="scheme-hint">Clique nos grupos dentro de cada gr&aacute;fico para mostrar/ocultar</span>
+  <span style="font-size:10px;color:var(--c-muted);margin-left:6px" id="scheme-hint">Selecione o n&iacute;vel de agrupamento para todos os gr&aacute;ficos</span>
 </div>
 
 <!-- ══ TAB 0: VISÃO GERAL ═══════════════════════════════════════════════════ -->
@@ -155,19 +155,16 @@ table.dt tr:hover td{background:#1f2233}
   <div class="grid-2">
     <div class="card">
       <div class="card-title" id="ttl-va-decomp">Valor Adicionado por Grupo (R$ bi)</div>
-      <div class="gf-row" id="gf-ch-va-decomp"></div>
       <div class="chart-wrap"><canvas id="ch-va-decomp"></canvas></div>
     </div>
     <div class="card">
       <div class="card-title" id="ttl-emp-group">Pessoal Ocupado por Grupo (mil)</div>
-      <div class="gf-row" id="gf-ch-emp-group"></div>
       <div class="chart-wrap"><canvas id="ch-emp-group"></canvas></div>
     </div>
   </div>
   <div class="grid-2">
     <div class="card">
       <div class="card-title" id="ttl-df-group">Demanda Final por Componente e Grupo (R$ bi)</div>
-      <div class="gf-row" id="gf-ch-df-group"></div>
       <div class="chart-wrap"><canvas id="ch-df-group"></canvas></div>
     </div>
     <div class="card"><div class="card-title">Top 15 Setores por VBP</div>
@@ -424,6 +421,28 @@ function aggBy(data,field,labels){
 // colour list for a label array
 function lblColors(lbls){return lbls.map(l=>gc(l));}
 
+// Enrich any sector-level data with group columns from D.Setores.
+// Baseline / Demanda_Final may not carry grupo_nt4 / grupo_ibge — look them up.
+const _SMAP=(()=>{const m={};D.Setores.forEach(s=>{m[s.cod]=s;});return m;})();
+function enrich(data){
+  return data.map(r=>{
+    const s=_SMAP[r.cod]||{};
+    // spread Setores fields first so row's own columns (e.g. grupo) take precedence
+    return Object.assign({grupo:s.grupo,grupo_nt4:s.grupo_nt4,grupo_ibge:s.grupo_ibge},r);
+  });
+}
+
+// Custom Chart.js legend for single-dataset per-bar-color charts
+// (Chart.js only shows one legend item for a single dataset, so we override generateLabels)
+function makeColorLegend(lbls,colors){
+  return {display:true,labels:{
+    generateLabels:()=>lbls.map((l,i)=>({
+      text:l.replace(/_/g," "),fillStyle:colors[i],strokeStyle:colors[i],lineWidth:0,hidden:false
+    })),
+    color:"#8892a4",font:{size:11},boxWidth:12,padding:10
+  }};
+}
+
 // ════════════════════════════════════════════════════════════════════════════
 // CHART REGISTRY
 // ════════════════════════════════════════════════════════════════════════════
@@ -580,7 +599,7 @@ function badge(g){const c=gc(g);return `<span class="badge-g" style="background:
 // OVERVIEW (Tab 0)
 // ════════════════════════════════════════════════════════════════════════════
 function initOverview(){
-  const bl=D.Baseline; const sr=D.Choques_Resumo;
+  const bl=enrich(D.Baseline); const sr=D.Choques_Resumo;
   const tot=(f)=>bl.reduce((s,r)=>s+(r[f]||0),0);
   document.getElementById("kpi-vbp").textContent=(tot("vbp")/1e6).toFixed(2)+" T";
   document.getElementById("kpi-va").textContent =(tot("va_pib")/1e6).toFixed(2)+" T";
@@ -625,7 +644,7 @@ function initOverview(){
 // BASELINE (Tab 1)
 // ════════════════════════════════════════════════════════════════════════════
 function initBaseline(){
-  const bl=D.Baseline; const dfAll=D.Demanda_Final;
+  const bl=enrich(D.Baseline); const dfAll=enrich(D.Demanda_Final);
   const s=sch(); const sec=isSec(); const sfx=sec?" (top 20)":" ("+s.label+")";
   setTtl("ttl-va-decomp","Valor Adicionado por Grupo"+sfx);
   setTtl("ttl-emp-group","Pessoal Ocupado por Grupo"+sfx);
@@ -654,26 +673,28 @@ function initBaseline(){
        plugins:{...CD.plugins,tooltip:TIP_SECTOR}});
   } else {
     const lbls=schLabels(bl); const col=scCol();
+    const grpColors=lblColors(lbls);
+
+    // VA decomp: 3-dataset grouped bar — legend already shows VA/PIB, Salários, EOB
     mkBar("ch-va-decomp",lbls,[
       {label:"VA/PIB",  data:aggBy(bl,"va_pib",lbls).map(v=>v/1e3),  backgroundColor:"#378ADD",borderRadius:3},
       {label:"Salários",data:aggBy(bl,"salarios",lbls).map(v=>v/1e3),backgroundColor:"#1D9E75",borderRadius:3},
       {label:"EOB",     data:aggBy(bl,"eob",lbls).map(v=>v/1e3),     backgroundColor:"#F39C12",borderRadius:3}
     ]);
-    attachGroupFilter("ch-va-decomp",lbls,lblColors(lbls));
 
+    // Employment: single dataset with per-group colours → custom generateLabels legend
+    const empVals=aggBy(bl,"ocupacoes",lbls).map(v=>v/1e3);
     mkBar("ch-emp-group",lbls,
-      [{label:"Ocupações (mil)",data:aggBy(bl,"ocupacoes",lbls).map(v=>v/1e3),
-        backgroundColor:lblColors(lbls),borderRadius:4}],
-      {plugins:{...CD.plugins,legend:{display:false}}});
-    attachGroupFilter("ch-emp-group",lbls,lblColors(lbls));
+      [{label:"Ocupações (mil)",data:empVals,backgroundColor:grpColors,borderRadius:4}],
+      {plugins:{...CD.plugins,legend:makeColorLegend(lbls,grpColors)}});
 
+    // Demanda Final: stacked by component — legend already shows Export / Gov / etc.
     const dfC=["Export","Gov","ISFLSF","Families","GFCF","DeltaStock"];
     const dfCols=["#378ADD","#534AB7","#888780","#1D9E75","#F39C12","#E24B4A"];
     mkBar("ch-df-group",lbls,
       dfC.map((c,i)=>({label:c,backgroundColor:dfCols[i],borderRadius:2,stack:"s",
         data:lbls.map(lbl=>dfAll.filter(r=>r[col]===lbl).reduce((s,r)=>s+(r[c]||0),0)/1e3)})),
       {scales:{x:{...CD.scales.x,stacked:true},y:{...CD.scales.y,stacked:true}}});
-    attachGroupFilter("ch-df-group",lbls,lblColors(lbls));
   }
 
   const top15=[...bl].sort((a,b)=>b.vbp-a.vbp).slice(0,15);
@@ -861,12 +882,16 @@ function rebuildShockCharts(){
       return{label:EX_LABEL[k],data:cods.map(c=>(m[c]?.delta_emp||0)/1e3),backgroundColor:EX_COLOR[k],borderRadius:3};
     }),{plugins:{...CD.plugins,tooltip:TIP_SECTOR}});
   } else {
-    const lbls=schLabels(cg);
+    // Re-aggregate sector-level shock sheets by current scheme so NT4 / IBGE / 7G all work
+    const grpOf=r=>(_SMAP[r.cod]||{})[col]||r[col];
+    const allG=new Set();
+    exK.forEach(k=>(D[k]||[]).forEach(r=>{const g=grpOf(r);if(g)allG.add(g);}));
+    const lbls=[...allG].sort();
     mkBar("ch-shock-va-groups",lbls,exK.map(k=>({label:EX_LABEL[k],backgroundColor:EX_COLOR[k],borderRadius:3,
-      data:lbls.map(g=>{const r=cg.find(x=>x[col]===g&&x.exercicio===k);return r?(r.delta_va||0)/1e3:0;})})));
+      data:lbls.map(g=>(D[k]||[]).reduce((s,r)=>s+(grpOf(r)===g?(r.delta_va||0):0),0)/1e3)})));
     attachGroupFilter("ch-shock-va-groups",lbls,lblColors(lbls));
     mkBar("ch-shock-emp-groups",lbls,exK.map(k=>({label:EX_LABEL[k],backgroundColor:EX_COLOR[k],borderRadius:3,
-      data:lbls.map(g=>{const r=cg.find(x=>x[col]===g&&x.exercicio===k);return r?(r.delta_emp||0)/1e3:0;})})));
+      data:lbls.map(g=>(D[k]||[]).reduce((s,r)=>s+(grpOf(r)===g?(r.delta_emp||0):0),0)/1e3)})));
     attachGroupFilter("ch-shock-emp-groups",lbls,lblColors(lbls));
   }
 
