@@ -251,7 +251,7 @@ table.dt tr:hover td{background:#1f2233}
   </div>
 </div>
 
-<!-- ══ TAB 5: CHOQUES ═══════════════════════════════════════════════════════ -->
+<!-- ══ TAB 6: CHOQUES ═══════════════════════════════════════════════════════ -->
 <div class="tab-panel" id="tab6">
   <div class="ex-bar">
     <span class="scheme-label">Exerc&iacute;cios:</span>
@@ -664,7 +664,8 @@ function activeEx(){return ALL_EX.filter(k=>STATE.exercises.has(k));}
 // ════════════════════════════════════════════════════════════════════════════
 const INITS=[initOverview,initBaseline,initMultipliers,initLinkages,initEnergy,initExtraction,initShocks];
 function showTab(n){
-  document.querySelectorAll(".tab-panel").forEach((p,i)=>p.classList.toggle("active",i===n));
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  const _tp=document.getElementById("tab"+n); if(_tp)_tp.classList.add("active");
   document.querySelectorAll("#mainTabs button").forEach((b,i)=>b.classList.toggle("active",i===n));
   STATE.tab=n;
   if(!(n in STATE.builtVer)||STATE.builtVer[n]!==STATE.filterVer){

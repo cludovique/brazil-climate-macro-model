@@ -202,7 +202,76 @@ message(sprintf(
   ALPHA["Derivados", "S48"], ALPHA["EE_Central", "S40"]
 ))
 
-# ── 2.9  Leontief inverse — pre-computed in Anexo 2 ────────────────────────────
+# ── 2.9  Satellite account: coefficients for transition analysis ─────────────
+# Row 102 matches the NT baseline employment text. The NT shock tables imply
+# 0.4 × row-102 occupations/output, so both raw and NT-calibrated labor
+# coefficients are kept.
+EMP_SHOCK_SCALE <- 0.4
+
+ce_raw <- as.vector(ocupacoes / x_safe)
+ce_nt  <- EMP_SHOCK_SCALE * ce_raw
+names(ce_raw) <- names(ce_nt) <- setores$cod
+
+wage_coef <- as.vector(remuner / x_safe)
+gdp_coef  <- as.vector(va_pib  / x_safe)
+names(wage_coef) <- names(gdp_coef) <- setores$cod
+
+energy_total <- colSums(E_mat)
+energy_fossil <- E_mat["Derivados", ] + E_mat["Gas_Natural", ]
+energy_lowcarbon <- E_mat["Biodiesel", ] + E_mat["Etanol", ] +
+  E_mat["EE_Central", ] + E_mat["EE_Distrib", ]
+
+# Replace this named vector when sector-level CO2 data are available.
+if (!exists("co2_sector")) {
+  co2_sector <- setNames(rep(NA_real_, N), setores$cod)
+}
+
+satellite <- data.frame(
+  cod = setores$cod,
+  nome = setores$nome,
+  output = as.numeric(x),
+  gdp = as.numeric(va_pib),
+  jobs = as.numeric(ocupacoes),
+  wages = as.numeric(remuner),
+  energy_ktep = as.numeric(energy_total[setores$cod]),
+  fossil_ktep = as.numeric(energy_fossil[setores$cod]),
+  lowcarbon_ktep = as.numeric(energy_lowcarbon[setores$cod]),
+  co2 = as.numeric(co2_sector[setores$cod]),
+  labor_coef_raw = as.numeric(ce_raw[setores$cod]),
+  labor_coef_nt = as.numeric(ce_nt[setores$cod]),
+  wage_coef = as.numeric(wage_coef[setores$cod]),
+  gdp_coef = as.numeric(gdp_coef[setores$cod]),
+  energy_coef = as.numeric(energy_total[setores$cod] / x_safe[setores$cod]),
+  fossil_energy_coef = as.numeric(energy_fossil[setores$cod] / x_safe[setores$cod]),
+  lowcarbon_energy_coef = as.numeric(energy_lowcarbon[setores$cod] / x_safe[setores$cod]),
+  carbon_coef = as.numeric(co2_sector[setores$cod] / x_safe[setores$cod]),
+  fossil_share = as.numeric(energy_fossil[setores$cod] /
+                              ifelse(energy_total[setores$cod] > 0,
+                                     energy_total[setores$cod], NA_real_)),
+  lowcarbon_share = as.numeric(energy_lowcarbon[setores$cod] /
+                                 ifelse(energy_total[setores$cod] > 0,
+                                        energy_total[setores$cod], NA_real_)),
+  women_share = as.numeric(get_row_vec(120) / occ_safe),
+  informality_share = as.numeric(get_row_vec(115) / occ_safe),
+  low_education_share = as.numeric(get_row_vec(121) / occ_safe),
+  stringsAsFactors = FALSE
+)
+
+SAT_COEF <- rbind(
+  Labor_raw        = satellite$labor_coef_raw,
+  Labor_NT         = satellite$labor_coef_nt,
+  Wages            = satellite$wage_coef,
+  GDP              = satellite$gdp_coef,
+  Energy           = satellite$energy_coef,
+  Fossil_Energy    = satellite$fossil_energy_coef,
+  Lowcarbon_Energy = satellite$lowcarbon_energy_coef,
+  Carbon           = satellite$carbon_coef
+)
+colnames(SAT_COEF) <- setores$cod
+
+message("Satellite account built: labor, wages, GDP, energy, fossil share, demographics.")
+
+# ── 2.10  Leontief inverse — pre-computed in Anexo 2 ───────────────────────────
 l_raw <- read_excel(ANX2, sheet = "Leontief", col_names = FALSE, range = "D5:BX77")
 L <- l_raw |>
   mutate(across(everything(),
@@ -340,6 +409,11 @@ dimnames(A) <- list(setores$cod, setores$cod)
 # (validated against NT — see section 2.9 check above)
 B <- L
 I_n <- diag(N)
+
+# Satellite-account multipliers: indicator impact per R$1 million of final demand.
+# Rows are indicators; columns are shocked sectors.
+SAT_MULT <- SAT_COEF %*% B
+colnames(SAT_MULT) <- setores$cod
 
 # ── 4.2  Closed model (endogenous household consumption) ──────────────────────
 # Household consumption coefficients: spending share of each sector per unit income
