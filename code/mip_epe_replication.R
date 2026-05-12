@@ -473,7 +473,8 @@ mult_prod <- data.frame(
 # MEI    — type I  = ME / ce (multiplier relative to direct effect)
 # MET    — total truncated (closed model, N×N part)
 # MEII   — type II = MET / ce
-ce     <- ce_raw
+ce     <- as.vector(ocupacoes / x_safe)
+names(ce) <- setores$cod
 Ce_hat <- diag(ce)
 
 E_gen  <- Ce_hat %*% B                # N×N employment generator (open)
@@ -725,14 +726,10 @@ simulate_shock <- function(delta_f,
   delta_rem  <- (remuner  / x_safe) * delta_x
   delta_sal  <- (salarios / x_safe) * delta_x
   delta_eob  <- (eob      / x_safe) * delta_x
-  delta_emp  <- ce_nt * delta_x
+  delta_emp  <- (ocupacoes / x_safe) * delta_x
 
   # Energy impacts by source: Δg = ALPHA · Δx  (ktep)
   delta_g    <- as.vector(ALPHA %*% delta_x);  names(delta_g) <- rownames(ALPHA)
-
-  # Satellite-account totals: each row is an indicator, already connected to B
-  satellite_delta <- as.vector(SAT_COEF %*% delta_x)
-  names(satellite_delta) <- rownames(SAT_COEF)
 
   # Labor breakdown: distribute delta_emp by baseline demographic shares
   delta_labor <- sapply(rownames(labor_share), function(grp) {
@@ -756,18 +753,6 @@ simulate_shock <- function(delta_f,
     delta_sal     = round(delta_sal, 4),
     delta_eob     = round(delta_eob, 4),
     delta_emp     = round(delta_emp, 1),
-    delta_energy_total     = round(satellite$energy_coef           * delta_x, 4),
-    delta_fossil_energy    = round(satellite$fossil_energy_coef    * delta_x, 4),
-    delta_lowcarbon_energy = round(satellite$lowcarbon_energy_coef * delta_x, 4),
-    delta_co2              = round(satellite$carbon_coef           * delta_x, 4),
-    delta_women_jobs       = round(satellite$women_share           * delta_emp, 1),
-    delta_informal_jobs    = round(satellite$informality_share     * delta_emp, 1),
-    delta_loweduc_jobs     = round(satellite$low_education_share   * delta_emp, 1),
-    fossil_share_base      = round(satellite$fossil_share, 4),
-    lowcarbon_share_base   = round(satellite$lowcarbon_share, 4),
-    women_share_base       = round(satellite$women_share, 4),
-    informality_share_base = round(satellite$informality_share, 4),
-    loweduc_share_base     = round(satellite$low_education_share, 4),
     var_x_pct     = round(delta_x   / x_safe                                   * 100, 4),
     var_va_pct    = round(delta_va  / ifelse(va_pib    > 0, va_pib,    1)      * 100, 4),
     var_emp_pct   = round(delta_emp / ifelse(ocupacoes > 0, ocupacoes, 1)      * 100, 4),
@@ -781,8 +766,6 @@ simulate_shock <- function(delta_f,
     delta_va     = sapply(grupos, function(s) sum(delta_va[s])),
     delta_rem    = sapply(grupos, function(s) sum(delta_rem[s])),
     delta_emp    = sapply(grupos, function(s) sum(delta_emp[s])),
-    delta_co2    = sapply(grupos, function(s) sum(satellite$carbon_coef[match(s, satellite$cod)] *
-                                                    delta_x[s], na.rm = TRUE)),
     delta_energy = sapply(grupos, function(s) {
       sum(ALPHA[, s, drop = FALSE] %*% delta_x[s])
     }),
@@ -811,7 +794,6 @@ simulate_shock <- function(delta_f,
     delta_emp      = delta_emp,
     delta_g        = delta_g,
     delta_labor    = delta_labor,
-    satellite_delta = satellite_delta,
     sector_results = sector_results,
     energy_detail  = sector_results[sector_results$cod %in% energy_sectors, ],
     fossil_detail  = sector_results[sector_results$cod %in% fossil_sectors, ],
@@ -948,29 +930,6 @@ shocks_labor_long <- do.call(rbind, lapply(all_shocks, function(r) {
   )
 }))
 
-shocks_satellite_long <- do.call(rbind, lapply(all_shocks, function(r) {
-  data.frame(
-    exercicio = r$shock_name,
-    indicador = names(r$satellite_delta),
-    delta = round(as.numeric(r$satellite_delta), 4),
-    stringsAsFactors = FALSE
-  )
-}))
-
-sat_coef_df <- data.frame(
-  indicador = rownames(SAT_COEF),
-  as.data.frame(SAT_COEF, check.names = FALSE),
-  row.names = NULL,
-  stringsAsFactors = FALSE
-)
-
-sat_mult_df <- data.frame(
-  indicador = rownames(SAT_MULT),
-  as.data.frame(SAT_MULT, check.names = FALSE),
-  row.names = NULL,
-  stringsAsFactors = FALSE
-)
-
 # ── Assemble sheet list ────────────────────────────────────────────────────────
 out_list <- list(
 
@@ -993,8 +952,7 @@ out_list <- list(
     salarios    = round(salarios,  2),
     eob         = round(eob,       2),
     ocupacoes   = round(ocupacoes, 0),
-    coef_emp_raw = round(ce_raw,   6),
-    coef_emp_nt  = round(ce_nt,    6),
+    coef_emp    = round(ce,        6),
     coef_rem    = round(cr,        6),
     stringsAsFactors = FALSE
   ),
@@ -1010,16 +968,6 @@ out_list <- list(
   # Energy
   "Energia_Fluxos_ktep" = make_energy_wide(E_mat),
   "Energia_Alpha"       = make_energy_wide(ALPHA),
-
-  # Satellite account
-  "Satellite"      = satellite |>
-    mutate(grupo = grupo_map[cod],
-           grupo_nt4 = nt4_map[cod],
-           eh_energia = cod %in% energy_sectors,
-           eh_fossil  = cod %in% fossil_sectors,
-           eh_renov   = cod %in% renewable_sectors),
-  "Satellite_Coef" = sat_coef_df,
-  "Satellite_Mult" = sat_mult_df,
 
   # Demand final
   "Demanda_Final" = data.frame(cod = setores$cod, nome = setores$nome,
@@ -1038,7 +986,6 @@ out_list <- list(
   "Choques_Grupos"  = shocks_agg_long,
   "Choques_Energia" = shocks_energy_long,
   "Choques_Labor"   = shocks_labor_long,
-  "Choques_Satellite" = shocks_satellite_long,
   "Choques_Resumo"  = shock_summary
 )
 
