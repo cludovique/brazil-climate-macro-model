@@ -21,6 +21,7 @@ cat("=== MMA Shock Engines ===\n")
 # =============================================================================
 # PARTE 1 — CARREGA MODELO IO (EPE 2018, 73 setores)
 # =============================================================================
+setwd("C:/Users/Camila Ludovique/Documents/GitHub/brazil-climate-macro-model")
 
 MIP_PATH <- "data/raw/48008000008202670_Camila_Anexo 2.xlsx"
 MMA_PATH <- "data/raw/Planilha_Detalhamento Resultados MMA-SMC v3 AR5 (07_10_2024).xlsx"
@@ -533,6 +534,94 @@ maps_df <- bind_rows(lapply(names(GRUPOS), function(g)
   data.frame(grupo=g, cod=GRUPOS[[g]], stringsAsFactors=FALSE))) |>
   left_join(setores, by=c("cod"="cod"))
 
+# ── Tabelas adicionais para o dashboard de engines ────────────────────────────
+
+# Mix energético (Engine 2): % elec/bio/fossil por tipo de setor × cenário × ano
+mix_rows <- list()
+for (cen in CENS_MMA) {
+  for (a in ANOS_STR) {
+    pe_i <- elec_ind_pct[[cen]][a]; pb_i <- bio_ind_pct[[cen]][a]
+    pe_t <- elec_tra_pct[[cen]][a]; pb_t <- bio_tra_pct[[cen]][a]
+    pe_c <- elec_cid_pct[[cen]][a]; pb_c <- bio_cid_pct[[cen]][a]
+    mix_rows[[length(mix_rows)+1]] <- data.frame(
+      cenario=cen, ano=as.integer(a), tipo="Indústria",
+      pct_elec=pe_i, pct_bio=pb_i, pct_fossil=pmax(1-pe_i-pb_i,0),
+      base_elec=BASE2020$elec_ind, base_bio=BASE2020$bio_ind,
+      base_fossil=pmax(1-BASE2020$elec_ind-BASE2020$bio_ind,0), stringsAsFactors=FALSE)
+    mix_rows[[length(mix_rows)+1]] <- data.frame(
+      cenario=cen, ano=as.integer(a), tipo="Transporte",
+      pct_elec=pe_t, pct_bio=pb_t, pct_fossil=pmax(1-pe_t-pb_t,0),
+      base_elec=BASE2020$elec_tra, base_bio=BASE2020$bio_tra,
+      base_fossil=pmax(1-BASE2020$elec_tra-BASE2020$bio_tra,0), stringsAsFactors=FALSE)
+    mix_rows[[length(mix_rows)+1]] <- data.frame(
+      cenario=cen, ano=as.integer(a), tipo="Cidades",
+      pct_elec=pe_c, pct_bio=pb_c, pct_fossil=pmax(1-pe_c-pb_c,0),
+      base_elec=BASE2020$elec_cid, base_bio=BASE2020$bio_cid,
+      base_fossil=pmax(1-BASE2020$elec_cid-BASE2020$bio_cid,0), stringsAsFactors=FALSE)
+  }
+}
+mix_df <- bind_rows(mix_rows)
+
+# Produção física (Engine 3): volumes por produto × cenário × ano
+prod_fisica_rows <- list()
+produtos <- list(
+  list(cod="S04",  nome="Cana-de-açúcar",  serie=cana_prod,      base=cana_2020,     unidade="1000 t"),
+  list(cod="S01",  nome="Soja",             serie=soja_prod,      base=soja_2020,     unidade="1000 t"),
+  list(cod="S02",  nome="Milho",            serie=milho_prod,     base=milho_2020,    unidade="1000 t"),
+  list(cod="S14",  nome="Aço",              serie=aco_prod,       base=aco_2020_safe, unidade="Mt"),
+  list(cod="S16",  nome="Clinker/Cimento",  serie=clinker_prod,   base=clin_2020_safe,unidade="Mt"),
+  list(cod="S40",  nome="Eletricidade",     serie=geracao_elec,   base=679,           unidade="TWh"),
+  list(cod="S22",  nome="Etanol+CCS",       serie=pj_etanol_ccs,  base=0,             unidade="PJ incremento"),
+  list(cod="S20",  nome="Diesel Verde",     serie=pj_diesel_vrd,  base=0,             unidade="PJ incremento"),
+  list(cod="S43",  nome="Biometano/Gás",    serie=pj_biometano,   base=0,             unidade="PJ incremento")
+)
+for (cen in CENS_MMA) {
+  for (a in ANOS_STR) {
+    for (p in produtos) {
+      v <- suppressWarnings(as.numeric(p$serie[[cen]][a]))
+      prod_fisica_rows[[length(prod_fisica_rows)+1]] <- data.frame(
+        cenario=cen, ano=as.integer(a),
+        cod=p$cod, produto=p$nome, unidade=p$unidade,
+        valor=ifelse(is.na(v),NA,round(v,2)),
+        base_2020=p$base,
+        variacao_pct=ifelse(!is.na(v) && p$base>0, round((v/p$base-1)*100,1), NA_real_),
+        stringsAsFactors=FALSE)
+    }
+  }
+}
+prod_fisica_df <- bind_rows(prod_fisica_rows)
+
+# PIB e População (Engine 1 input)
+pib_pop_df <- data.frame(
+  ano       = as.integer(ANOS_STR),
+  gdp_index = as.numeric(gdp_idx),
+  gdp_rel_2018 = as.numeric(gdp_idx) * gdp_2018_factor,
+  crescimento_pct = round((as.numeric(gdp_idx) * gdp_2018_factor - 1) * 100, 2),
+  pop_milhoes = as.numeric(pop_mil),
+  stringsAsFactors=FALSE
+)
+
+# Alocação de investimento (Engine 1 — ALOC_INV)
+aloc_df <- data.frame(
+  cod      = names(ALOC_INV),
+  aloc_pct = round(as.numeric(ALOC_INV) * 100, 2),
+  stringsAsFactors=FALSE) |>
+  left_join(setores |> select(cod, nome), by="cod") |>
+  arrange(desc(aloc_pct))
+
+# Multiplicadores de produção L* por cenário × ano (extraído de res_all)
+mult_df <- res_all |>
+  select(cenario, ano, cod, nome, mult_prod_star) |>
+  arrange(cenario, ano, desc(mult_prod_star))
+
+# Custos de investimento por cenário (Engine 1 inputs)
+inv_df <- bind_rows(lapply(CENS_MMA, function(cen) {
+  data.frame(
+    cenario=cen, ano=ANOS_MMA,
+    inv_bi_R2018=sapply(ANOS_MMA, function(a) round(inv_annual_R2018[[cen]][periodo_idx(a)]*1e3/1e3, 2)),
+    stringsAsFactors=FALSE)
+}))
+
 dir.create("outputs/tables", showWarnings=FALSE, recursive=TRUE)
 write_xlsx(
   list(
@@ -541,10 +630,18 @@ write_xlsx(
     "Resultados_Completos"= res_all,
     "Emissoes_Setoriais"  = res_all |> select(cenario,ano,cod,nome,e_coef,ghg_induzido_mt) |> filter(e_coef!=0),
     "Delta_F_Componentes" = res_all |> select(cenario,ano,cod,nome,delta_f_gdp,delta_f_inv,delta_f_prod,delta_f_total),
+    "Mix_Energetico"      = mix_df,
+    "Producao_Fisica"     = prod_fisica_df,
+    "PIB_Pop"             = pib_pop_df,
+    "Aloc_Investimento"   = aloc_df,
+    "Multiplicadores"     = mult_df,
+    "Investimento_Custos" = inv_df,
     "Premissas"           = premissas,
     "Mapeamento_Setores"  = maps_df
   ),
-  path="outputs/tables/mma_shock_results.xlsx"
+  path=if (tryCatch({f<-file("outputs/tables/mma_shock_results.xlsx","a");close(f);TRUE},error=function(e)FALSE))
+    "outputs/tables/mma_shock_results.xlsx" else
+    "outputs/tables/mma_shock_results_new.xlsx"
 )
 cat("  Salvo: outputs/tables/mma_shock_results.xlsx\n")
 
