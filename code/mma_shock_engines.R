@@ -16,64 +16,41 @@
 pkgs <- c("readxl","dplyr","tidyr","writexl","stringr")
 for (p in pkgs) { if (!requireNamespace(p,quietly=TRUE)) install.packages(p); library(p,character.only=TRUE) }
 options(OutDec=".")
+
+# ── Engine flags ───────────────────────────────────────────────────────────────
+# Engine 1 (GDP scaling + transition investment) and Engine 2 (energy mix ∆A)
+# are always active. Engines 3 & 4 are parked for the current delivery scope.
+RUN_ENGINE3 <- TRUE    # Physical production volumes → ∆f  (O&G + elec calibrated to MMA)
+RUN_ENGINE4 <- FALSE   # Emission-intensity satellite account (scope: future)
+
 cat("=== MMA Shock Engines ===\n")
+cat(sprintf("  Engines active: 1=YES  2=YES  3=%s  4=%s\n",
+            ifelse(RUN_ENGINE3,"YES","no"), ifelse(RUN_ENGINE4,"YES","no")))
 
 # =============================================================================
-# PARTE 1 — CARREGA MODELO IO (EPE 2018, 73 setores)
+# PARTE 1 — CARREGA MODELO IO (via mip_epe_replication.R)
 # =============================================================================
 setwd("C:/Users/Camila Ludovique/Documents/GitHub/brazil-climate-macro-model")
 
-MIP_PATH <- "data/raw/48008000008202670_Camila_Anexo 2.xlsx"
 MMA_PATH <- "data/raw/Planilha_Detalhamento Resultados MMA-SMC v3 AR5 (07_10_2024).xlsx"
-stopifnot(file.exists(MIP_PATH), file.exists(MMA_PATH))
+stopifnot(file.exists(MMA_PATH))
 
-cat("Lendo modelo IO...\n")
-setores_raw <- read_excel(MIP_PATH, sheet="Lista PS",
-                          col_names=FALSE, range=cell_cols("A:M"))
-setores <- setores_raw |>
-  select(cod=12, nome=13) |>
-  filter(!is.na(cod), grepl("^S", as.character(cod))) |>
-  mutate(cod=as.character(cod), nome=as.character(nome),
-         id=as.integer(gsub("\\D","",cod)))
-N <- nrow(setores)
-cat(sprintf("  %d setores\n", N))
+# Source mip_epe_replication in data-only mode: loads A, L, Z, x, x_safe,
+# setores, N, DF, ALPHA, satellite, SAT_COEF, SAT_MULT and all helper functions.
+# Sections 10–12 (exercises, summary, export) are skipped.
+SOURCE_MODE <- TRUE
+source("code/mip_epe_replication.R")
 
-read_matrix <- function(sheet, r1, r2, c1, c2) {
-  raw <- read_excel(MIP_PATH, sheet=sheet, col_names=FALSE)
-  raw[r1:r2, c1:c2] |>
-    mutate(across(everything(),
-                  ~suppressWarnings(as.numeric(replace_na(as.character(.),"0"))))) |>
-    as.matrix()
-}
-
-A <- read_matrix("Coeficientes Tecnicos", 5, 4+N, 4, 3+N)
-L <- read_matrix("Leontief",              5, 4+N, 4, 3+N)
-Z <- read_matrix("Usos SxS",              5, 4+N, 4, 3+N)
-dimnames(A) <- dimnames(L) <- dimnames(Z) <- list(setores$cod, setores$cod)
-
-usos_raw <- read_excel(MIP_PATH, sheet="Usos SxS", col_names=FALSE)
-demanda_final <- usos_raw[5:(4+N), 78:83] |>
-  mutate(across(everything(),
-                ~suppressWarnings(as.numeric(replace_na(as.character(.),"0")))))
+# ── Aliases so the rest of this script keeps its original variable names ───────
+# mip_epe_replication  → mma_shock_engines (legacy name)
+#   ALPHA              → alpha_energia   (ktep / R$M, 6 sources × 73 sectors)
+#   DF                 → demanda_final   (73 × 6 final demand, col names remapped)
+alpha_energia <- ALPHA
+demanda_final <- as.data.frame(DF)
 colnames(demanda_final) <- c("Exportacoes","Gov","ISFLSF","Familias","FBCF","Var_Estoque")
 demanda_final$cod <- setores$cod
 
-x       <- rowSums(Z) + rowSums(demanda_final[,1:6])
-names(x) <- setores$cod
-x_safe  <- ifelse(x > 0, x, 1)
-
-# Coeficientes de energia (ktep / R$M)
-linha_energia <- c(Derivados=125,Biodiesel=126,Etanol=127,
-                   EE_Central=128,EE_Distrib=129,Gas_Natural=130)
-obter_linha <- function(lr) {
-  v <- suppressWarnings(as.numeric(as.character(unlist(usos_raw[lr, 4:(3+N)]))))
-  v[is.na(v)] <- 0; setNames(v, setores$cod)
-}
-energia_base  <- do.call(rbind, lapply(linha_energia, obter_linha))
-rownames(energia_base) <- names(linha_energia)
-alpha_energia <- sweep(energia_base, 2, x_safe, "/")
-
-cat("  IO carregado: A, L, Z, x, demanda_final, alpha_energia\n")
+cat("  IO carregado via mip_epe_replication: A, L, Z, x, ALPHA, satellite\n")
 
 # =============================================================================
 # PARTE 2 — EXTRAI DADOS MMA
@@ -127,14 +104,57 @@ ghg_mma <- list("0D"=parse_rb_block(4), "25D"=parse_rb_block(14), "100D"=parse_r
 
 # ── 2.3  Energia — mix tecnológico ----------------------------------------
 en <- read_mma(4)
-# Linhas verificadas: 23=industria%, 24=transporte%, 25=edificações%, 26=agricultura%
-# 16=energia primária, 17=energia final, 49=geração elétrica
-# 76=etanol+CCS, 78=diesel verde, 79=biometano
+# Linhas verificadas: 16=energia primária, 17=energia final, 49=geração elétrica
+# 62-68=% geração por fonte, 76=etanol+CCS, 78=diesel verde, 79=biometano
 energia_primaria  <- get_scenario_row(en, 16)   # Mtep
 geracao_elec      <- get_scenario_row(en, 49)   # TWh
-pj_etanol_ccs     <- get_scenario_row(en, 76)   # PJ
-pj_diesel_vrd     <- get_scenario_row(en, 78)   # PJ
-pj_biometano      <- get_scenario_row(en, 79)   # PJ
+pj_etanol_ccs     <- get_scenario_row(en, 76)   # PJ — Etanol + CCS
+pj_diesel_vrd     <- get_scenario_row(en, 78)   # PJ — Diesel Verde (HVO)
+pj_biometano      <- get_scenario_row(en, 79)   # PJ — Biometano/Gás
+pj_gasolina_verde <- get_scenario_row(en, 77)   # PJ — Gasolina Verde (base 2020 = 0)
+pj_bioqav         <- get_scenario_row(en, 80)   # PJ — BioQAV / SAF (base 2020 = 0)
+pj_bunker_verde   <- get_scenario_row(en, 81)   # PJ — Bunker Verde (base 2020 = 0)
+
+# ── 2.3c  Petróleo & Gás — volumes físicos (Sheet 4) ─────────────────────
+# Linhas verificadas via _diag_mma_rows.R:
+#   R37 = produção petróleo (kbep)          → Engine 3: S05
+#   R39 = consumo bruto óleo cru (kbep)     → Engine 2: INDICADOR S19
+#   R40 = derivados consumo doméstico (ktep) → Engine 2+3: S19
+#   R41 = derivados exportação (ktep)        → Engine 2+3: S19
+# Metodologia: BLUES INDICADOR — redução de consumo de cru por unidade de
+# derivado captura coprocessamento (biomassa substituindo petróleo na refinaria).
+prod_oleo      <- get_scenario_row(en, 37)   # kbep — produção bruta S05
+consumo_bruto  <- get_scenario_row(en, 39)   # kbep — cru consumido pelas refinarias
+deriv_dom      <- get_scenario_row(en, 40)   # ktep — derivados consumo doméstico
+deriv_exp      <- get_scenario_row(en, 41)   # ktep — derivados exportação
+prod_oleo_2020     <- get_base2020(en, 37)
+consumo_bruto_2020 <- get_base2020(en, 39)
+deriv_dom_2020     <- get_base2020(en, 40)
+deriv_exp_2020     <- get_base2020(en, 41)
+# Derivados total = doméstico + exportação (proxy output refinaria S19)
+deriv_total <- lapply(CENS_MMA, function(cen)
+  setNames(deriv_dom[[cen]] + deriv_exp[[cen]], ANOS_STR))
+names(deriv_total) <- CENS_MMA
+deriv_total_2020 <- deriv_dom_2020 + deriv_exp_2020
+
+# ── 2.3b  Geração Elétrica — mix por fonte (% geração, Sheet 4) ───────────
+# Usadas no Engine 2 para modificar A[S19/S43, S40/S41] (insumo fóssil de
+# geração termelétrica) conforme a transição de fóssil→renovável na grade.
+# Biomassa inclui biomassa convencional (R65) + biomassa+CCS (R66), pois ambas
+# mantêm demanda por biocombustíveis (S22) como insumo de geração.
+# Hidro/Eólica/Solar/Nuclear não têm linha de insumo energético na MIP → não
+# entram nos fatores de escala (sc_e = 1, sem alteração nas linhas S40/S41).
+foss_gen_pct <- get_scenario_row(en, 68)              # % geração fóssil
+foss_gen_2020 <- get_base2020(en, 68)                 # 0.146
+# Biomassa total = convencional + CCS (ambas usam S22 como insumo)
+safe_sum2 <- function(df, r1, r2, cols) {
+  safe <- function(v) { v <- suppressWarnings(as.numeric(unlist(v))); v[is.na(v)] <- 0; setNames(v, ANOS_STR) }
+  list("25D"  = safe(df[r1, cols[1]:cols[2]]) + safe(df[r2, cols[1]:cols[2]]),
+       "100D" = safe(df[r1, cols[3]:cols[4]]) + safe(df[r2, cols[3]:cols[4]]),
+       "0D"   = safe(df[r1, cols[1]:cols[2]]) + safe(df[r2, cols[1]:cols[2]]))  # fallback = 25D
+}
+bio_gen_pct   <- safe_sum2(en, 65, 66, c(5,10,12,17))  # R65 biomassa + R66 biomassa+CCS
+bio_gen_2020  <- sum(suppressWarnings(as.numeric(c(en[[65,3]], en[[66,3]]))), na.rm=TRUE)  # 0.093
 
 # ── 2.4  Indústria — mix e produção ----------------------------------------
 ind <- read_mma(5)
@@ -148,6 +168,25 @@ elec_ind_2020 <- get_base2020(ind, 18)        # 0.33
 bio_ind_2020  <- get_base2020(ind, 19)        # 0.23
 aco_2020      <- get_base2020(ind, 27)        # 31.4 Mt
 clinker_2020  <- get_base2020(ind, 41)        # 42.7 Mt
+
+# ── 2.4b  Indústria — sub-setores (BLUES-style, Planilha MMA Sheet 5) ─────
+# Rows verified via _diag_mma_rows.R; cols_25d=5:10, cols_100d=12:17
+# Ferro e Aço
+foss_ferro_pct  <- get_scenario_row(ind, 32); foss_ferro_2020  <- get_base2020(ind, 32)  # 0.619
+bio_ferro_pct   <- get_scenario_row(ind, 33); bio_ferro_2020   <- get_base2020(ind, 33)  # 0.290
+elec_ferro_pct  <- get_scenario_row(ind, 34); elec_ferro_2020  <- get_base2020(ind, 34)  # 0.091
+# Cimento
+foss_cim_pct    <- get_scenario_row(ind, 45); foss_cim_2020    <- get_base2020(ind, 45)  # 0.674
+bio_cim_pct     <- get_scenario_row(ind, 46); bio_cim_2020     <- get_base2020(ind, 46)  # 0.183
+elec_cim_pct    <- get_scenario_row(ind, 47); elec_cim_2020    <- get_base2020(ind, 47)  # 0.144
+# Químico
+foss_qui_pct    <- get_scenario_row(ind, 56); foss_qui_2020    <- get_base2020(ind, 56)  # 0.666
+bio_qui_pct     <- get_scenario_row(ind, 57); bio_qui_2020     <- get_base2020(ind, 57)  # 0.023
+elec_qui_pct    <- get_scenario_row(ind, 58); elec_qui_2020    <- get_base2020(ind, 58)  # 0.312
+# Outros Indústria
+foss_out_pct    <- get_scenario_row(ind, 67); foss_out_2020    <- get_base2020(ind, 67)  # 0.307
+bio_out_pct     <- get_scenario_row(ind, 68); bio_out_2020     <- get_base2020(ind, 68)  # 0.261
+elec_out_pct    <- get_scenario_row(ind, 69); elec_out_2020    <- get_base2020(ind, 69)  # 0.433
 
 # ── 2.5  Transporte -------------------------------------------------------
 tr <- read_mma(6)
@@ -169,13 +208,22 @@ gas_cid_2020  <- get_base2020(ci, 29)         # 0.26
 
 # ── 2.7  Agropecuária — produção física -----------------------------------
 ag <- read_mma(2)
-# R68=cana(1000t), R72=milho(1000t), R79=soja(1000t)
+# R68=cana(1000t), R72=milho total(1000t), R79=soja total(1000t)
+# R77=oleaginosas energéticas (non-soja; girassol/canola/palma) (1000t)
 cana_prod      <- get_scenario_row(ag, 68)
 milho_prod     <- get_scenario_row(ag, 72)
 soja_prod      <- get_scenario_row(ag, 79)
+olea_prod      <- get_scenario_row(ag, 77)    # 1000t — oleaginosas energéticas (non-soja)
 cana_2020      <- get_base2020(ag, 68)         # 692714 (1000t)
 milho_2020     <- get_base2020(ag, 72)         # 108304
 soja_2020      <- get_base2020(ag, 79)         # 123491
+olea_2020      <- 4720                         # MMA Planilha 2, R77, col3 (confirmado)
+
+# Área agrícola (1000 ha) — contexto no dashboard; não calibra coeficientes IO
+area_alimentos   <- get_scenario_row(ag, 115)  # Área de Alimentos (1000 ha)
+area_energeticos <- get_scenario_row(ag, 116)  # Área de Energéticos (1000 ha)
+area_alim_2020   <- 48562                      # MMA Planilha 2, R115, col3
+area_ener_2020   <- 34401                      # MMA Planilha 2, R116, col3
 
 # ── 2.8  Custos de investimento -----------------------------------------------
 cu <- read_mma(10)
@@ -203,16 +251,16 @@ GRUPOS <- list(
   oleo_gas     = c("S05","S19","S21"),
   biocomb      = c("S20","S22"),
   eletricidade = c("S40","S41","S42","S43"),
-  ind_aco      = c("S14"),
-  ind_cimento  = c("S16"),
+  ind_aco      = c("S29"),   # S29 = Prod. ferro-gusa/ferroligas/siderurgia
+  ind_cimento  = c("S28"),   # S28 = Fabricação de produtos de minerais não-metálicos
   ind_quimico  = c("S24","S25","S26"),
-  ind_outros   = c("S10","S11","S12","S13","S15","S17","S18","S23",
-                   "S27","S28","S29","S30","S31","S32","S33","S34",
+  ind_outros   = c("S10","S11","S12","S13","S14","S15","S16","S17","S18","S23",
+                   "S27","S30","S31","S32","S33","S34",
                    "S35","S36","S37","S38","S39"),
   ind_all      = c("S10","S11","S12","S13","S14","S15","S16","S17","S18",
                    "S23","S24","S25","S26","S27","S28","S29","S30","S31",
                    "S32","S33","S34","S35","S36","S37","S38","S39"),
-  transporte   = c("S50","S51","S52"),
+  transporte   = c("S48","S49","S50","S51","S52"),  # S48 terrestre, S49 aquaviário, S50 aéreo, S51 armazenamento, S52 correio
   cidades      = c("S57","S58","S59","S60"),
   residuos     = c("S66","S67","S68"),
   construcao   = c("S44","S45")
@@ -233,20 +281,42 @@ gdp_rel_2018 <- gdp_idx * gdp_2018_factor
 f_base       <- rowSums(demanda_final[, c("Familias","Gov","ISFLSF","FBCF","Exportacoes")])
 names(f_base) <- setores$cod
 
+# Setores calibrados pelo Engine 3: sua trajetória de produção é fixada pelos
+# volumes físicos MMA (Engine 3), não pelo crescimento do PIB (Engine 1).
+# Zeramos o componente GDP-scaling nesses setores para evitar dupla contagem.
+#   S05 = Extrativa petróleo/gás: pico 2030 + declínio 58% até 2050 (MMA)
+#   S19 = Refino/derivados: segue consumo+exportação de derivados (MMA R40+R41)
+#   S40 = Geração elétrica: segue TWh gerados (MMA R49)
+#   S42 = Transmissão: proporcional à geração (segue S40)
+ENGINE3_SECTORS <- c("S05","S19","S40","S42")
+
 # 4a: Escala PIB — crescimento da demanda final relativo a 2018
+# Setores em ENGINE3_SECTORS recebem delta_f=0 aqui quando Engine 3 ativo.
 engine1_gdp <- function(cenario, ano) {
-  g <- gdp_rel_2018[as.character(ano)]
-  f_base * (g - 1)
+  g  <- gdp_rel_2018[as.character(ano)]
+  df <- f_base * (g - 1)
+  if (RUN_ENGINE3)
+    for (s in ENGINE3_SECTORS) if (s %in% names(df)) df[s] <- 0
+  df
 }
 
 # 4b: Investimento de transição — alocado como FBCF por setor IO
-ALOC_INV <- c(S40=0.15,S41=0.05,S42=0.03,S43=0.03,
-              S22=0.08,S20=0.04,S05=0.05,
-              S14=0.04,S16=0.02,S36=0.06,S37=0.06,
-              S27=0.08,S44=0.12,S45=0.04,
-              S50=0.04,S51=0.02,
-              S01=0.03,S04=0.02,S08=0.03,
-              S66=0.02,S67=0.02)
+#
+# TODO (melhoria prioritária): os pesos abaixo são PREMISSAS MANUAIS — números
+# redondos baseados em julgamento sobre onde o capex de transição é gasto.
+# Eles NÃO foram calibrados a partir das tabelas de investimento do plano MMA.
+# O plano MMA contém um detalhamento por tema (eólica, solar, VEs, biocombustíveis,
+# etc.) que deveria ser mapeado diretamente para os setores IO e usado para derivar
+# esses pesos de forma data-driven.
+# Referência esperada: planilha MMA — aba de investimentos por tema/tecnologia,
+# mapeada para os códigos IO via Mapeamento_Setores.
+ALOC_INV <- c(S40=0.15,S41=0.05,S42=0.03,S43=0.03,  # electricity / gas
+              S22=0.08,S20=0.04,S05=0.05,             # biofuels, oil&gas
+              S29=0.04,S28=0.02,S36=0.06,S37=0.06,    # steel(S29), cement(S28), auto parts, other transport equip
+              S27=0.08,S44=0.12,S45=0.04,             # plastics/rubber, water/waste, construction
+              S50=0.04,S51=0.02,                       # air transport, logistics
+              S01=0.03,S04=0.02,S08=0.03,             # agriculture, mining, food processing
+              S66=0.02,S67=0.02)                       # public admin, education (public sector capacity)
 ALOC_INV <- ALOC_INV[names(ALOC_INV) %in% setores$cod]
 ALOC_INV <- ALOC_INV / sum(ALOC_INV)
 
@@ -268,23 +338,51 @@ cat("  Engine 1 OK\n")
 cat("Construindo Engine 2 (∆A)...\n")
 
 BASE2020 <- list(
-  elec_ind  = ifelse(is.na(elec_ind_2020), 0.33, elec_ind_2020),
-  bio_ind   = ifelse(is.na(bio_ind_2020),  0.23, bio_ind_2020),
+  elec_ind  = ifelse(is.na(elec_ind_2020), 0.33,  elec_ind_2020),
+  bio_ind   = ifelse(is.na(bio_ind_2020),  0.23,  bio_ind_2020),
   elec_tra  = ifelse(is.na(elec_tra_2020), 0.004, elec_tra_2020),
   bio_tra   = ifelse(is.na(bio_tra_2020),  0.303, bio_tra_2020),
   elec_cid  = ifelse(is.na(elec_cid_2020), 0.625, elec_cid_2020),
   bio_cid   = ifelse(is.na(bio_cid_2020),  0.000, bio_cid_2020),
-  gas_cid   = ifelse(is.na(gas_cid_2020),  0.260, gas_cid_2020)
+  gas_cid   = ifelse(is.na(gas_cid_2020),  0.260, gas_cid_2020),
+  # Geração elétrica: shares do mix de geração (proxy para insumos energéticos de S40/S41)
+  foss_gen  = ifelse(is.na(foss_gen_2020), 0.146, foss_gen_2020),
+  bio_gen   = ifelse(is.na(bio_gen_2020),  0.093, bio_gen_2020)
 )
 
 engine2_A_star <- function(cenario, ano) {
-  a  <- as.character(ano)
+  # 0D = sem transição → coeficientes técnicos permanecem em 2018; sem Engine 2.
+  if (cenario == "0D") return(A)
+
+  a      <- as.character(ano)
   A_star <- A
 
-  # Redistribui coef. de energia de colunas `setor_cods` conforme novo mix
-  rebalancear <- function(setor_cods, pct_e_new, pct_b_new, pct_e_base, pct_b_base) {
-    pct_f_base <- max(1 - pct_e_base - pct_b_base, 0)
-    pct_f_new  <- max(1 - pct_e_new  - pct_b_new,  0)
+  # ── Método BLUES-style (sub-setor) ──────────────────────────────────────────
+  # Para cada sub-setor MMA, calculamos fatores de escala por combustível:
+  #   sc_fuel = share_fuel_cenario / share_fuel_2020
+  # Os fatores são aplicados às linhas energéticas da coluna j de A_star,
+  # seguidos de normalização que preserva a intensidade energética total
+  # (soma dos coef. elétrico+bio+fóssil por coluna). A normalização é necessária
+  # para evitar instabilidade numérica em L* = (I−A*)⁻¹ quando sc_e chega a 46×
+  # (transporte elétrico: 0.36% → 16.7%). Verificado via diag_engine2.R.
+  #
+  # Diferença vs. abordagem anterior: cada sub-setor MMA (Ferro e Aço, Cimento,
+  # Químico, Outros, Transporte, Cidades) usa seus próprios fatores de escala,
+  # em vez de um único fator agregado para toda a indústria. Isso captura a
+  # trajetória diferenciada de descarbonização entre sub-setores, seguindo a
+  # metodologia BLUES/EPE descrita em "Insumo para Matriz Substituição Energia".
+
+  # normalize=TRUE: preserva intensidade energética total (necessário quando sc_e
+  # pode ser muito grande, ex: transporte elétrico 0.36%→16.7% → sc_e=46×).
+  # normalize=FALSE: aplica fatores de escala diretamente — correto quando a mudança
+  # é uma redução genuína de intensidade, ex: geração elétrica elimina 95% do fóssil.
+  rebalancear <- function(setor_cods,
+                          pct_e_new, pct_b_new, pct_f_new,
+                          pct_e_base, pct_b_base, pct_f_base,
+                          normalize = TRUE) {
+    sc_e <- if (pct_e_base > 1e-6) pct_e_new / pct_e_base else 0
+    sc_b <- if (pct_b_base > 1e-6) pct_b_new / pct_b_base else 0
+    sc_f <- if (pct_f_base > 1e-6) pct_f_new / pct_f_base else 1
     for (j in setor_cods) {
       if (!(j %in% colnames(A_star))) next
       e_elec <- sum(A_star[intersect(c("S40","S41"), rownames(A_star)), j])
@@ -292,9 +390,23 @@ engine2_A_star <- function(cenario, ano) {
       e_foss <- sum(A_star[intersect(c("S19","S43"), rownames(A_star)), j])
       total  <- e_elec + e_bio + e_foss
       if (total <= 0) next
-      new_e <- total * pct_e_new
-      new_b <- total * pct_b_new
-      new_f <- total * pct_f_new
+      new_e_raw <- e_elec * sc_e
+      new_b_raw <- e_bio  * sc_b
+      new_f_raw <- e_foss * sc_f
+      sum_raw   <- new_e_raw + new_b_raw + new_f_raw
+      if (sum_raw <= 0) next
+      if (normalize) {
+        # Normalização: preserva intensidade energética total por setor
+        new_e <- total * new_e_raw / sum_raw
+        new_b <- total * new_b_raw / sum_raw
+        new_f <- total * new_f_raw / sum_raw
+      } else {
+        # Escalonamento direto: a intensidade total muda com a transição
+        new_e <- new_e_raw
+        new_b <- new_b_raw
+        new_f <- new_f_raw
+      }
+      # Distribui dentro de cada sub-grupo proporcionalmente às shares existentes
       if (e_elec > 0) {
         for (r in intersect(c("S40","S41"), rownames(A_star)))
           A_star[r, j] <<- A_star[r, j] / e_elec * new_e
@@ -305,7 +417,7 @@ engine2_A_star <- function(cenario, ano) {
         for (r in intersect(c("S20","S22"), rownames(A_star)))
           A_star[r, j] <<- A_star[r, j] / e_bio * new_b
       } else if (new_b > 0 && "S22" %in% rownames(A_star)) {
-        A_star["S22", j] <<- A_star["S22", j] + new_b
+        A_star["S22", j] <<- new_b
       }
       if (e_foss > 0) {
         for (r in intersect(c("S19","S43"), rownames(A_star)))
@@ -315,17 +427,143 @@ engine2_A_star <- function(cenario, ano) {
     A_star
   }
 
-  pe_i <- elec_ind_pct[[cenario]][a]; pb_i <- bio_ind_pct[[cenario]][a]
-  if (!is.na(pe_i) && !is.na(pb_i))
-    A_star <- rebalancear(GRUPOS$ind_all, pe_i, pb_i, BASE2020$elec_ind, BASE2020$bio_ind)
+  # ── Indústria — 4 sub-setores MMA com fatores de escala próprios ───────────
+  # Ferro e Aço → GRUPOS$ind_aco
+  pf <- foss_ferro_pct[[cenario]][a]; pb <- bio_ferro_pct[[cenario]][a]
+  pe <- elec_ferro_pct[[cenario]][a]
+  if (!anyNA(c(pe,pb,pf)))
+    A_star <- rebalancear(GRUPOS$ind_aco,
+                          pe, pb, pf,
+                          elec_ferro_2020, bio_ferro_2020, foss_ferro_2020)
 
+  # Cimento → GRUPOS$ind_cimento
+  pf <- foss_cim_pct[[cenario]][a]; pb <- bio_cim_pct[[cenario]][a]
+  pe <- elec_cim_pct[[cenario]][a]
+  if (!anyNA(c(pe,pb,pf)))
+    A_star <- rebalancear(GRUPOS$ind_cimento,
+                          pe, pb, pf,
+                          elec_cim_2020, bio_cim_2020, foss_cim_2020)
+
+  # Químico → GRUPOS$ind_quimico
+  pf <- foss_qui_pct[[cenario]][a]; pb <- bio_qui_pct[[cenario]][a]
+  pe <- elec_qui_pct[[cenario]][a]
+  if (!anyNA(c(pe,pb,pf)))
+    A_star <- rebalancear(GRUPOS$ind_quimico,
+                          pe, pb, pf,
+                          elec_qui_2020, bio_qui_2020, foss_qui_2020)
+
+  # Outros Indústria → GRUPOS$ind_outros
+  pf <- foss_out_pct[[cenario]][a]; pb <- bio_out_pct[[cenario]][a]
+  pe <- elec_out_pct[[cenario]][a]
+  if (!anyNA(c(pe,pb,pf)))
+    A_star <- rebalancear(GRUPOS$ind_outros,
+                          pe, pb, pf,
+                          elec_out_2020, bio_out_2020, foss_out_2020)
+
+  # ── Transporte — total (base agregada; evita share≈0 de freight em 2020) ───
   pe_t <- elec_tra_pct[[cenario]][a]; pb_t <- bio_tra_pct[[cenario]][a]
-  if (!is.na(pe_t) && !is.na(pb_t))
-    A_star <- rebalancear(GRUPOS$transporte, pe_t, pb_t, BASE2020$elec_tra, BASE2020$bio_tra)
+  pf_t <- max(1 - pe_t - pb_t, 0)
+  if (!anyNA(c(pe_t,pb_t)))
+    A_star <- rebalancear(GRUPOS$transporte,
+                          pe_t, pb_t, pf_t,
+                          BASE2020$elec_tra, BASE2020$bio_tra,
+                          max(1 - BASE2020$elec_tra - BASE2020$bio_tra, 0))
 
-  pe_c <- elec_cid_pct[[cenario]][a]; pb_c <- bio_cid_pct[[cenario]][a]
-  if (!is.na(pe_c) && !is.na(pb_c))
-    A_star <- rebalancear(GRUPOS$cidades, pe_c, pb_c, BASE2020$elec_cid, BASE2020$bio_cid)
+  # ── Cidades — DESATIVADO (ver TODO abaixo) ────────────────────────────────
+  # TODO (lacuna de modelagem): a transição "Cidades/Edifícios" (gás → eletricidade
+  # + biomassa para aquecimento distrital) ocorre principalmente no consumo FINAL
+  # das famílias e no uso energético de edifícios comerciais/residenciais — não
+  # no processo produtivo dos setores de serviços S57–S60 (TI, finanças, imóveis,
+  # jurídico) atualmente mapeados em GRUPOS$cidades.
+  #
+  # Dois problemas impedem o uso seguro do bloco original:
+  #   1. MAPEAMENTO ERRADO: S57–S60 são serviços profissionais urbanos, não
+  #      operadores de infraestrutura de edifícios. A energia "Cidades" do MMA
+  #      refere-se a calor/refrigeração em edificações — que no modelo IO aparece
+  #      principalmente no vetor de demanda final (famílias), não como insumo
+  #      intermediário desses setores.
+  #   2. EXPLOSÃO DO FATOR DE ESCALA: bio_cid_2020 ≈ 1.86e-5 (≈0%), portanto
+  #      sc_b = bio_cid_2050 / bio_cid_2020 = 10.8% / 0.002% = 5.809×.
+  #      Qualquer coeficiente A[S22, j] não-nulo nesses setores é amplificado
+  #      ~5800×, produzindo artefatos como +1760% em A[S22,S60].
+  #
+  # Correção futura requer: (a) identificar os setores IO que melhor capturam
+  # o uso energético de edificações (possivelmente S44, S45, ou sub-grupos de
+  # serviços com dados de uso energético por combustível por setor — ex. EPE BEN),
+  # e (b) usar shares de base realistas (não ~0%) para o fator de biomassa.
+  # pe_c <- elec_cid_pct[[cenario]][a]; pb_c <- bio_cid_pct[[cenario]][a]
+  # pf_c <- max(1 - pe_c - pb_c, 0)
+  # if (!anyNA(c(pe_c,pb_c)))
+  #   A_star <- rebalancear(GRUPOS$cidades, pe_c, pb_c, pf_c,
+  #                         BASE2020$elec_cid, BASE2020$bio_cid,
+  #                         max(1 - BASE2020$elec_cid - BASE2020$bio_cid, 0))
+
+  # ── Geração Elétrica (S40/S41) — mix de geração muda A[S19/S43, S40/S41] ──
+  # A geração elétrica usa fóssil (gás/carvão) como insumo direto (A[S19,S40]).
+  # Conforme a grade descarboniza (fóssil: 14.6% → 0.7%), esse insumo cai.
+  # Biomassa (convencional + CCS) também varia: base=9.3% → 12.6% em 100D 2050.
+  # Hidro/Eólica/Solar/Nuclear não têm linha energética na MIP (insumos são
+  # capital, não combustível) → sc_e = pct_e_base/pct_e_base = 1 (sem alteração).
+  pf_g <- foss_gen_pct[[cenario]][a]; pb_g <- bio_gen_pct[[cenario]][a]
+  # Escala apenas as linhas fóssil (S19/S43) e biomassa (S20/S22) do gerador.
+  # A[S40,S40] e A[S41,S41] são fluxos intra-setor (perdas, armazenamento),
+  # NÃO combustível de geração — definimos pct_e_new = pct_e_base → sc_e = 1
+  # para que os auto-coeficientes elétricos não sejam alterados.
+  #
+  # Aplicado APENAS a S40 (geração centralizada): o mix de geração (fóssil/biomassa)
+  # reflete usinas termelétricas centralizadas. S41 (geração distribuída = solar,
+  # micro-hidro) NÃO usa biomassa como combustível — aplicar o mesmo mix a S41
+  # criaria um coeficiente A[S22,S41] espúrio a partir do zero via else-if de
+  # rebalancear(). S41 herda indirectamente a descarbonização via Engine 2 de
+  # Cidades (demanda), mas seu input de geração não usa o mix termelétrico.
+  pe_g_base <- max(1 - foss_gen_2020 - bio_gen_2020, 0)
+  if (!anyNA(c(pf_g, pb_g)))
+    A_star <- rebalancear(intersect(c("S40"), colnames(A_star)),
+                          pe_g_base, pb_g, pf_g,   # pct_e_new = base → sc_e = 1
+                          pe_g_base, bio_gen_2020, foss_gen_2020,
+                          normalize = FALSE)  # redução de intensidade genuína (fóssil −95%)
+
+  # ── Refino S19 — INDICADOR coprocessamento ────────────────────────────────
+  # INDICADOR[t] = (consumo_bruto[t]/deriv_total[t]) / (consumo_bruto_2020/deriv_total_2020)
+  # Interpreta: à medida que biomassa substitui petróleo cru (coprocessamento
+  # 0%→52% em 100D 2050), o cru consumido por unidade de derivado cai.
+  # Aplicado a A[S05,S19]: insumo de petróleo bruto (S05) por unidade de refino.
+  # Aplicado a A[S19,S19]: auto-consumo de derivados na própria refinaria.
+  # Fonte: MMA Planilha 4, R39=consumo_bruto, R40+R41=deriv_dom+exp.
+  cb_t <- consumo_bruto[[cenario]][a]
+  dt_t <- deriv_total[[cenario]][a]
+  if (!anyNA(c(cb_t, dt_t)) &&
+      !is.na(consumo_bruto_2020) && consumo_bruto_2020 > 1e-6 &&
+      !is.na(deriv_total_2020)   && deriv_total_2020   > 1e-6 &&
+      dt_t > 1e-6) {
+    indicador_s19 <- max((cb_t / dt_t) / (consumo_bruto_2020 / deriv_total_2020), 0)
+    if ("S05" %in% rownames(A_star) && "S19" %in% colnames(A_star))
+      A_star["S05","S19"] <- A["S05","S19"] * indicador_s19
+    if ("S19" %in% rownames(A_star) && "S19" %in% colnames(A_star))
+      A_star["S19","S19"] <- A["S19","S19"] * indicador_s19
+  }
+
+  # ── Gás Natural S43 — INDICADOR biometano (análogo ao coprocessamento S19) ─
+  # INDICADOR[t] = fração fóssil do output de S43 = 900 / (900 + pj_biometano[t])
+  # base 2020 ≈ 1.0 (pj_biometano_2020 ≈ 0, S43 essencialmente 100% gás fóssil).
+  # Interpreta: à medida que biometano cresce dentro de S43 (produção a partir de
+  # biomassa/resíduos, sem insumos fósseis), os coeficientes de insumo fóssil por
+  # unidade de output de S43 caem proporcionalmente à fração ainda fóssil.
+  # Aplicado a A[S19,S43]: derivados de petróleo usados em operações de gás fóssil.
+  # Aplicado a A[S43,S43]: auto-consumo de gás (compressão, distribuição) —
+  #   biometano usa biogás, não gás fóssil, para suas próprias operações.
+  # Fonte: MMA Planilha 4, R79=pj_biometano; base S43 = 900 PJ (Engine 3).
+  # Nota: lado de aumento de insumos de biomassa em A[S22,S43] não implementado
+  #   (requer coef. de produção de biometano de EPE/ANP — ver TODO Engine 3).
+  bio_s43_t <- pj_biometano[[cenario]][a]
+  s43_base_pj <- 900
+  if (!is.na(bio_s43_t) && bio_s43_t >= 0) {
+    indicador_s43 <- s43_base_pj / (s43_base_pj + bio_s43_t)  # 1.0 → ~0.46 em 2050
+    if ("S19" %in% rownames(A_star) && "S43" %in% colnames(A_star))
+      A_star["S19","S43"] <- A["S19","S43"] * indicador_s43
+    if ("S43" %in% rownames(A_star) && "S43" %in% colnames(A_star))
+      A_star["S43","S43"] <- A["S43","S43"] * indicador_s43
+  }
 
   A_star
 }
@@ -353,24 +591,70 @@ engine3_delta_x <- function(cenario, ano) {
     delta_x[cod] <<- delta_x[cod] + x[cod] * (vs / b - 1)
   }
 
-  # Agropecuária
-  apply_ratio("S04", cana_prod[[cenario]][a],  cana_2020)
-  apply_ratio("S01", soja_prod[[cenario]][a],  soja_2020)
-  apply_ratio("S02", milho_prod[[cenario]][a], milho_2020)
+  # Agropecuária — EPE/FIPE 73-sector has only S01 (aggregate Agriculture).
+  # S02 = Pecuária (livestock), S04 = Mineral extraction — NOT crop sectors.
+  # Apply weighted composite shock to S01 using each crop's approximate share
+  # of S01 gross output (IBGE PAM 2018 estimates: soja~28%, milho~10%, cana~8%).
+  # Oleaginosas energéticas (non-soja; palma/girassol/canola): weight estimated
+  # via volume ratio (4720/123491) × 0.28 ≈ 0.011 → 0.01.
+  # Each crop adds its weighted delta independently; the rest of S01 (~53%) is
+  # implicitly held at BASE2020 growth.
+  CROP_WT <- c(soja=0.28, milho=0.10, cana=0.08, olea=0.01)
+  vs_soja  <- suppressWarnings(as.numeric(soja_prod[[cenario]][a]))
+  vs_milho <- suppressWarnings(as.numeric(milho_prod[[cenario]][a]))
+  vs_cana  <- suppressWarnings(as.numeric(cana_prod[[cenario]][a]))
+  vs_olea  <- suppressWarnings(as.numeric(olea_prod[[cenario]][a]))
+  if ("S01" %in% names(delta_x)) {
+    if (!is.na(vs_soja)  && !is.na(soja_2020)  && soja_2020  > 0)
+      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["soja"]  * (vs_soja  / soja_2020  - 1)
+    if (!is.na(vs_milho) && !is.na(milho_2020) && milho_2020 > 0)
+      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["milho"] * (vs_milho / milho_2020 - 1)
+    if (!is.na(vs_cana)  && !is.na(cana_2020)  && cana_2020  > 0)
+      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["cana"]  * (vs_cana  / cana_2020  - 1)
+    if (!is.na(vs_olea)  && olea_2020 > 0)
+      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["olea"]  * (vs_olea  / olea_2020  - 1)
+  }
 
-  # Indústria pesada (Mt → ratio)
-  aco_2020_safe <- ifelse(is.na(aco_2020) || aco_2020<=0, 31.4, aco_2020)
+  # Indústria pesada
+  # S29 = Produção de ferro-gusa/ferroligas/siderurgia (NOT S14 = vestuário)
+  # S28 = Fabricação de produtos de minerais não-metálicos (NOT S16 = madeira)
+  aco_2020_safe  <- ifelse(is.na(aco_2020)     || aco_2020    <=0, 31.4, aco_2020)
   clin_2020_safe <- ifelse(is.na(clinker_2020) || clinker_2020<=0, 42.7, clinker_2020)
-  apply_ratio("S14", aco_prod[[cenario]][a],     aco_2020_safe)
-  apply_ratio("S16", clinker_prod[[cenario]][a], clin_2020_safe)
+  apply_ratio("S29", aco_prod[[cenario]][a],     aco_2020_safe)   # S29 = Siderurgia
+  apply_ratio("S28", clinker_prod[[cenario]][a], clin_2020_safe)  # S28 = Minerais não-metálicos
 
   # Geração elétrica (TWh)
   apply_ratio("S40", geracao_elec[[cenario]][a], 679)
 
+  # Transmissão (S42) — proporcional à geração; ambas escalam pelo mesmo TWh
+  apply_ratio("S42", geracao_elec[[cenario]][a], 679)
+
+  # Petróleo bruto (S05) — produção física: pico 2030, declínio 58% até 2050
+  # Base 2020 em kbep (MMA Planilha 4, R37); utiliza mesma unidade do MMA.
+  apply_ratio("S05", prod_oleo[[cenario]][a],
+              ifelse(is.na(prod_oleo_2020) || prod_oleo_2020 <= 0, NA_real_, prod_oleo_2020))
+
+  # Refino / derivados (S19) — output: derivados dom + exp (ktep)
+  # Permanece ~+6% acima de 2020 mesmo com queda de cru (coprocessamento).
+  apply_ratio("S19", deriv_total[[cenario]][a],
+              ifelse(is.na(deriv_total_2020) || deriv_total_2020 <= 0, NA_real_, deriv_total_2020))
+
   # Biocombustíveis: base 2020 + incremento cenário
-  apply_ratio("S22", 1020 + pj_etanol_ccs[[cenario]][a], 1020)   # etanol base 1020 PJ
-  apply_ratio("S20", 230  + pj_diesel_vrd[[cenario]][a],  230)   # biodiesel base 230 PJ
+  # S22 inclui todos os biocombustíveis avançados produzidos por biorefinarias:
+  #   Etanol+CCS (base 1020 PJ) + Gasolina Verde + BioQAV + Bunker Verde (base=0)
+  s22_inc <- sum(c(pj_etanol_ccs[[cenario]][a],
+                   pj_gasolina_verde[[cenario]][a],
+                   pj_bioqav[[cenario]][a],
+                   pj_bunker_verde[[cenario]][a]), na.rm=TRUE)
+  apply_ratio("S22", 1020 + s22_inc, 1020)
+  apply_ratio("S20", 230  + pj_diesel_vrd[[cenario]][a],  230)   # biodiesel/HVO base 230 PJ
   apply_ratio("S43", 900  + pj_biometano[[cenario]][a],   900)   # gás/biometano base 900 PJ
+  # Nota: o Engine 2 agora aplica um INDICADOR de biometano à coluna S43 de A*,
+  # reduzindo A[S19,S43] e A[S43,S43] proporcionalmente à fração fóssil restante
+  # (análogo ao indicador de coprocessamento de S19). Lacuna remanescente:
+  # o aumento de insumos de biomassa em A[S22,S43] (feedstock para produção de
+  # biometano) não é implementado por falta de coeficientes técnicos de produção
+  # (insumos por PJ de biometano). Fonte recomendada: EPE/ANP.
 
   delta_x
 }
@@ -417,7 +701,17 @@ cat("  Engine 4 OK\n")
 # PARTE 8 — LOOP DE SIMULAÇÕES
 # =============================================================================
 cat("Rodando simulações...\n")
-resultados <- list()
+
+# ── Satellite coefficients for economic impact (from mip_epe_replication) ─────
+# These are per-R$M-of-output ratios: multiplied by Δx (or Δf) give direct/indirect splits
+sat_gdp   <- setNames(satellite$gdp_coef,      satellite$cod)  # VA / R$M output
+sat_labor <- setNames(satellite$labor_coef_raw, satellite$cod)  # persons / R$M output
+sat_wage  <- setNames(satellite$wage_coef,      satellite$cod)  # R$ wages / R$M output
+mult_base <- colSums(L)   # baseline production multipliers (constant across scenarios)
+
+resultados      <- list()
+energia_impacto <- list()   # collects ALPHA × ∆x energy impact per scenario × year
+A_stars         <- list()   # stores A* matrices for each cen×ano (needed for coef_long_df)
 
 for (cen in CENS_MMA) {
   for (ano in ANOS_MMA) {
@@ -425,26 +719,84 @@ for (cen in CENS_MMA) {
 
     # Engine 2: nova A* e L*
     A_star   <- engine2_A_star(cen, ano)
+    A_stars[[paste(cen, ano, sep="_")]] <- A_star   # store for coef_long_df
     L_star   <- engine2_L_star(A_star)
 
     # Engine 1: ∆f demanda final
     df1      <- engine1(cen, ano)
-    # Engine 3: ∆f equivalente de produção exógena
-    df3      <- engine3_delta_f(cen, ano, A_star)
+
+    # Engine 3 (parked when RUN_ENGINE3 = FALSE)
+    df3 <- if (RUN_ENGINE3) engine3_delta_f(cen, ano, A_star) else
+             setNames(numeric(N), setores$cod)
     df_total <- df1 + df3
 
     # Propagação: ∆x = L* × ∆f
     dx_total <- as.vector(L_star %*% df_total)
     names(dx_total) <- setores$cod
 
-    # Engine 4: coeficientes de emissão
-    dx_exog  <- engine3_delta_x(cen, ano)
-    e_coef   <- engine4_e_coef(cen, ano, delta_x=dx_total + dx_exog)
+    # Engine 3 exogenous volume (needed for Engine 4 even if Engine 3 is parked)
+    dx_exog <- if (RUN_ENGINE3) engine3_delta_x(cen, ano) else
+                 setNames(numeric(N), setores$cod)
+
+    # Engine 4 (parked when RUN_ENGINE4 = FALSE)
+    e_coef <- if (RUN_ENGINE4) engine4_e_coef(cen, ano, delta_x = dx_total + dx_exog) else
+                setNames(numeric(N), setores$cod)
+
+    # ── Energy impact: ALPHA × ∆x (ktep by source) ─────────────────────────
+    # ALPHA is a 6-source × 73-sector matrix (ktep / R$M) from mip_epe_replication.
+    # Multiplying by ∆x gives the induced change in energy consumption by source.
+    # Classification: Derivados + Gas_Natural = fossil; all others = low-carbon/renewable.
+    delta_e <- as.vector(ALPHA %*% dx_total)
+    names(delta_e) <- rownames(ALPHA)
+    FOSSIL_FONTES  <- c("Derivados", "Gas_Natural")   # natural gas is fossil
+    RENOV_FONTES   <- c("Biodiesel", "Etanol", "EE_Central", "EE_Distrib")
+    energia_impacto[[paste(cen, ano, sep="_")]] <- data.frame(
+      cenario    = cen,
+      ano        = ano,
+      fonte      = names(delta_e),
+      tipo       = ifelse(names(delta_e) %in% FOSSIL_FONTES, "fossil", "renovavel"),
+      delta_ktep = round(delta_e, 4),
+      stringsAsFactors = FALSE
+    )
 
     # GHG direto do cenário MMA
     g   <- ghg_mma[[cen]]
     ghg_dir <- if (!is.null(g) && as.character(ano) %in% rownames(g))
                  sum(g[as.character(ano),], na.rm=TRUE) else NA_real_
+
+    # ── Baseline: GDP scaling only, with 2018 A matrix (no investment, no Engine 2) ──
+    # This is the counterfactual: "what if GDP grew but no transition happened?"
+    # Transition effect = Total − Baseline = net impact of (investment + mix change)
+    df_gdp_only   <- engine1_gdp(cen, ano)
+    dx_baseline   <- as.vector(L %*% df_gdp_only)
+    names(dx_baseline) <- setores$cod
+    dx_transition <- dx_total - dx_baseline   # net effect of Engine 2 + investment
+
+    # ── Economic impacts: direct + indirect + total ──────────────────────────
+    # Direct  = satellite_coef × Δf_total  (sectors receiving the demand shock)
+    # Indirect = satellite_coef × (Δx - Δf) (supply-chain propagation)
+    # Total   = satellite_coef × Δx_total  = Direct + Indirect
+    delta_va_dir  <- sat_gdp   * df_total
+    delta_va_tot  <- sat_gdp   * dx_total
+    delta_va_ind  <- delta_va_tot - delta_va_dir
+    # Baseline (GDP only) vs Transition decomposition
+    delta_va_base_vec  <- sat_gdp   * dx_baseline
+    delta_va_trans_vec <- sat_gdp   * dx_transition
+
+    delta_emp_dir <- sat_labor * df_total
+    delta_emp_tot <- sat_labor * dx_total
+    delta_emp_ind <- delta_emp_tot - delta_emp_dir
+    delta_emp_base_vec  <- sat_labor * dx_baseline
+    delta_emp_trans_vec <- sat_labor * dx_transition
+
+    delta_rem_dir <- sat_wage  * df_total
+    delta_rem_tot <- sat_wage  * dx_total
+    delta_rem_ind <- delta_rem_tot - delta_rem_dir
+    delta_rem_base_vec  <- sat_wage  * dx_baseline
+    delta_rem_trans_vec <- sat_wage  * dx_transition
+
+    mult_star_vec <- colSums(L_star)
+    mult_shift    <- mult_star_vec - mult_base   # L* vs L: Engine-2 effect on multipliers
 
     # Resultados por setor
     resultados[[paste(cen,ano,sep="_")]] <- data.frame(
@@ -457,11 +809,34 @@ for (cen in CENS_MMA) {
       delta_f_inv     = round(engine1_inv(cen, ano), 1),
       delta_f_prod    = round(df3, 1),
       delta_f_total   = round(df_total, 1),
-      delta_x_total   = round(dx_total, 1),
-      delta_x_pct     = round(dx_total / x_safe * 100, 3),
+      delta_x_total      = round(dx_total, 1),
+      delta_x_pct        = round(dx_total / x_safe * 100, 3),
+      delta_x_baseline   = round(dx_baseline, 1),
+      delta_x_transition = round(dx_transition, 1),
+      # Value added
+      delta_va_total    = round(delta_va_tot, 1),
+      delta_va_direct   = round(delta_va_dir, 1),
+      delta_va_indirect = round(delta_va_ind, 1),
+      delta_va_baseline = round(delta_va_base_vec, 1),
+      delta_va_transition = round(delta_va_trans_vec, 1),
+      # Employment
+      delta_emp_total      = round(delta_emp_tot, 1),
+      delta_emp_direct     = round(delta_emp_dir, 1),
+      delta_emp_indirect   = round(delta_emp_ind, 1),
+      delta_emp_baseline   = round(delta_emp_base_vec, 1),
+      delta_emp_transition = round(delta_emp_trans_vec, 1),
+      # Wages/income
+      delta_rem_total      = round(delta_rem_tot, 1),
+      delta_rem_direct     = round(delta_rem_dir, 1),
+      delta_rem_indirect   = round(delta_rem_ind, 1),
+      delta_rem_baseline   = round(delta_rem_base_vec, 1),
+      delta_rem_transition = round(delta_rem_trans_vec, 1),
+      # Multipliers
+      mult_prod_base  = round(mult_base, 4),
+      mult_prod_star  = round(mult_star_vec, 4),
+      mult_shift      = round(mult_shift, 4),
       e_coef          = signif(e_coef, 4),
       ghg_induzido_mt = round(e_coef * dx_total, 6),
-      mult_prod_star  = round(colSums(L_star), 4),
       stringsAsFactors = FALSE
     )
   }
@@ -474,11 +849,29 @@ resumo <- res_all |>
   group_by(cenario, ano) |>
   summarise(
     delta_prod_bi        = round(sum(delta_x_total)/1e3, 2),
+    delta_prod_baseline_bi   = round(sum(delta_x_baseline)/1e3, 2),
+    delta_prod_transition_bi = round(sum(delta_x_transition)/1e3, 2),
     delta_prod_pct_media = round(mean(delta_x_pct), 3),
     ghg_induzido_mt      = round(sum(ghg_induzido_mt), 3),
     inv_shock_bi         = round(sum(delta_f_inv)/1e3, 2),
     gdp_scaling_bi       = round(sum(delta_f_gdp)/1e3, 2),
     prod_shock_bi        = round(sum(delta_f_prod)/1e3, 2),
+    # Economic aggregates
+    delta_va_bi            = round(sum(delta_va_total)/1e3, 2),
+    delta_va_direct_bi     = round(sum(delta_va_direct)/1e3, 2),
+    delta_va_indirect_bi   = round(sum(delta_va_indirect)/1e3, 2),
+    delta_va_baseline_bi   = round(sum(delta_va_baseline)/1e3, 2),
+    delta_va_transition_bi = round(sum(delta_va_transition)/1e3, 2),
+    delta_emp_total        = round(sum(delta_emp_total), 0),
+    delta_emp_direct       = round(sum(delta_emp_direct), 0),
+    delta_emp_indirect     = round(sum(delta_emp_indirect), 0),
+    delta_emp_baseline     = round(sum(delta_emp_baseline), 0),
+    delta_emp_transition   = round(sum(delta_emp_transition), 0),
+    delta_rem_bi             = round(sum(delta_rem_total)/1e3, 2),
+    delta_rem_direct_bi      = round(sum(delta_rem_direct)/1e3, 2),
+    delta_rem_indirect_bi    = round(sum(delta_rem_indirect)/1e3, 2),
+    delta_rem_baseline_bi    = round(sum(delta_rem_baseline)/1e3, 2),
+    delta_rem_transition_bi  = round(sum(delta_rem_transition)/1e3, 2),
     .groups="drop"
   ) |>
   left_join(
@@ -492,7 +885,78 @@ resumo <- res_all |>
     by=c("cenario","ano")
   )
 
+energia_impacto_df <- bind_rows(energia_impacto)
+
+# ── Demanda por componente (Engine 1 decomposição) ────────────────────────────
+# Mostra quanto do choque ΔF vem de cada tipo de demanda final por cenário×ano.
+# Engine 1a (GDP) escala todos os componentes proporcionalmente; Engine 1b (Inv)
+# é adicionado inteiramente como FBCF de transição.
+tot_fam_bi  <- sum(demanda_final$Familias,                    na.rm=TRUE) / 1000
+tot_gov_bi  <- sum(demanda_final$Gov + demanda_final$ISFLSF,  na.rm=TRUE) / 1000
+tot_fbcf_bi <- sum(demanda_final$FBCF,                        na.rm=TRUE) / 1000
+tot_exp_bi  <- sum(demanda_final$Exportacoes,                 na.rm=TRUE) / 1000
+demanda_comp_df <- bind_rows(lapply(CENS_MMA, function(cen)
+  bind_rows(lapply(ANOS_MMA, function(ano) {
+    g   <- gdp_rel_2018[as.character(ano)] - 1
+    inv <- inv_annual_R2018[[cen]][periodo_idx(ano)] * 1000 / 1000  # R$bi
+    data.frame(
+      cenario             = cen,
+      ano                 = as.integer(ano),
+      delta_familias_bi   = round(tot_fam_bi  * g, 2),
+      delta_gov_bi        = round(tot_gov_bi  * g, 2),
+      delta_fbcf_gdp_bi   = round(tot_fbcf_bi * g, 2),
+      delta_fbcf_inv_bi   = round(inv,           2),
+      delta_fbcf_total_bi = round(tot_fbcf_bi * g + inv, 2),
+      delta_exp_bi        = round(tot_exp_bi  * g, 2),
+      stringsAsFactors    = FALSE
+    )
+  }))
+))
+
+# ── Coeficientes técnicos energéticos A* por setor individual ────────────────
+# Calcula A*[linha_energia, j] para todos os 73 setores j, para base2020 e 100D.
+# Agrega S19+S43→Fóssil, S20+S22→Biomassa, S40+S41→Elétrico.
+# Cada setor j recebe um grupo de filtragem (Indústria/Transporte/Cidades/Energia/Outros).
+# Este dataset alimenta a tabela cruzada do dashboard (mostra setores individuais).
+COD_GRUPO_TBL <- setNames(rep("Outros", nrow(setores)), setores$cod)
+for (cod in GRUPOS$ind_all)    COD_GRUPO_TBL[cod] <- "Indústria"
+for (cod in GRUPOS$transporte) COD_GRUPO_TBL[cod] <- "Transporte"
+for (cod in GRUPOS$cidades)    COD_GRUPO_TBL[cod] <- "Cidades"
+for (cod in intersect(c("S40","S41","S42","S43","S05","S06","S07",
+                        "S19","S20","S21","S22"), setores$cod))
+  COD_GRUPO_TBL[cod] <- "Energia"
+ET_GROUPS <- list(
+  "Fóssil"   = intersect(c("S19","S43"), rownames(A)),
+  "Biomassa" = intersect(c("S20","S22"), rownames(A)),
+  "Elétrico" = intersect(c("S40","S41"), rownames(A))
+)
+coef_sector_df <- bind_rows(lapply(c("base2020","100D"), function(cen_s) {
+  anos_s <- if (cen_s=="base2020") 2020L else as.integer(ANOS_MMA)
+  bind_rows(lapply(anos_s, function(ano_s) {
+    mat_s <- if (cen_s=="base2020") A else A_stars[[paste(cen_s, ano_s, sep="_")]]
+    if (is.null(mat_s)) return(NULL)
+    bind_rows(lapply(setores$cod, function(j) {
+      if (!(j %in% colnames(mat_s))) return(NULL)
+      bind_rows(lapply(names(ET_GROUPS), function(et) {
+        rows_et <- ET_GROUPS[[et]]
+        cv <- if (length(rows_et)>0) sum(mat_s[rows_et, j]) else 0L
+        data.frame(cenario=cen_s, ano=as.integer(ano_s),
+                   cod=j, nome=setores$nome[setores$cod==j],
+                   grupo=COD_GRUPO_TBL[j],
+                   energy_type=et, coef=round(cv,7),
+                   stringsAsFactors=FALSE)
+      }))
+    }))
+  }))
+}))
+# Keep original coef_long_df (group aggregates) for ch-coef-evol chart
+coef_long_df <- coef_sector_df |>
+  group_by(cenario, ano, grupo, energy_type) |>
+  summarise(coef=round(mean(coef),6), .groups="drop") |>
+  rename(subsector=grupo)   # compat alias for existing chart code
+
 cat(sprintf("  Simulações concluídas: %d cenário×ano\n", nrow(resumo)))
+cat(sprintf("  Impacto energético calculado: %d fonte×cenário×ano\n", nrow(energia_impacto_df)))
 
 # =============================================================================
 # PARTE 9 — EXPORTAÇÃO
@@ -515,7 +979,11 @@ premissas <- data.frame(
     "Elec. edifícios 2020 (%)","Gás edifícios 2020 (%)",
     "Cana 2020 (1000t)","Soja 2020 (1000t)","Milho 2020 (1000t)",
     "Aço 2020 (Mt)","Clinker 2020 (Mt)","Geração elétrica 2020 (TWh)",
-    "Etanol base 2020 (PJ)","Biodiesel base 2020 (PJ)","Gás/biometano base 2020 (PJ)"
+    "Petróleo bruto 2020 (kbep)","Consumo cru refinarias 2020 (kbep)",
+    "Derivados doméstico 2020 (ktep)","Derivados exportação 2020 (ktep)",
+    "Derivados totais 2020 (ktep)",
+    "Etanol base 2020 (PJ)","Biodiesel base 2020 (PJ)","Gás/biometano base 2020 (PJ)",
+    "ENGINE3_SECTORS (GDP override)"
   ),
   valor = c(
     3.65, 1.25, USD2023_to_R2018, gdp_2018_factor,
@@ -525,7 +993,24 @@ premissas <- data.frame(
     cana_2020, soja_2020, milho_2020,
     aco_2020_safe  <- ifelse(is.na(aco_2020)||aco_2020<=0,31.4,aco_2020),
     clin_2020_safe <- ifelse(is.na(clinker_2020)||clinker_2020<=0,42.7,clinker_2020),
-    679, 1020, 230, 900
+    679,
+    ifelse(is.na(prod_oleo_2020)||prod_oleo_2020<=0, NA_real_, prod_oleo_2020),
+    ifelse(is.na(consumo_bruto_2020)||consumo_bruto_2020<=0, NA_real_, consumo_bruto_2020),
+    ifelse(is.na(deriv_dom_2020)||deriv_dom_2020<=0, NA_real_, deriv_dom_2020),
+    ifelse(is.na(deriv_exp_2020)||deriv_exp_2020<=0, NA_real_, deriv_exp_2020),
+    ifelse(is.na(deriv_total_2020)||deriv_total_2020<=0, NA_real_, deriv_total_2020),
+    1020, 230, 900,
+    NA_real_   # texto apenas
+  ),
+  fonte = c(
+    rep("Assumido", 4),
+    rep("MMA Planilha 5/6/7", 6),
+    rep("MMA Planilha 2", 3),
+    "MMA Planilha 5","MMA Planilha 5","MMA Planilha 4",
+    "MMA Planilha 4 R37","MMA Planilha 4 R39",
+    "MMA Planilha 4 R40","MMA Planilha 4 R41","Calculado R40+R41",
+    rep("MMA Planilha 4", 3),
+    "S05,S19,S40,S42"
   ),
   stringsAsFactors=FALSE
 )
@@ -537,27 +1022,45 @@ maps_df <- bind_rows(lapply(names(GRUPOS), function(g)
 # ── Tabelas adicionais para o dashboard de engines ────────────────────────────
 
 # Mix energético (Engine 2): % elec/bio/fossil por tipo de setor × cenário × ano
+# Inclui agregados (Indústria/Transporte/Cidades) e sub-setores MMA
 mix_rows <- list()
+add_mix <- function(cen, a, tipo, pe, pb, pf, be, bb, bf) {
+  mix_rows[[length(mix_rows)+1]] <<- data.frame(
+    cenario=cen, ano=as.integer(a), tipo=tipo,
+    pct_elec=pe, pct_bio=pb, pct_fossil=pf,
+    base_elec=be, base_bio=bb, base_fossil=bf, stringsAsFactors=FALSE)
+}
 for (cen in CENS_MMA) {
   for (a in ANOS_STR) {
     pe_i <- elec_ind_pct[[cen]][a]; pb_i <- bio_ind_pct[[cen]][a]
     pe_t <- elec_tra_pct[[cen]][a]; pb_t <- bio_tra_pct[[cen]][a]
     pe_c <- elec_cid_pct[[cen]][a]; pb_c <- bio_cid_pct[[cen]][a]
-    mix_rows[[length(mix_rows)+1]] <- data.frame(
-      cenario=cen, ano=as.integer(a), tipo="Indústria",
-      pct_elec=pe_i, pct_bio=pb_i, pct_fossil=pmax(1-pe_i-pb_i,0),
-      base_elec=BASE2020$elec_ind, base_bio=BASE2020$bio_ind,
-      base_fossil=pmax(1-BASE2020$elec_ind-BASE2020$bio_ind,0), stringsAsFactors=FALSE)
-    mix_rows[[length(mix_rows)+1]] <- data.frame(
-      cenario=cen, ano=as.integer(a), tipo="Transporte",
-      pct_elec=pe_t, pct_bio=pb_t, pct_fossil=pmax(1-pe_t-pb_t,0),
-      base_elec=BASE2020$elec_tra, base_bio=BASE2020$bio_tra,
-      base_fossil=pmax(1-BASE2020$elec_tra-BASE2020$bio_tra,0), stringsAsFactors=FALSE)
-    mix_rows[[length(mix_rows)+1]] <- data.frame(
-      cenario=cen, ano=as.integer(a), tipo="Cidades",
-      pct_elec=pe_c, pct_bio=pb_c, pct_fossil=pmax(1-pe_c-pb_c,0),
-      base_elec=BASE2020$elec_cid, base_bio=BASE2020$bio_cid,
-      base_fossil=pmax(1-BASE2020$elec_cid-BASE2020$bio_cid,0), stringsAsFactors=FALSE)
+    # Agregados (backward-compat)
+    add_mix(cen,a,"Indústria",  pe_i,pb_i,pmax(1-pe_i-pb_i,0),
+            BASE2020$elec_ind,BASE2020$bio_ind,pmax(1-BASE2020$elec_ind-BASE2020$bio_ind,0))
+    add_mix(cen,a,"Transporte", pe_t,pb_t,pmax(1-pe_t-pb_t,0),
+            BASE2020$elec_tra,BASE2020$bio_tra,pmax(1-BASE2020$elec_tra-BASE2020$bio_tra,0))
+    add_mix(cen,a,"Cidades",    pe_c,pb_c,pmax(1-pe_c-pb_c,0),
+            BASE2020$elec_cid,BASE2020$bio_cid,pmax(1-BASE2020$elec_cid-BASE2020$bio_cid,0))
+    # Sub-setores (BLUES-style)
+    add_mix(cen,a,"Ferro e Aço",
+            elec_ferro_pct[[cen]][a], bio_ferro_pct[[cen]][a], foss_ferro_pct[[cen]][a],
+            elec_ferro_2020, bio_ferro_2020, foss_ferro_2020)
+    add_mix(cen,a,"Cimento",
+            elec_cim_pct[[cen]][a],   bio_cim_pct[[cen]][a],   foss_cim_pct[[cen]][a],
+            elec_cim_2020, bio_cim_2020, foss_cim_2020)
+    add_mix(cen,a,"Químico",
+            elec_qui_pct[[cen]][a],   bio_qui_pct[[cen]][a],   foss_qui_pct[[cen]][a],
+            elec_qui_2020, bio_qui_2020, foss_qui_2020)
+    add_mix(cen,a,"Outros Indústria",
+            elec_out_pct[[cen]][a],   bio_out_pct[[cen]][a],   foss_out_pct[[cen]][a],
+            elec_out_2020, bio_out_2020, foss_out_2020)
+    # Geração Elétrica (S40/S41) — pct representa share de geração por fonte
+    pf_g <- foss_gen_pct[[cen]][a]; pb_g <- bio_gen_pct[[cen]][a]
+    pe_g <- if (!anyNA(c(pf_g,pb_g))) max(1-pf_g-pb_g,0) else max(1-BASE2020$foss_gen-BASE2020$bio_gen,0)
+    add_mix(cen,a,"Geração Elétrica",
+            pe_g, pb_g, pf_g,
+            max(1-BASE2020$foss_gen-BASE2020$bio_gen,0), BASE2020$bio_gen, BASE2020$foss_gen)
   }
 }
 mix_df <- bind_rows(mix_rows)
@@ -565,15 +1068,25 @@ mix_df <- bind_rows(mix_rows)
 # Produção física (Engine 3): volumes por produto × cenário × ano
 prod_fisica_rows <- list()
 produtos <- list(
-  list(cod="S04",  nome="Cana-de-açúcar",  serie=cana_prod,      base=cana_2020,     unidade="1000 t"),
-  list(cod="S01",  nome="Soja",             serie=soja_prod,      base=soja_2020,     unidade="1000 t"),
-  list(cod="S02",  nome="Milho",            serie=milho_prod,     base=milho_2020,    unidade="1000 t"),
-  list(cod="S14",  nome="Aço",              serie=aco_prod,       base=aco_2020_safe, unidade="Mt"),
-  list(cod="S16",  nome="Clinker/Cimento",  serie=clinker_prod,   base=clin_2020_safe,unidade="Mt"),
-  list(cod="S40",  nome="Eletricidade",     serie=geracao_elec,   base=679,           unidade="TWh"),
-  list(cod="S22",  nome="Etanol+CCS",       serie=pj_etanol_ccs,  base=0,             unidade="PJ incremento"),
-  list(cod="S20",  nome="Diesel Verde",     serie=pj_diesel_vrd,  base=0,             unidade="PJ incremento"),
-  list(cod="S43",  nome="Biometano/Gás",    serie=pj_biometano,   base=0,             unidade="PJ incremento")
+  list(cod="S01",  nome="Cana-de-açúcar (→S01)",          serie=cana_prod,       base=cana_2020,       unidade="1000 t"),
+  list(cod="S01",  nome="Soja (→S01)",                    serie=soja_prod,       base=soja_2020,       unidade="1000 t"),
+  list(cod="S01",  nome="Milho (→S01)",                   serie=milho_prod,      base=milho_2020,      unidade="1000 t"),
+  list(cod="S01",  nome="Oleaginosas Energéticas (→S01)", serie=olea_prod,       base=olea_2020,       unidade="1000 t"),
+  # Área agrícola: display-only no dashboard (não calibra IO)
+  list(cod="S01",  nome="Área Alimentos",                 serie=area_alimentos,  base=area_alim_2020,  unidade="1000 ha"),
+  list(cod="S01",  nome="Área Energéticos",               serie=area_energeticos,base=area_ener_2020,  unidade="1000 ha"),
+  list(cod="S29",  nome="Aço",                     serie=aco_prod,       base=aco_2020_safe, unidade="Mt"),
+  list(cod="S28",  nome="Clinker/Cimento",          serie=clinker_prod,   base=clin_2020_safe,unidade="Mt"),
+  list(cod="S40",  nome="Eletricidade",             serie=geracao_elec,   base=679,           unidade="TWh"),
+  list(cod="S05",  nome="Petróleo bruto (S05)",     serie=prod_oleo,      base=prod_oleo_2020,    unidade="kbep"),
+  list(cod="S19",  nome="Derivados totais (S19)",   serie=deriv_total,    base=deriv_total_2020,  unidade="ktep"),
+  list(cod="S22",  nome="Etanol+CCS",       serie=pj_etanol_ccs,    base=0, unidade="PJ incremento"),
+  list(cod="S20",  nome="Diesel Verde",     serie=pj_diesel_vrd,    base=0, unidade="PJ incremento"),
+  list(cod="S43",  nome="Biometano/Gás",    serie=pj_biometano,     base=0, unidade="PJ incremento"),
+  # Biocombustíveis avançados (base 2020 = 0; valores = produção total PJ por cenário)
+  list(cod="S22",  nome="Gasolina Verde",   serie=pj_gasolina_verde, base=0, unidade="PJ"),
+  list(cod="S22",  nome="BioQAV",           serie=pj_bioqav,         base=0, unidade="PJ"),
+  list(cod="S22",  nome="Bunker Verde",     serie=pj_bunker_verde,   base=0, unidade="PJ")
 )
 for (cen in CENS_MMA) {
   for (a in ANOS_STR) {
@@ -622,6 +1135,142 @@ inv_df <- bind_rows(lapply(CENS_MMA, function(cen) {
     stringsAsFactors=FALSE)
 }))
 
+# ── Macro base table (2018 baseline: output, VA, wages, EOB by sector) ─────────
+macro_base_df <- data.frame(
+  cod        = setores$cod,
+  nome       = setores$nome,
+  grupo_7    = grupo_map[setores$cod],
+  grupo_nt4  = nt4_map[setores$cod],
+  output_bi  = round(as.numeric(x)     / 1e3, 4),   # R$ bilhões
+  va_bi      = round(as.numeric(va_pib)/ 1e3, 4),
+  remuner_bi = round(as.numeric(remuner)/ 1e3, 4),
+  eob_bi     = round(as.numeric(eob)   / 1e3, 4),
+  emprego    = round(as.numeric(ocupacoes), 0),
+  export_bi  = round(as.numeric(DF[,"Export"]) / 1e3, 4),
+  familias_bi= round(as.numeric(DF[,"Families"])/ 1e3, 4),
+  gfcf_bi    = round(as.numeric(DF[,"GFCF"])   / 1e3, 4),
+  gov_bi     = round((as.numeric(DF[,"Gov"]) + as.numeric(DF[,"ISFLSF"])) / 1e3, 4),
+  stringsAsFactors = FALSE
+)
+
+# ── Type I & II multipliers from mip_epe_replication (already in memory) ───────
+# mult_prod: MP(I), MPT/MPTT(II), direct/indirect/induced
+# mult_emp:  ME/MEI(I), MET/MEII(II)
+# mult_rem:  MR/MRI(I), MRT/MRII(II)
+
+# =============================================================================
+# PARTE 8b — LINKAGES, LABOR BASELINE, TAX SATELLITE
+# =============================================================================
+
+# ── 8b.1  Linkage comparison: base L vs L* for 100D 2050 ─────────────────────
+# ind_lig is already in memory from mip_epe_replication.R (section 6):
+#   BL, FL, FLG, Vj, Vi, quadrante, eh_energia, eh_fossil, grupo
+# We compute BL*/FLG* from A_stars[["100D_2050"]] to show how sector positions
+# shift in the linkage space under the 100D transition.
+A_star_s100 <- A_stars[["100D_2050"]]
+if (!is.null(A_star_s100)) {
+  L_star_s100 <- engine2_L_star(A_star_s100)
+  # Ghosh supply-side: F* = diag(1/x) Z*  where  Z* = A* diag(x)
+  Z_star_s100 <- A_star_s100 %*% diag(as.numeric(x_safe))
+  F_star_s100 <- diag(1 / as.numeric(x_safe)) %*% Z_star_s100
+  G_star_s100 <- tryCatch(solve(diag(N) - F_star_s100),
+                          error = function(e) { warning("G* singular; usa G base"); G })
+  BL_star  <- colMeans(L_star_s100) / mean(L_star_s100)
+  FL_star  <- rowMeans(L_star_s100) / mean(L_star_s100)
+  FLG_star <- rowMeans(G_star_s100) / mean(G_star_s100)
+  quad_star <- dplyr::case_when(
+    BL_star >= 1 & FLG_star >= 1 ~ "Setor-Chave",
+    BL_star >= 1 & FLG_star <  1 ~ "Demanda acima da media",
+    BL_star <  1 & FLG_star >= 1 ~ "Oferta acima da media",
+    TRUE                         ~ "Independente"
+  )
+  names(quad_star) <- setores$cod
+  linkage_100d_df <- data.frame(
+    cod       = setores$cod,
+    nome      = setores$nome,
+    BL        = round(BL_star,  4),
+    FL        = round(FL_star,  4),
+    FLG       = round(FLG_star, 4),
+    Vj        = NA_real_,
+    Vi        = NA_real_,
+    quadrante = quad_star,
+    grupo     = grupo_map[setores$cod],
+    stringsAsFactors = FALSE
+  )
+} else {
+  linkage_100d_df <- NULL
+}
+
+# Combined base 2018 + 100D 2050 linkage comparison
+linkage_comp_df <- bind_rows(
+  ind_lig |>
+    select(cod, nome, BL, FL, FLG, Vj, Vi, quadrante, grupo) |>
+    mutate(cenario = "base2020", ano = 2020L),
+  if (!is.null(linkage_100d_df))
+    linkage_100d_df |> mutate(cenario = "100D", ano = 2050L)
+) |> select(cenario, ano, cod, nome, BL, FL, FLG, Vj, Vi, quadrante, grupo)
+
+cat(sprintf("  Linkage comparison: %d rows (base + 100D 2050)\n", nrow(linkage_comp_df)))
+
+# ── 8b.2  Labor baseline by subcategory (2018, 8 groups × 73 sectors) ────────
+# labor_share: 8×73 share matrix (fraction of sector employment by group)
+# ocupacoes: 73-vector of absolute 2018 employment per sector
+labor_baseline_df <- bind_rows(lapply(rownames(labor_share), function(grp) {
+  abs_emp <- as.numeric(labor_share[grp, ]) * as.numeric(ocupacoes)
+  data.frame(
+    grupo_labor = grp,
+    cod         = setores$cod,
+    nome        = setores$nome,
+    grupo_7     = grupo_map[setores$cod],
+    emprego_abs = round(abs_emp, 0),
+    share       = round(as.numeric(labor_share[grp, ]), 4),
+    stringsAsFactors = FALSE
+  )
+}))
+cat(sprintf("  Labor baseline: %d rows (%d groups × %d sectors)\n",
+            nrow(labor_baseline_df), length(rownames(labor_share)), N))
+
+# ── 8b.3  Tax satellite: net taxes on production (VA - Remuner - EOB) ─────────
+# impostos_liq = implicit tax residual (includes net taxes on products + imports)
+# tax_coef = impostos_liq / x_safe  →  R$ tax revenue per R$M of gross output
+# delta_tax = tax_coef × delta_x  →  change in government revenue by scenario
+impostos_liq <- as.numeric(va_pib) - as.numeric(remuner) - as.numeric(eob)
+names(impostos_liq) <- setores$cod
+tax_coef_vec <- impostos_liq / as.numeric(x_safe)
+names(tax_coef_vec) <- setores$cod
+
+# 2018 baseline tax structure per sector
+tax_base_df <- data.frame(
+  cod         = setores$cod,
+  nome        = setores$nome,
+  grupo_7     = grupo_map[setores$cod],
+  va_bi       = round(as.numeric(va_pib)  / 1e3, 4),
+  remuner_bi  = round(as.numeric(remuner) / 1e3, 4),
+  eob_bi      = round(as.numeric(eob)     / 1e3, 4),
+  impostos_bi = round(impostos_liq        / 1e3, 4),
+  tax_coef    = round(tax_coef_vec,       6),
+  stringsAsFactors = FALSE
+)
+
+# Delta tax by scenario × ano: join tax_coef onto res_all, then summarise
+tax_shock_df <- res_all |>
+  left_join(data.frame(cod = setores$cod, tax_coef = round(tax_coef_vec, 6)),
+            by = "cod") |>
+  mutate(
+    delta_tax_total_bi   = round(tax_coef * delta_x_total   / 1e3, 4),
+    delta_tax_direct_bi  = round(tax_coef * delta_f_total   / 1e3, 4),
+    delta_tax_indirect_bi= round(tax_coef * (delta_x_total - delta_f_total) / 1e3, 4)
+  ) |>
+  group_by(cenario, ano) |>
+  summarise(
+    delta_tax_total_bi    = round(sum(delta_tax_total_bi,    na.rm = TRUE), 4),
+    delta_tax_direct_bi   = round(sum(delta_tax_direct_bi,   na.rm = TRUE), 4),
+    delta_tax_indirect_bi = round(sum(delta_tax_indirect_bi, na.rm = TRUE), 4),
+    .groups = "drop"
+  )
+
+cat(sprintf("  Tax satellite: %d scenario×ano combinations\n", nrow(tax_shock_df)))
+
 dir.create("outputs/tables", showWarnings=FALSE, recursive=TRUE)
 write_xlsx(
   list(
@@ -636,8 +1285,20 @@ write_xlsx(
     "Aloc_Investimento"   = aloc_df,
     "Multiplicadores"     = mult_df,
     "Investimento_Custos" = inv_df,
+    "Energia_Impacto"     = energia_impacto_df,
+    "Demanda_Componentes" = demanda_comp_df,
+    "Coef_Tecnicos"       = coef_sector_df,
     "Premissas"           = premissas,
-    "Mapeamento_Setores"  = maps_df
+    "Mapeamento_Setores"  = maps_df,
+    "Macro_Base"          = macro_base_df,        # 2018 baseline by sector
+    "Mult_Producao"       = mult_prod,            # Type I (MP) + Type II (MPT/MPTT)
+    "Mult_Emprego"        = mult_emp,             # Type I (ME/MEI) + Type II (MET/MEII)
+    "Mult_Renda"          = mult_rem,             # Type I (MR/MRI) + Type II (MRT/MRII)
+    "Ind_Ligacoes"        = ind_lig,              # Base 2018: BL/FL/FLG/Vj/Vi/quadrante
+    "Linkage_Comp"        = linkage_comp_df,      # Base vs 100D 2050 linkage scatter data
+    "Labor_Baseline"      = labor_baseline_df,    # 2018 employment by subcategory × sector
+    "Tax_Base"            = tax_base_df,          # 2018 tax structure (VA residual) per sector
+    "Tax_Choques"         = tax_shock_df          # ΔTax revenue by cenario × ano
   ),
   path=if (tryCatch({f<-file("outputs/tables/mma_shock_results.xlsx","a");close(f);TRUE},error=function(e)FALSE))
     "outputs/tables/mma_shock_results.xlsx" else
@@ -646,11 +1307,36 @@ write_xlsx(
 cat("  Salvo: outputs/tables/mma_shock_results.xlsx\n")
 
 saveRDS(
-  list(res_all=res_all, resumo=resumo, ghg_mma=ghg_mma,
-       gdp_idx=gdp_idx, pop_mil=pop_mil,
-       GRUPOS=GRUPOS, BASE2020=BASE2020, premissas=premissas,
-       ANOS_MMA=ANOS_MMA, CENS_MMA=CENS_MMA),
-  file="data/processed/mma_shocks.rds"
+  list(
+    res_all          = res_all,
+    resumo           = resumo,
+    ghg_mma          = ghg_mma,
+    gdp_idx          = gdp_idx,
+    pop_mil          = pop_mil,
+    GRUPOS           = GRUPOS,
+    BASE2020         = BASE2020,
+    premissas        = premissas,
+    ANOS_MMA         = ANOS_MMA,
+    CENS_MMA         = CENS_MMA,
+    energia_impacto  = energia_impacto_df,
+    demanda_comp     = demanda_comp_df,       # Engine 1 ΔF by demand component
+    coef_sector      = coef_sector_df,        # A* energy coef by IO sector×year (base+100D)
+    coef_long        = coef_long_df,          # same, grouped average (for dashboard charts)
+    satellite        = satellite,
+    ALPHA            = ALPHA,
+    # Multipliers (Type I & II)
+    mult_prod        = mult_prod,             # MP / MPT / MPTT + direct/indirect/induced
+    mult_emp         = mult_emp,              # ME/MEI (Type I) + MET/MEII (Type II)
+    mult_rem         = mult_rem,              # MR/MRI (Type I) + MRT/MRII (Type II)
+    # Linkage indices
+    ind_lig          = ind_lig,               # Base 2018: BL/FL/FLG/Vj/Vi/quadrante
+    linkage_comp     = linkage_comp_df,       # Base vs 100D 2050 scatter comparison
+    # Labor & tax satellites (2018 baseline)
+    labor_baseline   = labor_baseline_df,     # 2018 employment by subcategory × sector
+    tax_base         = tax_base_df,           # 2018 VA decomposition + tax_coef per sector
+    tax_shock        = tax_shock_df           # ΔTax revenue by cenario × ano
+  ),
+  file = "data/processed/mma_shocks.rds"
 )
 cat("  Salvo: data/processed/mma_shocks.rds\n")
 
