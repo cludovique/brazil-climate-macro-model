@@ -34,9 +34,16 @@ for (p in pkgs) {
 }
 options(scipen = 10, OutDec = ".")
 
+# ── SOURCE_MODE flag ─────────────────────────────────────────────────────────
+# When TRUE (set by mma_shock_engines.R before sourcing this file), only the
+# data-loading sections (1-9) are executed — all exercises, summary output, and
+# Excel export are skipped. This avoids duplicate I/O and long runtimes when
+# this file is used purely as a data provider.
+SOURCE_MODE <- if (exists("SOURCE_MODE")) SOURCE_MODE else FALSE
+
 # ── Computation flags ─────────────────────────────────────────────────────────
 # Set to FALSE to skip slow operations during development iterations
-COMPUTE_SLOW      <- TRUE   # Pure linkage indices + hypothetical extraction (~1-3 min)
+COMPUTE_SLOW      <- if (SOURCE_MODE) FALSE else TRUE   # Pure linkage indices + hypothetical extraction (~1-3 min)
 COMPUTE_VERY_SLOW <- FALSE  # Field of influence SI matrix (~10-15 min for N=73)
 
 # ── Shock parameters — energy transition scenarios ────────────────────────────
@@ -804,8 +811,10 @@ simulate_shock <- function(delta_f,
 
 
 # =============================================================================
-# 10. EXERCISES
+# 10. EXERCISES  (skipped when SOURCE_MODE = TRUE)
 # =============================================================================
+
+if (!SOURCE_MODE) {   # ← guard: everything below runs only in standalone mode
 
 cat("\n=== EXERCISES ===\n")
 
@@ -1004,3 +1013,5 @@ write_xlsx(out_list, path = out_path)
 
 cat(sprintf("\nSaved: %s (%d sheets)\n", out_path, length(out_list)))
 cat("=== DONE ===\n")
+
+}   # ← end of !SOURCE_MODE guard (sections 10-12)
