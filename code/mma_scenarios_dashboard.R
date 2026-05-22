@@ -101,11 +101,31 @@ table.dt tr:hover td{background:#1f2233}
 .sb{background:#1f2233;border:1px solid var(--bdr);color:var(--txt);
   border-radius:5px;padding:4px 9px;font-size:11px;width:180px;outline:none}
 .sb:focus{border-color:var(--acc)}
-@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}.full{grid-column:1}}
+/* ── Responsive ── */
+@media(max-width:900px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .g5c{grid-template-columns:1fr 1fr!important}
+  .full{grid-column:1}
+  .tab-panel{padding:10px 12px}
+  .topbar{padding:8px 12px;flex-wrap:wrap;gap:6px}
+  .topbar span{display:none}
+  .ctrlbar{padding:5px 12px;top:52px}
+  nav.tabs{top:36px;padding:0 12px}
+  .kpi .v{font-size:20px}
+}
+@media(max-width:600px){
+  .g2,.g3,.g4,.g5c{grid-template-columns:1fr!important}
+  .cw{height:200px}
+  .cw.tall{height:260px}
+  .cw.xtall{height:320px}
+  table.dt{font-size:10px}
+  .topbar h1{font-size:12px}
+}
 </style></head>
 <body>
 
 <div class="topbar">
+  <a href="index.html" style="color:var(--mut);font-size:11px;text-decoration:none;white-space:nowrap">← MIP-EPE</a>
   <h1>MMA 100D &mdash; Engines 1 &amp; 2 &amp; 3</h1>
   <span>100D vs Linha de Base &nbsp;&bull;&nbsp; Base: MIP-EPE 2018 &nbsp;&bull;&nbsp; 73 setores</span>
 </div>
@@ -938,7 +958,7 @@ table.dt tr:hover td{background:#1f2233}
   <span style="font-size:13px;font-weight:700;color:#fff">2 · Emprego</span>
   <span style="font-size:10px;color:var(--mut)">Postos de trabalho diretos e indiretos · 100D vs Baseline PIB · base 2018 = 104.340 Mil postos</span>
 </div>
-<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px">
+<div class="g5c" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px">
   <div class="card kpi" style="border-left:3px solid var(--base)">
     <div class="v" id="e-emp-base" style="color:#fff">—</div>
     <div class="l">Emprego — Linha de Base</div>
