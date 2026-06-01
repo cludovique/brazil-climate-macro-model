@@ -5,6 +5,7 @@
 # =============================================================================
 pkgs <- c("readxl","jsonlite","dplyr")
 for (p in pkgs) { if (!requireNamespace(p,quietly=TRUE)) install.packages(p); library(p,character.only=TRUE) }
+setwd("C:/Users/Camila Ludovique/Documents/GitHub/brazil-climate-macro-model")
 
 XLS_IN  <- if (file.exists("outputs/tables/mma_shock_results_new.xlsx"))
              "outputs/tables/mma_shock_results_new.xlsx" else

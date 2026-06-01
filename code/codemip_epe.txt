@@ -18,12 +18,12 @@ code/mip_epe_replication.R
 ├── §6  LINKAGE INDICES
 │       ├── HR: BL, FL (Leontief), FLG (Ghosh)
 │       ├── Variation coefficients: Vj, Vi
-│       └── Pure linkages: PBLN, PFLN, PTL  [if (COMPUTE_SLOW)]
+│       └── Pure linkages: PBLN, PFLN, PTL  
 │
 ├── §7  HYPOTHETICAL EXTRACTION
-│       └── BLextrac, FLextrac              [if (COMPUTE_SLOW)]
+│       └── BLextrac, FLextrac              
 │
-├── §8  FIELD OF INFLUENCE                  [if (COMPUTE_VERY_SLOW)]
+├── §8  FIELD OF INFLUENCE                  
 │       └── SI matrix
 │
 ├── §9  SHOCK ENGINE
@@ -34,3 +34,65 @@ code/mip_epe_replication.R
 │       └── Ex4: renewable demand shock (+Δ on S20, S22, S40, S41, S42)
 │
 └── §10 EXPORT → calls dashboard_export.R
+
+
+
+20/05/2026
+
+┌─────────────────────────────────────────────────────────────────┐
+│  Anexo2.xlsx  (MIP-EPE 2018 raw)                                │
+│  Z (73×73) · DF (73×6) · L_precomputed · VA · Remuner · Emprego│
+└──────────────────────────┬──────────────────────────────────────┘
+                           ↓  reads directly
+┌─────────────────────────────────────────────────────────────────┐
+│  mip_epe_replication.R   ← FOUNDATION                          │
+│                                                                 │
+│  MODELS                                                         │
+│    A = Z · diag(1/x)          technical coefficients           │
+│    B = L  (pre-computed)      Type I  Leontief                  │
+│    BF = solve(I - AF)         Type II closed model (✅ done)    │
+│    G  = Ghosh supply-side                                       │
+│                                                                 │
+│  MULTIPLIERS  (✅ all computed, stored in R objects)            │
+│    mult_prod  →  MP (Type I) · MPT / MPTT (Type II)            │
+│                  direct / indirect / induced decomposition      │
+│    mult_emp   →  ME / MEI (Type I) · MET / MEII (Type II)      │
+│    mult_rem   →  MR / MRI (Type I) · MRT / MRII (Type II)      │
+│                                                                 │
+│  MACRO BASE                                                     │
+│    x = gross output  ·  va_pib = GDP by sector                 │
+│    remuner · salarios · eob  (VA decomposition)                 │
+│    DF = Exports · Gov · ISFLSF · Families · GFCF               │
+│    satellite → gdp_coef · wage_coef · labor_coef · energy_coef │
+│                                                                 │
+│  GROUPINGS: NT4 · 7-group · IBGE (17)  (✅ all built)          │
+│                                                                 │
+│  ⚠️  SOURCE_MODE = TRUE  → only sections 1–9 loaded            │
+│       all multipliers, linkage, exercises SKIPPED               │
+└──────────────────────────┬──────────────────────────────────────┘
+                           ↓  source(..., SOURCE_MODE=TRUE)
+┌─────────────────────────────────────────────────────────────────┐
+│  mma_shock_engines.R     ← SCENARIOS                           │
+│                                                                 │
+│  Inherits from mip_epe: A, L/B, BF, x, DF, satellite          │
+│                                                                 │
+│  Engine 1 → ΔF  (GDP scaling + transition investment)          │
+│  Engine 2 → ΔA  (energy mix substitution → A* → L*)            │
+│  Engine 3 → Δx  (O&G + electricity physical volumes)           │
+│                                                                 │
+│  Applies shocks with L* (not original L):                       │
+│    Δx_total = L* · ΔF + Δx_engine3                             │
+│    ΔVA  = gdp_coef · Δx                                        │
+│    ΔEmp = emp_coef · Δx                                        │
+│    ΔRem = wage_coef · Δx                                       │
+│                                                                 │
+│  ⚠️  BF / Type II multipliers NOT USED here — only L*          │
+│  ⚠️  mult_prod / mult_emp NOT exported to Excel                │
+│                                                                 │
+│  Output → mma_shock_results.xlsx  +  mma_shocks.rds            │
+└──────────────────────────┬──────────────────────────────────────┘
+                           ↓  reads Excel
+┌─────────────────────────────────────────────────────────────────┐
+│  mma_scenarios_dashboard.R   ← DASHBOARD                       │
+│  Only sees what's in the Excel — has NO multiplier data yet     │
+└─────────────────────────────────────────────────────────────────┘
