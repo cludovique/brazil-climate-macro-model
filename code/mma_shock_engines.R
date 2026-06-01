@@ -261,7 +261,7 @@ GRUPOS <- list(
                    "S23","S24","S25","S26","S27","S28","S29","S30","S31",
                    "S32","S33","S34","S35","S36","S37","S38","S39"),
   transporte   = c("S48","S49","S50","S51","S52"),  # S48 terrestre, S49 aquaviário, S50 aéreo, S51 armazenamento, S52 correio
-  cidades      = c("S57","S58","S59","S60"),
+  cidades      = c("S52","S53","S59","S66","S67","S68","S69","S70"),
   residuos     = c("S66","S67","S68"),
   construcao   = c("S44","S45")
 )
@@ -343,8 +343,13 @@ BASE2020 <- list(
   elec_tra  = ifelse(is.na(elec_tra_2020), 0.004, elec_tra_2020),
   bio_tra   = ifelse(is.na(bio_tra_2020),  0.303, bio_tra_2020),
   elec_cid  = ifelse(is.na(elec_cid_2020), 0.625, elec_cid_2020),
-  bio_cid   = ifelse(is.na(bio_cid_2020),  0.000, bio_cid_2020),
   gas_cid   = ifelse(is.na(gas_cid_2020),  0.260, gas_cid_2020),
+  # bio_cid_2020 from MMA R27 is a single biomass sub-type (≈1.86e-5, near zero).
+  # The correct base share for "other / biomass / thermal" in buildings is inferred
+  # as the residual: 1 - elec - gas = 1 - 0.625 - 0.260 = 0.115 (11.5%).
+  # Using the spreadsheet value directly would produce sc_b = 10.8% / 0.002% ≈ 5800×.
+  bio_cid   = max(1 - ifelse(is.na(elec_cid_2020), 0.625, elec_cid_2020) -
+                      ifelse(is.na(gas_cid_2020),  0.260, gas_cid_2020), 0),
   # Geração elétrica: shares do mix de geração (proxy para insumos energéticos de S40/S41)
   foss_gen  = ifelse(is.na(foss_gen_2020), 0.146, foss_gen_2020),
   bio_gen   = ifelse(is.na(bio_gen_2020),  0.093, bio_gen_2020)
@@ -469,34 +474,29 @@ engine2_A_star <- function(cenario, ano) {
                           BASE2020$elec_tra, BASE2020$bio_tra,
                           max(1 - BASE2020$elec_tra - BASE2020$bio_tra, 0))
 
-  # ── Cidades — DESATIVADO (ver TODO abaixo) ────────────────────────────────
-  # TODO (lacuna de modelagem): a transição "Cidades/Edifícios" (gás → eletricidade
-  # + biomassa para aquecimento distrital) ocorre principalmente no consumo FINAL
-  # das famílias e no uso energético de edifícios comerciais/residenciais — não
-  # no processo produtivo dos setores de serviços S57–S60 (TI, finanças, imóveis,
-  # jurídico) atualmente mapeados em GRUPOS$cidades.
+  # ── Cidades / Edifícios ────────────────────────────────────────────────────
+  # GRUPOS$cidades = S52 (alojamento), S53 (alimentação), S59 (imobiliário),
+  #   S66 (adm pública), S67-S68 (educação), S69-S70 (saúde).
+  # Estes setores são os proxies IO para uso de energia em edifícios comerciais
+  # e de serviços: o imobiliário (S59) compra eletricidade e gás como insumos
+  # intermediários para "produzir" serviços de locação; hotéis e restaurantes
+  # (S52/S53) têm alta intensidade energética em edificações; educação, saúde
+  # e administração pública (S66-S70) representam edifícios públicos.
   #
-  # Dois problemas impedem o uso seguro do bloco original:
-  #   1. MAPEAMENTO ERRADO: S57–S60 são serviços profissionais urbanos, não
-  #      operadores de infraestrutura de edifícios. A energia "Cidades" do MMA
-  #      refere-se a calor/refrigeração em edificações — que no modelo IO aparece
-  #      principalmente no vetor de demanda final (famílias), não como insumo
-  #      intermediário desses setores.
-  #   2. EXPLOSÃO DO FATOR DE ESCALA: bio_cid_2020 ≈ 1.86e-5 (≈0%), portanto
-  #      sc_b = bio_cid_2050 / bio_cid_2020 = 10.8% / 0.002% = 5.809×.
-  #      Qualquer coeficiente A[S22, j] não-nulo nesses setores é amplificado
-  #      ~5800×, produzindo artefatos como +1760% em A[S22,S60].
-  #
-  # Correção futura requer: (a) identificar os setores IO que melhor capturam
-  # o uso energético de edificações (possivelmente S44, S45, ou sub-grupos de
-  # serviços com dados de uso energético por combustível por setor — ex. EPE BEN),
-  # e (b) usar shares de base realistas (não ~0%) para o fator de biomassa.
-  # pe_c <- elec_cid_pct[[cenario]][a]; pb_c <- bio_cid_pct[[cenario]][a]
-  # pf_c <- max(1 - pe_c - pb_c, 0)
-  # if (!anyNA(c(pe_c,pb_c)))
-  #   A_star <- rebalancear(GRUPOS$cidades, pe_c, pb_c, pf_c,
-  #                         BASE2020$elec_cid, BASE2020$bio_cid,
-  #                         max(1 - BASE2020$elec_cid - BASE2020$bio_cid, 0))
+  # Mix energético (3 componentes):
+  #   Elétrico  : R26 = elec_cid_pct (% eletricidade)
+  #   Gás/GLP   : R29 = gas_cid_pct  (% gás + GLP) → usado como "fossil" em rebalancear
+  #   Bio/Outro : residual = 1 - elec - gas (inclui solar térmico, lenha, outros)
+  # Base 2020: elec=62.5%, gas=26.0%, bio/outro=11.5% (residual — NÃO usa R27
+  # de bio_cid_2020 ≈ 1.86e-5, que captura apenas um sub-tipo específico de
+  # biomassa e produz sc_b ≈ 5800× se usado diretamente como base).
+  pe_c <- elec_cid_pct[[cenario]][a]
+  pg_c <- gas_cid_pct[[cenario]][a]
+  pb_c <- max(1 - pe_c - pg_c, 0)   # bio/outro = residual do cenário
+  if (!anyNA(c(pe_c, pg_c)))
+    A_star <- rebalancear(GRUPOS$cidades,
+                          pe_c, pb_c, pg_c,
+                          BASE2020$elec_cid, BASE2020$bio_cid, BASE2020$gas_cid)
 
   # ── Geração Elétrica (S40/S41) — mix de geração muda A[S19/S43, S40/S41] ──
   # A geração elétrica usa fóssil (gás/carvão) como insumo direto (A[S19,S40]).
@@ -976,7 +976,7 @@ premissas <- data.frame(
     "Fator ajuste PIB 2018 vs 2020",
     "Elec. indústria 2020 (%)","Bio indústria 2020 (%)",
     "Elec. transporte 2020 (%)","Bio transporte 2020 (%)",
-    "Elec. edifícios 2020 (%)","Gás edifícios 2020 (%)",
+    "Elec. edifícios 2020 (%)","Gás edifícios 2020 (%)","Bio/outro edifícios 2020 (% residual)",
     "Cana 2020 (1000t)","Soja 2020 (1000t)","Milho 2020 (1000t)",
     "Aço 2020 (Mt)","Clinker 2020 (Mt)","Geração elétrica 2020 (TWh)",
     "Petróleo bruto 2020 (kbep)","Consumo cru refinarias 2020 (kbep)",
@@ -989,7 +989,7 @@ premissas <- data.frame(
     3.65, 1.25, USD2023_to_R2018, gdp_2018_factor,
     BASE2020$elec_ind, BASE2020$bio_ind,
     BASE2020$elec_tra, BASE2020$bio_tra,
-    BASE2020$elec_cid, BASE2020$gas_cid,
+    BASE2020$elec_cid, BASE2020$gas_cid, BASE2020$bio_cid,
     cana_2020, soja_2020, milho_2020,
     aco_2020_safe  <- ifelse(is.na(aco_2020)||aco_2020<=0,31.4,aco_2020),
     clin_2020_safe <- ifelse(is.na(clinker_2020)||clinker_2020<=0,42.7,clinker_2020),
@@ -1004,7 +1004,7 @@ premissas <- data.frame(
   ),
   fonte = c(
     rep("Assumido", 4),
-    rep("MMA Planilha 5/6/7", 6),
+    rep("MMA Planilha 5/6/7", 7),
     rep("MMA Planilha 2", 3),
     "MMA Planilha 5","MMA Planilha 5","MMA Planilha 4",
     "MMA Planilha 4 R37","MMA Planilha 4 R39",
