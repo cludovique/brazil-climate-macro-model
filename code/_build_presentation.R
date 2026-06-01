@@ -13,30 +13,6 @@ DARK  <- "#1C2B4A"; GREEN <- "#1D9E75"; LGREE <- "#3DC494"; AMBER <- "#F39C12"
 WHITE <- "#FFFFFF"; LGRAY <- "#E8ECF0"; MGRAY <- "#8A9BB0"; DKGN  <- "#0D5C3A"
 DKBL  <- "#1A2840"; DKAM  <- "#3D2A00"
 
-# ── Create a tiny 1×1 pixel PNG of solid color → embed as background fill ─────
-# external_img embeds image data into PPTX so temp files are self-contained.
-solid_png <- function(hex_color) {
-  tmp <- tempfile(fileext = ".png")
-  png(tmp, width = 20, height = 20, bg = "transparent")
-  par(mar = c(0,0,0,0), xaxs = "i", yaxs = "i")
-  plot.new()
-  rect(0, 0, 1, 1, col = hex_color, border = NA)
-  dev.off()
-  tmp
-}
-
-# Pre-generate background colors used across slides
-bg_files <- list()
-for (col in c(DARK, DKBL, DKGN, "#2A3F6A", "#1D5C46", "#1A4A7A", "#6B4C1A",
-              "#1D5038", "#0D1F3C", "#2A2A1A", "#1A2A3A", "#1A3A2A",
-              AMBER, GREEN, "#378ADD", LGREE, MGRAY)) {
-  bg_files[[col]] <- solid_png(col)
-}
-get_bg <- function(col) {
-  if (is.null(bg_files[[col]])) bg_files[[col]] <<- solid_png(col)
-  bg_files[[col]]
-}
-
 # ── Helper functions ───────────────────────────────────────────────────────────
 fp    <- function(col=WHITE, sz=14, b=FALSE, it=FALSE)
           fp_text(color=col, font.size=sz, bold=b, italic=it, font.family="Calibri")
@@ -49,11 +25,10 @@ blist <- function(items, col=LGRAY, sz=11, bullet="▸  ", indent=7) {
 }
 add_blank <- function(prs) add_slide(prs, layout="Blank", master="Office Theme")
 
-# Add a filled rectangle (uses embedded PNG image)
+# Filled rectangle — ph_location(bg=col) sets the shape fill directly.
+# No images, no scaling issues, covers exactly the specified area.
 box <- function(sl, col, l, t, w, h) {
-  ph_with(sl,
-    external_img(get_bg(col), width=w, height=h),
-    ph_location(left=l, top=t, width=w, height=h, bg="transparent"))
+  ph_with(sl, fpar(), ph_location(left=l, top=t, width=w, height=h, bg=col))
 }
 # Text box
 tb <- function(sl, txt, l, t, w, h, col=WHITE, sz=13, b=FALSE, it=FALSE, align="left")
@@ -61,18 +36,15 @@ tb <- function(sl, txt, l, t, w, h, col=WHITE, sz=13, b=FALSE, it=FALSE, align="
 # Bullet list block
 bl <- function(sl, items, l, t, w, h, col=LGRAY, sz=11, bullet="▸  ", indent=7)
   ph_with(sl, blist(items,col,sz,bullet,indent), ph_location(left=l,top=t,width=w,height=h))
-# Thin horizontal rule (1px tall image)
-rule <- function(sl, col, l, t, w=2.0) {
-  ph_with(sl, external_img(get_bg(col), width=w, height=0.06),
-          ph_location(left=l, top=t, width=w, height=0.06))
-}
+# Thin horizontal rule
+rule  <- function(sl, col, l, t, w=2.0)
+  ph_with(sl, fpar(), ph_location(left=l, top=t, width=w, height=0.06, bg=col))
 # Thin vertical rule
-vrule <- function(sl, col, l, t, h=2.0, w=0.07) {
-  ph_with(sl, external_img(get_bg(col), width=w, height=h),
-          ph_location(left=l, top=t, width=w, height=h))
-}
-# Slide background + header bar
+vrule <- function(sl, col, l, t, h=2.0, w=0.07)
+  ph_with(sl, fpar(), ph_location(left=l, top=t, width=w, height=h, bg=col))
+# Full slide background
 bg    <- function(sl, col=DARK) box(sl, col, 0, 0, 10, 7.5)
+# Header bar + title
 hdr   <- function(sl, txt, col=GREEN) {
   sl <- box(sl, col, 0, 0, 10, 0.9)
   tb(sl, txt, 0.4, 0.1, 9, 0.7, WHITE, 22, b=TRUE)
