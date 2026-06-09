@@ -251,16 +251,7 @@ table.dt tr:hover td{background:#1f2233}
   <div class="g2" style="margin-bottom:16px">
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <div class="ct" style="margin:0">FBCF — Alocação por Setor IO (R$ bi, 100D · ano selecionado no filtro)</div>
-          <!-- Política de Localização toggle -->
-          <div id="aloc-pol-tog" style="display:inline-flex;border:1px solid var(--bdr);border-radius:6px;overflow:hidden;font-size:10px;cursor:pointer;flex-shrink:0">
-            <span id="aloc-btn-sem" onclick="setAlocPolicy('sem_localizacao')"
-              style="padding:3px 9px;background:rgba(59,109,17,.35);color:#7BC142;font-weight:600">Sem política</span>
-            <span id="aloc-btn-com" onclick="setAlocPolicy('com_localizacao')"
-              style="padding:3px 9px;background:transparent;color:var(--mut)">Com política</span>
-          </div>
-        </div>
+        <div class="ct" style="margin:0">FBCF — Alocação por Setor IO (R$ bi, 100D · ano selecionado no filtro)</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
           <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mut)">
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#E24B4A"></span>Energéticos</span>
@@ -279,10 +270,8 @@ table.dt tr:hover td{background:#1f2233}
         <div class="ct">Engine 1b — Mapeamento Tecnologia → Setor IO</div>
         <p style="font-size:10.5px;color:var(--mut);line-height:1.8;margin:0 0 8px">
           Pesos derivados dos dados físicos do MMA (ΔGW instalado × capex unitário por tecnologia).
-          Apenas a <b style="color:var(--txt)">fração doméstica</b> dos equipamentos importados estimula
-          a produção local — a parte importada cria déficit comercial, não produção interna.
-          Com a <b style="color:#3BD6F5">Política de Localização</b>, o conteúdo doméstico cresce:
-          turbinas 40%→70% · painéis 20%→55% · baterias 30%→65% (linear 2026→2050).
+          Premissa simplificadora: <b style="color:var(--txt)">100% de produção doméstica</b> — todo o
+          investimento de transição estimula setores da economia brasileira sem ajuste de vazamento importado.
         </p>
 
         <!-- Allocation groups table — reflects actual derive_aloc_inv() mapping -->
@@ -310,7 +299,7 @@ table.dt tr:hover td{background:#1f2233}
               <td style="padding:3px 6px;color:#9B59B6;font-weight:600">Turbinas eólicas</td>
               <td style="padding:3px 6px;color:var(--mut)">S34 <span style="color:#555;font-size:9px">CNAE 2821</span></td>
               <td style="padding:3px 6px;color:#9B59B6;font-weight:700;text-align:right">~9%²</td>
-              <td style="padding:3px 6px;color:var(--mut)">Máq. e equip. mecânicos — naceles, caixas de câmbio, eixos. <b style="color:var(--txt)">Somente fração doméstica</b> (40→70% com política)</td>
+              <td style="padding:3px 6px;color:var(--mut)">Máq. e equip. mecânicos — naceles, caixas de câmbio, eixos (CNAE 2821-6: turbinas, bombas, compressores)</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
               <td style="padding:3px 6px;color:#F39C12;font-weight:600">Equipamentos elétricos</td>
@@ -346,7 +335,7 @@ table.dt tr:hover td{background:#1f2233}
               <td style="padding:3px 6px;color:#7F8C8D;font-weight:600">Painéis &amp; armazenamento</td>
               <td style="padding:3px 6px;color:var(--mut)">S32</td>
               <td style="padding:3px 6px;color:#7F8C8D;font-weight:700;text-align:right">~1%²</td>
-              <td style="padding:3px 6px;color:var(--mut)">Painéis solares + baterias utility-scale + automação predial. <b style="color:var(--txt)">Somente fração doméstica</b> (painéis 20→55% · baterias 30→65%)</td>
+              <td style="padding:3px 6px;color:var(--mut)">Painéis solares + baterias utility-scale + automação predial (eletrônicos e ópticos)</td>
             </tr>
             <tr>
               <td style="padding:3px 6px;color:#8E44AD;font-weight:600">Nuclear O&amp;M</td>
@@ -357,17 +346,13 @@ table.dt tr:hover td{background:#1f2233}
           </tbody>
         </table>
 
-        <p style="font-size:10px;color:var(--mut);line-height:1.7;margin:0 0 6px">
+        <p style="font-size:10px;color:var(--mut);line-height:1.7;margin:0">
           <b style="color:var(--txt)">Mecanismo:</b>
           CAE (R$ bi/ano) × ALOC_INV[s, ano] → Δf[s] (choque FBCF setorial) → L* · Δf → Δx (produção induzida).<br>
           <b style="color:var(--txt)">Normalização:</b> pesos somam 1.0 — o total do investimento é integralmente alocado sem dupla contagem.<br>
           <b style="color:var(--txt)">S20 excluído:</b> biodiesel/HVO já cresce via Engine 3 (volume físico MMA calibrado) — incluir FBCF em S20 criaria dupla contagem.<br>
-          <b style="color:var(--txt)">S40/S41 excluídos:</b> geração elétrica cresce via Engine 3; FBCF em S40/S41 seria também dupla contagem.
-        </p>
-        <p style="font-size:10px;color:var(--mut);line-height:1.6;margin:0">
-          ¹ Pesos aproximados, 100D · sem política · 2050. Variam por ano (capex incremental de cada tecnologia muda)
-          e por política (conteúdo doméstico de S34, S32, S36 sobe com localização industrial).<br>
-          ² Com <b style="color:#3BD6F5">Política de Localização ativa</b>, S34 sobe para ~14% e S32 para ~4% em 2050.
+          <b style="color:var(--txt)">S40/S41 excluídos:</b> geração elétrica cresce via Engine 3; FBCF em S40/S41 seria também dupla contagem.<br>
+          ¹ Pesos aproximados, 100D · 2050. Variam por ano conforme o capex incremental de cada tecnologia muda.
         </p>
       </div>
     </div>
@@ -1230,7 +1215,6 @@ const SECNAME={};
 // STATE
 // ════════════════════════════════════════════════════════════════════════════
 const S={ano:2035, grp:null, tab:0};
-let alocPolicy="sem_localizacao"; // toggle: "sem_localizacao" | "com_localizacao"
 
 // ════════════════════════════════════════════════════════════════════════════
 // CONTROLS
@@ -1380,37 +1364,14 @@ function showTab(n){
 }
 function rebuild(){_built.clear();INITS[S.tab]();}
 
-// ── Política de localização — helper functions ────────────────────────────
-function setAlocPolicy(pol){
-  alocPolicy=pol;
-  // Update button styles
-  const btnSem=document.getElementById("aloc-btn-sem");
-  const btnCom=document.getElementById("aloc-btn-com");
-  if(btnSem&&btnCom){
-    btnSem.style.background = pol==="sem_localizacao"?"rgba(59,109,17,.35)":"transparent";
-    btnSem.style.color      = pol==="sem_localizacao"?"#7BC142":"var(--mut)";
-    btnSem.style.fontWeight = pol==="sem_localizacao"?"600":"400";
-    btnCom.style.background = pol==="com_localizacao"?"rgba(59,199,255,.25)":"transparent";
-    btnCom.style.color      = pol==="com_localizacao"?"#3BD6F5":"var(--mut)";
-    btnCom.style.fontWeight = pol==="com_localizacao"?"600":"400";
-  }
-  renderAlocChart(D.Aloc_Investimento||[]);
-}
+// ── FBCF allocation chart ─────────────────────────────────────────────────
 function renderAlocChart(aloc){
   const rs=D.Resumo||[];
   const invAno=(+(rs.find(r=>r.cenario==="100D"&&+r.ano===S.ano)||{}).inv_shock_bi)||0;
-  // Backward-compat: if data has no localiz_policy / ano column, skip those filters
-  const hasLP =aloc.some(r=>r.localiz_policy!=null);
   const hasAno=aloc.some(r=>r.ano!=null);
-  // Show warning on "Com política" button when LP data not yet available
-  const btnCom=document.getElementById("aloc-btn-com");
-  if(btnCom) btnCom.title=hasLP?"":"⚠ Execute mma_shock_engines.R para ativar";
   const alocS=[...aloc]
-    .filter(r=>r.cenario==="100D"
-      &&(!hasAno||+r.ano===S.ano)
-      &&(!hasLP||r.localiz_policy===alocPolicy))
+    .filter(r=>r.cenario==="100D"&&(!hasAno||+r.ano===S.ano))
     .sort((a,b)=>(+(b.aloc_pct)||0)-(+(a.aloc_pct)||0));
-  // Y-axis: short label (cod only); full name appears in tooltip title
   mkHBar("ch-aloc",alocS.map(r=>r.cod),
     [{label:"R$ bi (100D)",
       data:alocS.map(r=>+((+(r.aloc_pct)||0)*invAno/100).toFixed(2)),
@@ -1473,8 +1434,7 @@ function initPremissas(){
                 title:{display:true,text:"R$ bi/ano (R$ 2023)",color:"#8892a4"}}}});
 
   // ── 2c. FBCF sector allocation bar — absolute R$bi ───────────────────────
-  // Sync toggle button state (e.g. on year change / rebuild)
-  setAlocPolicy(alocPolicy);
+  renderAlocChart(aloc);
 
 
   // ── 3a. Main energy groups — stacked 100% bar, 100D ───────────────────────

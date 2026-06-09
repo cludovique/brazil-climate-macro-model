@@ -23,21 +23,6 @@ options(OutDec=".")
 RUN_ENGINE3 <- TRUE    # Physical production volumes → ∆f  (O&G + elec calibrated to MMA)
 RUN_ENGINE4 <- FALSE   # Emission-intensity satellite account (scope: future)
 
-# ── Política de Localização Industrial (toggle) ────────────────────────────────
-# FALSE (padrão): conteúdo doméstico fixo — realidade atual de importações
-#   Turbinas eólicas: 40% doméstico (60% importado — Vestas/Siemens)
-#   Painéis solares:  20% doméstico (80% importado — China dominante)
-#   Baterias utility: 30% doméstico (70% importado)
-#
-# TRUE: conteúdo doméstico cresce linearmente 2026→2050, simulando:
-#   política industrial de nacionalização da cadeia de energias renováveis
-#   (ex: BNDES/Finame requisitos de conteúdo local, zonas francas, etc.)
-#   Turbinas: 40% → 70%  |  Painéis: 20% → 55%  |  Baterias: 30% → 65%
-#
-# O toggle afeta apenas ALOC_INV (destino do FBCF de transição).
-# Engine 2 e Engine 3 (técnicos/físicos) são idênticos em ambos os casos.
-# Ambas as versões (LP e no-LP) são sempre exportadas para comparação no dashboard.
-LOCALIZ_POLICY <- FALSE   # <── TOGGLE: TRUE = política de localização ativa
 
 cat("=== MMA Shock Engines ===\n")
 cat(sprintf("  Engines active: 1=YES  2=YES  3=%s  4=%s\n",
@@ -371,7 +356,7 @@ engine1_gdp <- function(cenario, ano) {
 #   coprocessamento $15M/PJ, EV $15M/PJ, edificações $30B/unidade-fração
 #
 # Mapeamento tecnologia → setor IO (100D pesos pré-normalização):
-#   Eólica:      S34(50%×40%dom) S45(30%) S33(10%) S42(10%)  [S34=máq.mecânicos; S37=transporte]
+#   Eólica:      S34(50%) S45(30%) S33(10%) S42(10%)  [S34=máq.mecânicos; produção 100% doméstica]
 #   Solar:       S32(40%×20%dom) S45(30%) S33(20%) S42(10%)
 #   Hidro:       S45(60%) S30(25%) S42(15%)
 #   Nuclear:     S45(50%) S39(50%)
@@ -382,7 +367,7 @@ engine1_gdp <- function(cenario, ano) {
 #   EV fleet:    S35(40%) S36(40%) S33(20%)
 #   Edificações: S45(55%) S33(30%) S32(15%)
 #   [S45 = Construção; S44 = Água/esgoto — NÃO usar para capex civil]
-#   [%dom = conteúdo doméstico: turbinas 40%, painéis 20%, baterias 30%]
+#   [premissa: 100% conteúdo doméstico — sem ajuste de vazamento importado]
 #
 # Pesos resultantes aprox. (normalizados, 100D 2050, pós-ajustes):
 #   S45~40%, S22~19%, S33~9%, S42~7%, S30~4%, S34~9%, S32~1%,
@@ -391,8 +376,7 @@ engine1_gdp <- function(cenario, ano) {
 # NOTA: S40/S41/S29/S28 excluídos — crescem via Engine 3 (volume físico MMA).
 
 # Função auxiliar: deriva pesos por cenário × ano a partir dos dados físicos MMA
-# localiz: se TRUE aplica trajetória crescente de conteúdo doméstico (LOCALIZ_POLICY)
-derive_aloc_inv <- function(cenario, ano = "2050", localiz = LOCALIZ_POLICY) {
+derive_aloc_inv <- function(cenario, ano = "2050") {
   # col 2050: 100D=col17, 25D e 0D=col10 (0D é near-BAU → usa 25D como proxy)
   col50 <- if (cenario == "100D") 17L else 10L
 
@@ -441,24 +425,14 @@ derive_aloc_inv <- function(cenario, ano = "2050", localiz = LOCALIZ_POLICY) {
   delta_elec_cid <- max(get_ci(26) - get_ci_b(26), 0)
   inv_bldg <- delta_elec_cid * 30000   # $M por fração-unit (~0.2 → $6B)
 
-  # ── 6. Conteúdo doméstico dos equipamentos importados ────────────────────
-  # Interpolação linear entre valor base (2026) e valor alvo (2050).
-  # LOCALIZ_POLICY=FALSE → constante no nível base (sem política de localização)
-  # LOCALIZ_POLICY=TRUE  → cresce até o alvo (política industrial de conteúdo local)
-  ano_n <- as.numeric(ano)
-  t_loc <- if (localiz) max(0, min(1, (ano_n - 2026) / (2050 - 2026))) else 0
-
-  dom_eol <- 0.40 + (0.70 - 0.40) * t_loc   # turbinas: 40% → 70% doméstico
-  dom_sol <- 0.20 + (0.55 - 0.20) * t_loc   # painéis:  20% → 55%
-  dom_bat <- 0.30 + (0.65 - 0.30) * t_loc   # baterias: 30% → 65%
-
-  # ── 7. Mapeamento tecnologia → setor IO ──────────────────────────────────
+  # ── 6. Mapeamento tecnologia → setor IO ──────────────────────────────────
+  # Premissa: produção 100% doméstica (simplificador — sem ajuste de vazamento importado)
   # NOTA: S45 = Construção (obras civis), S44 = Água/esgoto (errado para capex)
 
   raw <- c(
-    S34 = inv_eol    * 0.50 * dom_eol,                  # turbinas eólicas — máq. e equip. mecânicos (CNAE 2821-6; S37=transporte, não turbinas)
-    S32 = inv_sol    * 0.40 * dom_sol +                  # painéis (fração doméstica)
-          inv_bat    * 0.60 * dom_bat +                  # baterias (fração doméstica)
+    S34 = inv_eol    * 0.50,                             # turbinas eólicas — máq. e equip. mecânicos (CNAE 2821-6)
+    S32 = inv_sol    * 0.40 +                            # painéis solares
+          inv_bat    * 0.60 +                            # baterias utility-scale
           inv_bldg   * 0.15,                             # controles smart edilícios
     S45 = inv_eol    * 0.30 + inv_sol    * 0.30 +
           inv_hid    * 0.60 + inv_nuc    * 0.50 +
@@ -485,29 +459,17 @@ derive_aloc_inv <- function(cenario, ano = "2050", localiz = LOCALIZ_POLICY) {
   raw / sum(raw)
 }
 
-# Pré-computa pesos por cenário × ano (dois conjuntos: sem e com política)
-# ALOC_INV_NOLP: conteúdo doméstico fixo (sem política de localização)
-# ALOC_INV_LP:   conteúdo doméstico crescente (com política de localização)
-# ALOC_INV:      conjunto ativo, determinado por LOCALIZ_POLICY
-build_aloc <- function(localiz) {
-  setNames(lapply(CENS_MMA, function(cen)
-    setNames(lapply(ANOS_MMA, function(a) derive_aloc_inv(cen, a, localiz=localiz)),
-             ANOS_MMA)
-  ), CENS_MMA)
-}
-ALOC_INV_NOLP <- build_aloc(FALSE)
-ALOC_INV_LP   <- build_aloc(TRUE)
-ALOC_INV      <- if (LOCALIZ_POLICY) ALOC_INV_LP else ALOC_INV_NOLP
+# Pré-computa pesos por cenário × ano
+ALOC_INV <- setNames(lapply(CENS_MMA, function(cen)
+  setNames(lapply(ANOS_MMA, function(a) derive_aloc_inv(cen, a)), ANOS_MMA)
+), CENS_MMA)
 
-# Diagnóstico: imprime pesos para 2030 e 2050 (100D, ambas as políticas)
+# Diagnóstico: imprime pesos para 2030 e 2050 (100D)
 for (cen in c("100D")) {
   for (a in c("2030","2050")) {
-    nolp <- ALOC_INV_NOLP[[cen]][[a]]
-    lp   <- ALOC_INV_LP[[cen]][[a]]
-    cat(sprintf("  ALOC_INV %s [%s] sem-LP: %s\n", cen, a,
-      paste(sprintf("%s=%.0f%%", names(nolp), 100*nolp), collapse=" ")))
-    cat(sprintf("  ALOC_INV %s [%s] com-LP: %s\n", cen, a,
-      paste(sprintf("%s=%.0f%%", names(lp),   100*lp),   collapse=" ")))
+    w <- ALOC_INV[[cen]][[a]]
+    cat(sprintf("  ALOC_INV %s [%s]: %s\n", cen, a,
+      paste(sprintf("%s=%.0f%%", names(w), 100*w), collapse=" ")))
   }
 }
 
@@ -1422,25 +1384,18 @@ pib_pop_df <- data.frame(
   stringsAsFactors=FALSE
 )
 
-# Alocação de investimento (Engine 1 — ALOC_INV)
-# Exporta ambas as políticas × cenário × ano para o toggle do dashboard
-mk_aloc_df <- function(aloc_src, policy_label) {
-  bind_rows(lapply(CENS_MMA, function(cen) {
-    bind_rows(lapply(ANOS_MMA, function(a) {
-      aloc_c <- aloc_src[[cen]][[as.character(a)]]
-      data.frame(cenario=cen, ano=as.integer(a), localiz_policy=policy_label,
-                 cod=names(aloc_c),
-                 aloc_pct=round(as.numeric(aloc_c)*100, 2),
-                 stringsAsFactors=FALSE)
-    }))
-  })) |>
-    left_join(setores |> select(cod, nome), by="cod") |>
-    arrange(cenario, ano, localiz_policy, desc(aloc_pct))
-}
-aloc_df <- bind_rows(
-  mk_aloc_df(ALOC_INV_NOLP, "sem_localizacao"),
-  mk_aloc_df(ALOC_INV_LP,   "com_localizacao")
-)
+# Alocação de investimento (Engine 1 — ALOC_INV) — cenário × ano
+aloc_df <- bind_rows(lapply(CENS_MMA, function(cen) {
+  bind_rows(lapply(ANOS_MMA, function(a) {
+    aloc_c <- ALOC_INV[[cen]][[as.character(a)]]
+    data.frame(cenario=cen, ano=as.integer(a),
+               cod=names(aloc_c),
+               aloc_pct=round(as.numeric(aloc_c)*100, 2),
+               stringsAsFactors=FALSE)
+  }))
+})) |>
+  left_join(setores |> select(cod, nome), by="cod") |>
+  arrange(cenario, ano, desc(aloc_pct))
 
 # Multiplicadores de produção L* por cenário × ano (extraído de res_all)
 mult_df <- res_all |>
