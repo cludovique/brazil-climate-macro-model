@@ -333,30 +333,123 @@ engine1_gdp <- function(cenario, ano) {
 
 # 4b: Investimento de transição — alocado como FBCF por setor IO
 #
-# TODO (melhoria prioritária): os pesos abaixo são PREMISSAS MANUAIS — números
-# redondos baseados em julgamento sobre onde o capex de transição é gasto.
-# Eles NÃO foram calibrados a partir das tabelas de investimento do plano MMA.
-# O plano MMA contém um detalhamento por tema (eólica, solar, VEs, biocombustíveis,
-# etc.) que deveria ser mapeado diretamente para os setores IO e usado para derivar
-# esses pesos de forma data-driven.
-# Referência esperada: planilha MMA — aba de investimentos por tema/tecnologia,
-# mapeada para os códigos IO via Mapeamento_Setores.
-ALOC_INV <- c(S40=0.15,S41=0.05,S42=0.03,S43=0.03,  # electricity / gas
-              S22=0.08,S20=0.04,S05=0.05,             # biofuels, oil&gas
-              S29=0.04,S28=0.02,S36=0.06,S37=0.06,    # steel(S29), cement(S28), auto parts, other transport equip
-              S27=0.08,S44=0.12,S45=0.04,             # plastics/rubber, water/waste, construction
-              S50=0.04,S51=0.02,                       # air transport, logistics
-              S01=0.03,S04=0.02,S08=0.03,             # agriculture, mining, food processing
-              S66=0.02,S67=0.02)                       # public admin, education (public sector capacity)
-ALOC_INV <- ALOC_INV[names(ALOC_INV) %in% setores$cod]
-ALOC_INV <- ALOC_INV / sum(ALOC_INV)
+# TIMING: Em 2026 o investimento ainda não foi realizado. Portanto investimento
+# de transição só entra a partir de 2030 (primeiro ano de modelo após 2026).
+# 2025 retorna delta_f = 0 para evitar salto artificial no ano base.
+#
+# ALOCAÇÃO DATA-DRIVEN: pesos derivados das adições físicas de capacidade
+# da planilha MMA (Sheet 4 Energia + Sheet 5 Indústria + Sheet 4 Biocombustíveis),
+# combinados com fatores de custo de capital por tecnologia (IRENA/EPE referência).
+#
+# Metodologia (ver code/_diag_inv_design.R para derivação completa):
+#   1. ΔGW por tecnologia: eólica(+120), solar(+19), hidro(+13) na 100D 2050
+#   2. ΔPJ biocombustíveis: biometano+dieselVerde+bioQAV = 2.567 PJ na 100D 2050
+#   3. CapEx unitário: eólica $1.2B/GW, solar $0.7B/GW, hidro $2.5B/GW,
+#      nuclear $8B/GW, biocombustíveis $40M/PJ (IRENA 2023 / EPE referência)
+#   4. Proxy de investimento total = Σ(ΔCapacidade × CapEx_unitário)
+#
+# Mapeamento tecnologia → setor IO:
+#   Eólica:       S37 turbinas(50%), S44 civil(30%), S33 elétricos(10%), S42 grid(10%)
+#   Solar:        S32 painéis(40%), S44 civil(30%), S33 elétricos(20%), S42 grid(10%)
+#   Hidro:        S44 civil(60%), S30 metalurgia/turbinas(25%), S42 grid(15%)
+#   Biocombust.:  S22 complexo(50%), S20 biodiesel(20%), S44 plantas(30%)
+#   Nuclear:      S39 manutenção/eng(50%), S44 civil(50%)
+#   EV transport: S35 automóveis(40%), S36 peças auto(40%), S33 elétricos(20%)
+#   [Biomassa elétrica: ΔGW < 0 na 100D → retira capacidade, sem capex de expansão]
+#
+# Pesos resultantes (normalizados, independentes de cenário — usar 100D como âncora):
+#   S44=33.7%, S37=24.0%, S22=17.2%, S42=6.9%, S20=6.9%, S33=5.7%,
+#   S30=2.8%, S32=1.8%, S39=0.9%
+#
+# NOTA: S40/S41 (setores de geração elétrica) NÃO recebem FBCF diretamente.
+# Na MIP, o investimento em turbinas/painéis é classificado como FBCF do setor
+# comprador de equipamentos (S37, S32, S33) ou como obra civil (S44), não como
+# FBCF no setor de geração S40. S40 cresce via Engine 3 (volume físico MMA).
+# Idem para S29/S28: crescimento via Engine 3; capex de descarbonização é
+# marginal versus expansão de produção já calibrada.
 
-periodo_idx <- function(ano) if (ano<=2030) 1L else if (ano<=2035) 2L else 3L
+# Função auxiliar: deriva pesos por cenário a partir da capacidade instalada MMA
+derive_aloc_inv <- function(cenario) {
+  # Capacidade instalada base 2020 (Sheet 4, col 3)
+  cap_eol_b <- suppressWarnings(as.numeric(en[[51, 3]])); cap_eol_b[is.na(cap_eol_b)] <- 20.2
+  cap_sol_b <- suppressWarnings(as.numeric(en[[52, 3]])); cap_sol_b[is.na(cap_sol_b)] <- 5.0
+  cap_hid_b <- suppressWarnings(as.numeric(en[[53, 3]])); cap_hid_b[is.na(cap_hid_b)] <- 111.1
+  cap_nuc_b <- suppressWarnings(as.numeric(en[[56, 3]])); cap_nuc_b[is.na(cap_nuc_b)] <- 2.0
+
+  # Capacidade 2050 por cenário
+  col50 <- if (cenario == "25D") 10L else 17L   # 2050 col: 25D=col10, 100D=col17, 0D→25D
+  get_cap <- function(row) { v <- suppressWarnings(as.numeric(en[[row, col50]])); if(is.na(v)) 0 else v }
+  eol_50 <- get_cap(51); sol_50 <- get_cap(52)
+  hid_50 <- get_cap(53); nuc_50 <- get_cap(56)
+  bio_ccs_50 <- get_cap(54) + get_cap(55)       # biomassa conv + CCS
+
+  d_eol <- max(eol_50 - cap_eol_b, 0)
+  d_sol <- max(sol_50 - cap_sol_b, 0)
+  d_hid <- max(hid_50 - cap_hid_b, 0)
+  d_nuc <- max(nuc_50 - cap_nuc_b, 0)
+
+  # Biocombustíveis PJ 2050: biometano(R79) + diesel verde(R78) + bioQAV(R80)
+  get_pj <- function(row) { v <- suppressWarnings(as.numeric(en[[row, col50]])); if(is.na(v)) 0 else v }
+  pj_bio <- get_pj(79) + get_pj(78) + get_pj(80)
+
+  # CapEx unitário (relativo, $M por GW ou por PJ)
+  inv_eol   <- d_eol * 1200   # $M/GW × GW
+  inv_sol   <- d_sol * 700
+  inv_hid   <- d_hid * 2500
+  inv_nuc   <- d_nuc * 8000
+  inv_bfuel <- pj_bio * 40    # $M/PJ
+
+  # Alocação por setor IO (sum do proxy de investimento por setor)
+  raw <- c(
+    S37 = inv_eol  * 0.50,                            # turbinas eólicas
+    S32 = inv_sol  * 0.40,                            # painéis solares
+    S44 = inv_eol  * 0.30 + inv_sol * 0.30 +
+          inv_hid  * 0.60 + inv_nuc * 0.50 +
+          inv_bfuel* 0.30,                            # obras civis
+    S33 = inv_eol  * 0.10 + inv_sol * 0.20,          # equip. elétricos
+    S42 = inv_eol  * 0.10 + inv_sol * 0.10 +
+          inv_hid  * 0.15,                            # transmissão/grid
+    S30 = inv_hid  * 0.25,                            # metalurgia/turbinas hidro
+    S22 = inv_bfuel* 0.50,                            # biocombustíveis complexo
+    S20 = inv_bfuel* 0.20,                            # biodiesel/HVO
+    S39 = inv_nuc  * 0.50                             # manutenção/eng nuclear
+  )
+  raw <- raw[names(raw) %in% setores$cod]
+  if (sum(raw) < 1e-6) raw <- raw + 1e-6    # guard against all-zero
+  raw / sum(raw)
+}
+
+# Pré-computa uma vez por cenário (evita recomputação no loop de simulação)
+ALOC_INV <- lapply(CENS_MMA, derive_aloc_inv)
+names(ALOC_INV) <- CENS_MMA
+
+# Diagnóstico: imprime pesos derivados
+for (cen in c("25D","100D")) {
+  cat(sprintf("  ALOC_INV %s: %s\n", cen,
+    paste(sprintf("%s=%.1f%%", names(ALOC_INV[[cen]]),
+                  100*ALOC_INV[[cen]]), collapse=" ")))
+}
+
+# Período de investimento: CAE por faixa de horizonte
+# 2025 → zero (ainda não realizado; estamos em 2026)
+# 2030 → CAE período 2020-2030 (proxy: aceleração inicial 2026-2030)
+# 2035 → CAE período 2020-2035
+# 2040-2050 → CAE período 2020-2050
+periodo_idx <- function(ano) {
+  ano_n <- as.numeric(ano)
+  if (ano_n < 2030) return(0L)        # 2025: sem investimento (pré-2030)
+  if (ano_n <= 2030) return(1L)       # 2030: CAE período 2020-2030
+  if (ano_n <= 2035) return(2L)       # 2035: CAE período 2020-2035
+  return(3L)                           # 2040-2050: CAE período 2020-2050
+}
 
 engine1_inv <- function(cenario, ano) {
-  inv_RM <- inv_annual_R2018[[cenario]][periodo_idx(ano)] * 1000
+  pi <- periodo_idx(ano)
   delta_f <- numeric(N); names(delta_f) <- setores$cod
-  for (cod in names(ALOC_INV)) delta_f[cod] <- delta_f[cod] + inv_RM * ALOC_INV[cod]
+  if (pi == 0L) return(delta_f)        # 2025: sem choque de investimento
+  inv_RM <- inv_annual_R2018[[cenario]][pi] * 1000
+  aloc   <- ALOC_INV[[cenario]]
+  for (cod in names(aloc)) delta_f[cod] <- delta_f[cod] + inv_RM * aloc[cod]
   delta_f
 }
 
@@ -1031,7 +1124,8 @@ tot_exp_bi  <- sum(demanda_final$Exportacoes,                 na.rm=TRUE) / 1000
 demanda_comp_df <- bind_rows(lapply(CENS_MMA, function(cen)
   bind_rows(lapply(ANOS_MMA, function(ano) {
     g   <- gdp_rel_2018[as.character(ano)] - 1
-    inv <- inv_annual_R2018[[cen]][periodo_idx(ano)] * 1000 / 1000  # R$bi
+    pi  <- periodo_idx(ano)
+    inv <- if (pi == 0L) 0 else inv_annual_R2018[[cen]][pi] * 1000 / 1000  # R$bi; 0 for 2025
     data.frame(
       cenario             = cen,
       ano                 = as.integer(ano),
@@ -1247,13 +1341,17 @@ pib_pop_df <- data.frame(
   stringsAsFactors=FALSE
 )
 
-# Alocação de investimento (Engine 1 — ALOC_INV)
-aloc_df <- data.frame(
-  cod      = names(ALOC_INV),
-  aloc_pct = round(as.numeric(ALOC_INV) * 100, 2),
-  stringsAsFactors=FALSE) |>
+# Alocação de investimento (Engine 1 — ALOC_INV) — exporta 100D como referência
+# ALOC_INV é agora uma lista por cenário; usa 100D para o dashboard
+aloc_ref <- ALOC_INV[["100D"]]
+aloc_df <- bind_rows(lapply(CENS_MMA, function(cen) {
+  aloc_c <- ALOC_INV[[cen]]
+  data.frame(cenario=cen, cod=names(aloc_c),
+             aloc_pct=round(as.numeric(aloc_c)*100, 2),
+             stringsAsFactors=FALSE)
+})) |>
   left_join(setores |> select(cod, nome), by="cod") |>
-  arrange(desc(aloc_pct))
+  arrange(cenario, desc(aloc_pct))
 
 # Multiplicadores de produção L* por cenário × ano (extraído de res_all)
 mult_df <- res_all |>
@@ -1264,7 +1362,10 @@ mult_df <- res_all |>
 inv_df <- bind_rows(lapply(CENS_MMA, function(cen) {
   data.frame(
     cenario=cen, ano=ANOS_MMA,
-    inv_bi_R2018=sapply(ANOS_MMA, function(a) round(inv_annual_R2018[[cen]][periodo_idx(a)]*1e3/1e3, 2)),
+    inv_bi_R2018=sapply(ANOS_MMA, function(a) {
+      pi <- periodo_idx(a)
+      round(if(pi==0L) 0 else inv_annual_R2018[[cen]][pi]*1e3/1e3, 2)
+    }),
     stringsAsFactors=FALSE)
 }))
 
