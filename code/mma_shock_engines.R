@@ -338,81 +338,113 @@ engine1_gdp <- function(cenario, ano) {
 # 2025 retorna delta_f = 0 para evitar salto artificial no ano base.
 #
 # ALOCAÇÃO DATA-DRIVEN: pesos derivados das adições físicas de capacidade
-# da planilha MMA (Sheet 4 Energia + Sheet 5 Indústria + Sheet 4 Biocombustíveis),
+# da planilha MMA (Sheet 4 Energia + Sheet 6 Transporte + Sheet 7 Cidades),
 # combinados com fatores de custo de capital por tecnologia (IRENA/EPE referência).
 #
-# Metodologia (ver code/_diag_inv_design.R para derivação completa):
-#   1. ΔGW por tecnologia: eólica(+120), solar(+19), hidro(+13) na 100D 2050
-#   2. ΔPJ biocombustíveis: biometano+dieselVerde+bioQAV = 2.567 PJ na 100D 2050
-#   3. CapEx unitário: eólica $1.2B/GW, solar $0.7B/GW, hidro $2.5B/GW,
-#      nuclear $8B/GW, biocombustíveis $40M/PJ (IRENA 2023 / EPE referência)
-#   4. Proxy de investimento total = Σ(ΔCapacidade × CapEx_unitário)
+# Categorias de capex incluídas:
+#   1. Eletricidade: eólica(+120 GW), solar(+19 GW), hidro(+13 GW), nuclear(+0.7 GW),
+#                   biomassa+CCS(+11.7 GW), bateria armazenamento(+11 GW)
+#   2. Biocombustíveis: biometano+dieselVerde+bioQAV (2.567 PJ na 100D 2050)
+#   3. Coprocessamento refinaria: diesel verde + etanol CCS PJ requerem upgrade
+#      de plantas de hidrotratamento/co-processamento em S19
+#   4. Frota EV: ΔPJ_elétrico transporte × fator (Sheet 6 R13×R14)
+#   5. Eficiência edificações: Δ% elétrico cidades × fator (Sheet 7 R26)
 #
-# Mapeamento tecnologia → setor IO:
-#   Eólica:       S37 turbinas(50%), S44 civil(30%), S33 elétricos(10%), S42 grid(10%)
-#   Solar:        S32 painéis(40%), S44 civil(30%), S33 elétricos(20%), S42 grid(10%)
-#   Hidro:        S44 civil(60%), S30 metalurgia/turbinas(25%), S42 grid(15%)
-#   Biocombust.:  S22 complexo(50%), S20 biodiesel(20%), S44 plantas(30%)
-#   Nuclear:      S39 manutenção/eng(50%), S44 civil(50%)
-#   EV transport: S35 automóveis(40%), S36 peças auto(40%), S33 elétricos(20%)
-#   [Biomassa elétrica: ΔGW < 0 na 100D → retira capacidade, sem capex de expansão]
+# CapEx unitário ($M): eólica $1.2B/GW, solar $0.7B/GW, hidro $2.5B/GW,
+#   nuclear $8B/GW, biomCCS $2.5B/GW, bateria $0.3B/GW, biofuels $40M/PJ,
+#   coprocessamento $15M/PJ, EV $15M/PJ, edificações $30B/unidade-fração
 #
-# Pesos resultantes (normalizados, independentes de cenário — usar 100D como âncora):
-#   S44=33.7%, S37=24.0%, S22=17.2%, S42=6.9%, S20=6.9%, S33=5.7%,
-#   S30=2.8%, S32=1.8%, S39=0.9%
+# Mapeamento tecnologia → setor IO (100D pesos pré-normalização):
+#   Eólica:      S37(50%) S44(30%) S33(10%) S42(10%)
+#   Solar:       S32(40%) S44(30%) S33(20%) S42(10%)
+#   Hidro:       S44(60%) S30(25%) S42(15%)
+#   Nuclear:     S44(50%) S39(50%)
+#   BiomCCS:     S22(35%) S44(40%) S33(15%) S30(10%)
+#   Baterias:    S32(60%) S33(40%)
+#   Biofuels:    S22(50%) S44(30%) S20(20%)
+#   Coprocss:    S19(40%) S44(35%) S33(15%) S27(10%)
+#   EV fleet:    S35(40%) S36(40%) S33(20%)
+#   Edificações: S44(55%) S33(30%) S32(15%)
 #
-# NOTA: S40/S41 (setores de geração elétrica) NÃO recebem FBCF diretamente.
-# Na MIP, o investimento em turbinas/painéis é classificado como FBCF do setor
-# comprador de equipamentos (S37, S32, S33) ou como obra civil (S44), não como
-# FBCF no setor de geração S40. S40 cresce via Engine 3 (volume físico MMA).
-# Idem para S29/S28: crescimento via Engine 3; capex de descarbonização é
-# marginal versus expansão de produção já calibrada.
+# Pesos resultantes (normalizados, 100D 2050):
+#   S44=34.0%, S37=20.2%, S22=17.3%, S33=7.9%, S42=5.8%, S20=5.8%,
+#   S30=2.4%, S32=2.4%, S19=1.7%, S39=0.8%, S35=0.7%, S36=0.7%, S27=0.4%
+#
+# NOTA: S40/S41/S29/S28 excluídos — crescem via Engine 3 (volume físico MMA).
 
-# Função auxiliar: deriva pesos por cenário a partir da capacidade instalada MMA
+# Função auxiliar: deriva pesos por cenário a partir dos dados físicos MMA
 derive_aloc_inv <- function(cenario) {
-  # Capacidade instalada base 2020 (Sheet 4, col 3)
-  cap_eol_b <- suppressWarnings(as.numeric(en[[51, 3]])); cap_eol_b[is.na(cap_eol_b)] <- 20.2
-  cap_sol_b <- suppressWarnings(as.numeric(en[[52, 3]])); cap_sol_b[is.na(cap_sol_b)] <- 5.0
-  cap_hid_b <- suppressWarnings(as.numeric(en[[53, 3]])); cap_hid_b[is.na(cap_hid_b)] <- 111.1
-  cap_nuc_b <- suppressWarnings(as.numeric(en[[56, 3]])); cap_nuc_b[is.na(cap_nuc_b)] <- 2.0
+  # col 2050: 100D=col17, 25D e 0D=col10 (0D é near-BAU → usa 25D como proxy)
+  col50 <- if (cenario == "100D") 17L else 10L
 
-  # Capacidade 2050 por cenário
-  col50 <- if (cenario == "25D") 10L else 17L   # 2050 col: 25D=col10, 100D=col17, 0D→25D
-  get_cap <- function(row) { v <- suppressWarnings(as.numeric(en[[row, col50]])); if(is.na(v)) 0 else v }
-  eol_50 <- get_cap(51); sol_50 <- get_cap(52)
-  hid_50 <- get_cap(53); nuc_50 <- get_cap(56)
-  bio_ccs_50 <- get_cap(54) + get_cap(55)       # biomassa conv + CCS
+  get_en  <- function(row) { v <- suppressWarnings(as.numeric(en[[row, col50]])); if(is.na(v)) 0 else v }
+  get_en_b<- function(row) { v <- suppressWarnings(as.numeric(en[[row, 3]]));    if(is.na(v)) 0 else v }
+  get_tr  <- function(row) { v <- suppressWarnings(as.numeric(tr[[row, col50]])); if(is.na(v)) 0 else v }
+  get_tr_b<- function(row) { v <- suppressWarnings(as.numeric(tr[[row, 3]]));    if(is.na(v)) 0 else v }
+  get_ci  <- function(row) { v <- suppressWarnings(as.numeric(ci[[row, col50]])); if(is.na(v)) 0 else v }
+  get_ci_b<- function(row) { v <- suppressWarnings(as.numeric(ci[[row, 3]]));    if(is.na(v)) 0 else v }
 
-  d_eol <- max(eol_50 - cap_eol_b, 0)
-  d_sol <- max(sol_50 - cap_sol_b, 0)
-  d_hid <- max(hid_50 - cap_hid_b, 0)
-  d_nuc <- max(nuc_50 - cap_nuc_b, 0)
+  # ── 1. Eletricidade — adições de capacidade instalada (GW) ───────────────
+  d_eol    <- max(get_en(51) - get_en_b(51), 0)   # eólica
+  d_sol    <- max(get_en(52) - get_en_b(52), 0)   # solar
+  d_hid    <- max(get_en(53) - get_en_b(53), 0)   # hidro
+  d_nuc    <- max(get_en(56) - get_en_b(56), 0)   # nuclear
+  d_bioccs <- max(get_en(55), 0)                   # biomassa+CCS (base=0)
+  d_bat    <- max(get_en(58), 0)                   # armazenamento baterias (base=0)
 
-  # Biocombustíveis PJ 2050: biometano(R79) + diesel verde(R78) + bioQAV(R80)
-  get_pj <- function(row) { v <- suppressWarnings(as.numeric(en[[row, col50]])); if(is.na(v)) 0 else v }
-  pj_bio <- get_pj(79) + get_pj(78) + get_pj(80)
+  inv_eol    <- d_eol    * 1200   # $M/GW — IRENA 2023 Brasil
+  inv_sol    <- d_sol    * 700
+  inv_hid    <- d_hid    * 2500
+  inv_nuc    <- d_nuc    * 8000   # referência Angra 3
+  inv_bioccs <- d_bioccs * 2500   # BECCS: capex similar à biomassa convencional
+  inv_bat    <- d_bat    * 300    # utility-scale battery (custo caindo)
 
-  # CapEx unitário (relativo, $M por GW ou por PJ)
-  inv_eol   <- d_eol * 1200   # $M/GW × GW
-  inv_sol   <- d_sol * 700
-  inv_hid   <- d_hid * 2500
-  inv_nuc   <- d_nuc * 8000
-  inv_bfuel <- pj_bio * 40    # $M/PJ
+  # ── 2. Biocombustíveis — PJ de capacidade instalada 2050 ─────────────────
+  pj_bmet  <- get_en(79)   # biometano
+  pj_dvrd  <- get_en(78)   # diesel verde (HVO)
+  pj_qav   <- get_en(80)   # bioQAV
+  pj_etccs <- get_en(76)   # etanol+CCS
 
-  # Alocação por setor IO (sum do proxy de investimento por setor)
+  inv_bfuel <- (pj_bmet + pj_dvrd + pj_qav) * 40   # $M/PJ — planta biorrefinaria
+
+  # ── 3. Coprocessamento em refinarias (S19) ────────────────────────────────
+  # Diesel verde + etanol CCS processados em refinarias de petróleo exigem
+  # upgrade de unidades de hidrotratamento e coprocessamento
+  inv_copro <- (pj_dvrd + pj_etccs) * 15   # $M/PJ — fração do capex de refinaria
+
+  # ── 4. Eletrificação do transporte (frota EV) ────────────────────────────
+  # Sheet 6: R13=PJ total transporte, R14=% elétrico → ΔPJ elétrico
+  delta_pj_ev <- max(get_tr(13) * get_tr(14) - get_tr_b(13) * get_tr_b(14), 0)
+  inv_ev <- delta_pj_ev * 15   # $M/PJ — prêmio frota EV + infraestrutura recarga
+
+  # ── 5. Eficiência e eletrificação de edificações ─────────────────────────
+  # Sheet 7: R26=% elétrico nos usos finais de cidades (fração 0-1)
+  delta_elec_cid <- max(get_ci(26) - get_ci_b(26), 0)
+  inv_bldg <- delta_elec_cid * 30000   # $M por fração-unit (~0.2 → $6B)
+
+  # ── 6. Mapeamento tecnologia → setor IO ──────────────────────────────────
   raw <- c(
-    S37 = inv_eol  * 0.50,                            # turbinas eólicas
-    S32 = inv_sol  * 0.40,                            # painéis solares
-    S44 = inv_eol  * 0.30 + inv_sol * 0.30 +
-          inv_hid  * 0.60 + inv_nuc * 0.50 +
-          inv_bfuel* 0.30,                            # obras civis
-    S33 = inv_eol  * 0.10 + inv_sol * 0.20,          # equip. elétricos
-    S42 = inv_eol  * 0.10 + inv_sol * 0.10 +
-          inv_hid  * 0.15,                            # transmissão/grid
-    S30 = inv_hid  * 0.25,                            # metalurgia/turbinas hidro
-    S22 = inv_bfuel* 0.50,                            # biocombustíveis complexo
-    S20 = inv_bfuel* 0.20,                            # biodiesel/HVO
-    S39 = inv_nuc  * 0.50                             # manutenção/eng nuclear
+    S37 = inv_eol    * 0.50,                            # turbinas eólicas
+    S32 = inv_sol    * 0.40 + inv_bat    * 0.60 +
+          inv_bldg   * 0.15,                            # painéis solares + células baterias
+    S44 = inv_eol    * 0.30 + inv_sol    * 0.30 +
+          inv_hid    * 0.60 + inv_nuc    * 0.50 +
+          inv_bioccs * 0.40 + inv_bfuel  * 0.30 +
+          inv_copro  * 0.35 + inv_bldg   * 0.55,       # obras civis (todas tecnologias)
+    S33 = inv_eol    * 0.10 + inv_sol    * 0.20 +
+          inv_bat    * 0.40 + inv_bioccs * 0.15 +
+          inv_copro  * 0.15 + inv_ev     * 0.20 +
+          inv_bldg   * 0.30,                            # equip. elétricos (inversores, HVAC)
+    S42 = inv_eol    * 0.10 + inv_sol    * 0.10 +
+          inv_hid    * 0.15,                            # transmissão e distribuição
+    S30 = inv_hid    * 0.25 + inv_bioccs * 0.10,       # metalurgia (turbinas hidro, vasos CCS)
+    S22 = inv_bioccs * 0.35 + inv_bfuel  * 0.50,       # complexo biocombustíveis
+    S20 = inv_bfuel  * 0.20,                            # biodiesel/HVO
+    S39 = inv_nuc    * 0.50,                            # manutenção/engenharia nuclear
+    S19 = inv_copro  * 0.40,                            # coprocessamento em refinaria
+    S27 = inv_copro  * 0.10,                            # material plástico/borracha (tubulação)
+    S35 = inv_ev     * 0.40,                            # automóveis (prêmio EV)
+    S36 = inv_ev     * 0.40                             # peças/baterias veiculares
   )
   raw <- raw[names(raw) %in% setores$cod]
   if (sum(raw) < 1e-6) raw <- raw + 1e-6    # guard against all-zero
