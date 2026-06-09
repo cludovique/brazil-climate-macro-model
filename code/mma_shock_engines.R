@@ -611,26 +611,40 @@ engine2_A_star <- function(cenario, ano) {
       A_star["S19","S20"] <- A["S19","S20"] * indicador_s20
   }
 
-  # ── Gás Natural S43 — INDICADOR biometano (análogo ao coprocessamento S19) ─
-  # INDICADOR[t] = fração fóssil do output de S43 = 900 / (900 + pj_biometano[t])
-  # base 2020 ≈ 1.0 (pj_biometano_2020 ≈ 0, S43 essencialmente 100% gás fóssil).
-  # Interpreta: à medida que biometano cresce dentro de S43 (produção a partir de
-  # biomassa/resíduos, sem insumos fósseis), os coeficientes de insumo fóssil por
-  # unidade de output de S43 caem proporcionalmente à fração ainda fóssil.
-  # Aplicado a A[S19,S43]: derivados de petróleo usados em operações de gás fóssil.
-  # Aplicado a A[S43,S43]: auto-consumo de gás (compressão, distribuição) —
-  #   biometano usa biogás, não gás fóssil, para suas próprias operações.
+  # ── Gás Natural S43 — INDICADOR biometano ────────────────────────────────
+  # INDICADOR[t] = fração fóssil de S43 = 900 / (900 + pj_biometano[t])
+  # base 2020 ≈ 1.0 (biometano ≈ 0; S43 essencialmente 100% gás fóssil).
+  #
+  # Fossil side ↓: três coeficientes escalam com a fração fóssil restante:
+  #   A[S05,S43] = 0.130 — maior insumo: extração upstream de gás (S05).
+  #     Biometano vem de resíduos orgânicos, não de poços; A[S05] cai.
+  #   A[S19,S43] = 0.001 — derivados de petróleo em operações de gás.
+  #   A[S43,S43] = 0.017 — auto-consumo de gás fóssil (compressão etc.).
+  #
+  # Biomass side ↑: biometano requer feedstock orgânico (vinhaça S08/S09,
+  #   resíduos agropecuários S01, RSO/esgoto S44). Esses insumos têm valor
+  #   de mercado próximo de zero (são resíduos). Por isso roteamos o
+  #   complemento via S22 (biocombustíveis), que capta o processamento/
+  #   beneficiamento de biogás. Magnitude: deslocamento de A[S05,S43] ×
+  #   BIOMETHANE_BIO_RATIO (= 1.0 paridade; calibrar com EPE/ANP).
+  #
   # Fonte: MMA Planilha 4, R79=pj_biometano; base S43 = 900 PJ (Engine 3).
-  # Nota: lado de aumento de insumos de biomassa em A[S22,S43] não implementado
-  #   (requer coef. de produção de biometano de EPE/ANP — ver TODO Engine 3).
   bio_s43_t <- pj_biometano[[cenario]][a]
   s43_base_pj <- 900
   if (!is.na(bio_s43_t) && bio_s43_t >= 0) {
     indicador_s43 <- s43_base_pj / (s43_base_pj + bio_s43_t)  # 1.0 → ~0.46 em 2050
+    BIOMETHANE_BIO_RATIO <- 1.0   # R$ S22 por R$ deslocado de S05; calibrar com EPE/ANP
+    # Fossil ↓
+    if ("S05" %in% rownames(A_star) && "S43" %in% colnames(A_star))
+      A_star["S05","S43"] <- A["S05","S43"] * indicador_s43
     if ("S19" %in% rownames(A_star) && "S43" %in% colnames(A_star))
       A_star["S19","S43"] <- A["S19","S43"] * indicador_s43
     if ("S43" %in% rownames(A_star) && "S43" %in% colnames(A_star))
       A_star["S43","S43"] <- A["S43","S43"] * indicador_s43
+    # Biomass ↑
+    if ("S22" %in% rownames(A_star) && "S43" %in% colnames(A_star))
+      A_star["S22","S43"] <- A["S22","S43"] +
+        A["S05","S43"] * (1 - indicador_s43) * BIOMETHANE_BIO_RATIO
   }
 
   A_star
