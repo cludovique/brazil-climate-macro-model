@@ -1367,20 +1367,29 @@ function setAlocPolicy(pol){
 function renderAlocChart(aloc){
   const rs=D.Resumo||[];
   const invAno=(+(rs.find(r=>r.cenario==="100D"&&+r.ano===S.ano)||{}).inv_shock_bi)||0;
-  // Backward-compat: if data has no localiz_policy column, skip that filter
+  // Backward-compat: if data has no localiz_policy / ano column, skip those filters
   const hasLP =aloc.some(r=>r.localiz_policy!=null);
   const hasAno=aloc.some(r=>r.ano!=null);
+  // Show warning on "Com política" button when LP data not yet available
+  const btnCom=document.getElementById("aloc-btn-com");
+  if(btnCom) btnCom.title=hasLP?"":"⚠ Execute mma_shock_engines.R para ativar";
   const alocS=[...aloc]
     .filter(r=>r.cenario==="100D"
       &&(!hasAno||+r.ano===S.ano)
       &&(!hasLP||r.localiz_policy===alocPolicy))
     .sort((a,b)=>(+(b.aloc_pct)||0)-(+(a.aloc_pct)||0));
-  mkHBar("ch-aloc",alocS.map(r=>r.cod+(r.nome?" "+String(r.nome).slice(0,18):"")),
+  // Y-axis: short label (cod only); full name appears in tooltip title
+  mkHBar("ch-aloc",alocS.map(r=>r.cod),
     [{label:"R$ bi (100D)",
       data:alocS.map(r=>+((+(r.aloc_pct)||0)*invAno/100).toFixed(2)),
       backgroundColor:alocS.map(r=>hexAlpha(nt4Color(r.cod),.78)),borderRadius:3}],
     {plugins:{...CD.plugins,legend:{display:false},
-              tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>`R$ ${ctx.parsed.x.toFixed(2)} bi`}}},
+              tooltip:{...CD.plugins.tooltip,callbacks:{
+                title:items=>{const i=items[0]?.dataIndex??-1;
+                  const r=alocS[i];
+                  return r?(r.cod+(r.nome?" — "+r.nome:"")):"";},
+                label:ctx=>`R$ ${ctx.parsed.x.toFixed(2)} bi  (${(+(alocS[ctx.dataIndex]?.aloc_pct)||0).toFixed(1)}%)`
+              }}},
      scales:{x:{...CD.scales.x,title:{display:true,text:"R$ bi (R$2018)",color:"#8892a4"}},y:CD.scales.y}});
 }
 
