@@ -355,19 +355,20 @@ engine1_gdp <- function(cenario, ano) {
 #   coprocessamento $15M/PJ, EV $15M/PJ, edificações $30B/unidade-fração
 #
 # Mapeamento tecnologia → setor IO (100D pesos pré-normalização):
-#   Eólica:      S37(50%) S44(30%) S33(10%) S42(10%)
-#   Solar:       S32(40%) S44(30%) S33(20%) S42(10%)
-#   Hidro:       S44(60%) S30(25%) S42(15%)
-#   Nuclear:     S44(50%) S39(50%)
-#   BiomCCS:     S22(35%) S44(40%) S33(15%) S30(10%)
+#   Eólica:      S37(50%) S45(30%) S33(10%) S42(10%)
+#   Solar:       S32(40%) S45(30%) S33(20%) S42(10%)
+#   Hidro:       S45(60%) S30(25%) S42(15%)
+#   Nuclear:     S45(50%) S39(50%)
+#   BiomCCS:     S22(35%) S45(40%) S33(15%) S30(10%)
 #   Baterias:    S32(60%) S33(40%)
-#   Biofuels:    S22(50%) S44(30%) S20(20%)
-#   Coprocss:    S19(40%) S44(35%) S33(15%) S27(10%)
+#   Biofuels:    S22(50%) S45(30%) S20(20%)
+#   Coprocss:    S19(40%) S45(35%) S33(15%) S27(10%)
 #   EV fleet:    S35(40%) S36(40%) S33(20%)
-#   Edificações: S44(55%) S33(30%) S32(15%)
+#   Edificações: S45(55%) S33(30%) S32(15%)
+#   [S45 = Construção; S44 = Água/esgoto — NÃO usar para capex civil]
 #
 # Pesos resultantes (normalizados, 100D 2050):
-#   S44=34.0%, S37=20.2%, S22=17.3%, S33=7.9%, S42=5.8%, S20=5.8%,
+#   S45=34.0%, S37=20.2%, S22=17.3%, S33=7.9%, S42=5.8%, S20=5.8%,
 #   S30=2.4%, S32=2.4%, S19=1.7%, S39=0.8%, S35=0.7%, S36=0.7%, S27=0.4%
 #
 # NOTA: S40/S41/S29/S28 excluídos — crescem via Engine 3 (volume físico MMA).
@@ -423,14 +424,15 @@ derive_aloc_inv <- function(cenario) {
   inv_bldg <- delta_elec_cid * 30000   # $M por fração-unit (~0.2 → $6B)
 
   # ── 6. Mapeamento tecnologia → setor IO ──────────────────────────────────
+  # NOTA: S45 = Construção (obras civis), S44 = Água/esgoto (errado para capex)
   raw <- c(
     S37 = inv_eol    * 0.50,                            # turbinas eólicas
     S32 = inv_sol    * 0.40 + inv_bat    * 0.60 +
           inv_bldg   * 0.15,                            # painéis solares + células baterias
-    S44 = inv_eol    * 0.30 + inv_sol    * 0.30 +
+    S45 = inv_eol    * 0.30 + inv_sol    * 0.30 +
           inv_hid    * 0.60 + inv_nuc    * 0.50 +
           inv_bioccs * 0.40 + inv_bfuel  * 0.30 +
-          inv_copro  * 0.35 + inv_bldg   * 0.55,       # obras civis (todas tecnologias)
+          inv_copro  * 0.35 + inv_bldg   * 0.55,       # Construção (obras civis, todas tecno.)
     S33 = inv_eol    * 0.10 + inv_sol    * 0.20 +
           inv_bat    * 0.40 + inv_bioccs * 0.15 +
           inv_copro  * 0.15 + inv_ev     * 0.20 +
