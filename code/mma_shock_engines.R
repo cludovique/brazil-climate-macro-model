@@ -588,27 +588,33 @@ engine2_A_star <- function(cenario, ano) {
   }
 
   # ── Biodiesel S20 — INDICADOR mistura (blend ratio) ──────────────────────
-  # A[S19,S20] = 0.2747 in 2018: S20 purchases petroleum derivatives from S19
-  # as an input. This high coefficient reflects the blending operation — in 2018
-  # Brazil mandated B10-B12 diesel, so S20's output was predominantly petroleum
-  # diesel blended with 10-12% biodiesel. The petroleum component is the S19 input.
+  # A[S19,S20] = 0.2747: derivados de petróleo → S20 (componente fóssil do diesel
+  # misturado). Em 2018 o mandato era B10-B12; ao crescer, a fração fóssil cai.
+  # A[S05,S20] = 0.2645: extração de petróleo → S20 (insumo de óleo bruto/upstream).
+  #   A interpretação exata de A[S05,S20] é ambígua (pode ser integração vertical
+  #   na TIP ou feedstock direto); aplicamos o indicador apenas a A[S19,S20]
+  #   por enquanto. Ver TODO: investigar A[S05,S20] e decidir se deve cair também.
   #
-  # As biodiesel mandate and production grow, the petroleum fraction per unit of
-  # S20 output falls. We model this with a blend indicator:
-  #   INDICADOR = S20_base_PJ / (S20_base_PJ + pj_diesel_vrd[t])
-  #   → 1.0 in 2020, declines as incremental HVO/diesel verde grows
-  # Interpretation: the new biodiesel/HVO increment (pj_diesel_vrd) is pure
-  # bio-based and requires no petroleum diesel input, so each additional PJ of
-  # incremental output dilutes the average petroleum content per unit.
-  # Applied to A[S19,S20] only (other S20 inputs, e.g. S01→S20, are unchanged
-  # since the feedstock processing side of the plant doesn't change).
+  # Biomass side ↑ (novo): à medida que diesel fóssil é deslocado por HVO/biodiesel,
+  #   o insumo de biocombustível de S22 aumenta na mesma proporção.
+  #   A[S22,S20] += A[S19,S20] × (1 − indicador) × BIODIESEL_BIO_RATIO
+  #   Ao contrário de S43 (feedstock = resíduo ≈ R$0), aqui o HVO/biodiesel compete
+  #   no mesmo mercado que o diesel fóssil → parity assumption (1.0) é defensável.
+  #   Resultado: Fóssil+Biomassa total é conservado (Sanity: 0.28207 = 0.28207).
+  #
   # Source: pj_diesel_vrd = MMA Planilha 4, R78; S20 base = 230 PJ (Engine 3).
-  s20_base_pj <- 230   # matches Engine 3 base for S20
+  s20_base_pj <- 230
   bio_s20_t   <- suppressWarnings(as.numeric(pj_diesel_vrd[[cenario]][a]))
   if (!is.na(bio_s20_t) && bio_s20_t >= 0 && s20_base_pj > 0) {
     indicador_s20 <- s20_base_pj / (s20_base_pj + bio_s20_t)   # 1.0 → ~0.20 in 100D 2050
+    BIODIESEL_BIO_RATIO <- 1.0   # R$ S22 por R$ deslocado de S19 (mercado paritário)
+    # Fossil ↓
     if ("S19" %in% rownames(A_star) && "S20" %in% colnames(A_star))
       A_star["S19","S20"] <- A["S19","S20"] * indicador_s20
+    # Biomass ↑
+    if ("S22" %in% rownames(A_star) && "S20" %in% colnames(A_star))
+      A_star["S22","S20"] <- A["S22","S20"] +
+        A["S19","S20"] * (1 - indicador_s20) * BIODIESEL_BIO_RATIO
   }
 
   # ── Gás Natural S43 — INDICADOR biometano ────────────────────────────────
