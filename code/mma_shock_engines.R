@@ -567,6 +567,30 @@ engine2_A_star <- function(cenario, ano) {
       A_star["S19","S19"] <- A["S19","S19"] * indicador_s19
   }
 
+  # ── Biodiesel S20 — INDICADOR mistura (blend ratio) ──────────────────────
+  # A[S19,S20] = 0.2747 in 2018: S20 purchases petroleum derivatives from S19
+  # as an input. This high coefficient reflects the blending operation — in 2018
+  # Brazil mandated B10-B12 diesel, so S20's output was predominantly petroleum
+  # diesel blended with 10-12% biodiesel. The petroleum component is the S19 input.
+  #
+  # As biodiesel mandate and production grow, the petroleum fraction per unit of
+  # S20 output falls. We model this with a blend indicator:
+  #   INDICADOR = S20_base_PJ / (S20_base_PJ + pj_diesel_vrd[t])
+  #   → 1.0 in 2020, declines as incremental HVO/diesel verde grows
+  # Interpretation: the new biodiesel/HVO increment (pj_diesel_vrd) is pure
+  # bio-based and requires no petroleum diesel input, so each additional PJ of
+  # incremental output dilutes the average petroleum content per unit.
+  # Applied to A[S19,S20] only (other S20 inputs, e.g. S01→S20, are unchanged
+  # since the feedstock processing side of the plant doesn't change).
+  # Source: pj_diesel_vrd = MMA Planilha 4, R78; S20 base = 230 PJ (Engine 3).
+  s20_base_pj <- 230   # matches Engine 3 base for S20
+  bio_s20_t   <- suppressWarnings(as.numeric(pj_diesel_vrd[[cenario]][a]))
+  if (!is.na(bio_s20_t) && bio_s20_t >= 0 && s20_base_pj > 0) {
+    indicador_s20 <- s20_base_pj / (s20_base_pj + bio_s20_t)   # 1.0 → ~0.20 in 100D 2050
+    if ("S19" %in% rownames(A_star) && "S20" %in% colnames(A_star))
+      A_star["S19","S20"] <- A["S19","S20"] * indicador_s20
+  }
+
   # ── Gás Natural S43 — INDICADOR biometano (análogo ao coprocessamento S19) ─
   # INDICADOR[t] = fração fóssil do output de S43 = 900 / (900 + pj_biometano[t])
   # base 2020 ≈ 1.0 (pj_biometano_2020 ≈ 0, S43 essencialmente 100% gás fóssil).
