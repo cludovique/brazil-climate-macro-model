@@ -595,11 +595,12 @@ engine2_A_star <- function(cenario, ano) {
   # Dois lados da substituição:
   #   FÓSSIL ↓  A[S05,S19] = crude oil input         → × indicador_s19
   #             A[S19,S19] = self-consumption deriv.  → × indicador_s19
-  #   BIOMASSA ↑ A[S22,S19] = bio-feedstock (bio-oil/pyrolysis) input
-  #             += A[S05,S19]_base × (1 − indicador_s19) × COPRO_BIO_RATIO
-  #             Assume price parity (COPRO_BIO_RATIO = 1): each R$ of crude
-  #             displaced is replaced by R$ 1 of bio-feedstock from S22.
-  #             Calibrate with EPE/ANP bio-oil price data when available.
+  #   BIOMASSA ↑ A[S22,S19] = bio-feedstock + bio-process-heat input
+  #             += (A[S05,S19] + A[S19,S19])_base × (1 − indicador) × COPRO_BIO_RATIO
+  #             A[S05,S19]=0.246: crude feedstock → replaced by bio-oil/pyrolysis.
+  #             A[S19,S19]=0.256: refinery self-consumption for process heat →
+  #               replaced by biomass residues (oil cake, biogas, bagasse-equiv).
+  #             COPRO_BIO_RATIO = 1 (price parity). Calibrate with EPE/ANP.
   #
   # Fonte: MMA Planilha 4, R39=consumo_bruto, R40+R41=deriv_dom+exp.
   COPRO_BIO_RATIO <- 1.0   # bio-feedstock value per R$ of displaced crude (price parity)
@@ -621,10 +622,15 @@ engine2_A_star <- function(cenario, ano) {
       A_star["S05","S19"] <- A["S05","S19"] * indicador_s19
     if ("S19" %in% rownames(A_star) && "S19" %in% colnames(A_star))
       A_star["S19","S19"] <- A["S19","S19"] * indicador_s19
-    # Biomass side ↑ — bio-feedstock replaces the displaced crude in value terms
+    # Biomass side ↑ — bio-inputs replace BOTH displaced crude AND displaced
+    # self-consumption (process heat). A[S19,S19]=0.2555: the refinery burns
+    # its own petroleum products for process heat/steam. In a bio-refinery
+    # running on vegetable oils, this process heat comes from biomass residues
+    # (oil cake, biogas, bagasse-equivalent) → routes to S22.
+    # Complement base = A[S05,S19] (crude feedstock) + A[S19,S19] (process heat).
     if ("S22" %in% rownames(A_star) && "S19" %in% colnames(A_star))
       A_star["S22","S19"] <- A["S22","S19"] +
-        A["S05","S19"] * (1 - indicador_s19) * COPRO_BIO_RATIO
+        (A["S05","S19"] + A["S19","S19"]) * (1 - indicador_s19) * COPRO_BIO_RATIO
   }
 
   # ── Biodiesel S20 — INDICADOR mistura (blend ratio) ──────────────────────
