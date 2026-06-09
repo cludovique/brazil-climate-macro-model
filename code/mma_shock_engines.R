@@ -399,7 +399,7 @@ engine2_A_star <- function(cenario, ano) {
   # Químico, Outros, Transporte, Cidades) usa seus próprios fatores de escala,
   # em vez de um único fator agregado para toda a indústria. Isso captura a
   # trajetória diferenciada de descarbonização entre sub-setores, seguindo a
-  # metodologia BLUES/EPE descrita em "Insumo para Matriz Substituição Energia".
+  # metodologia BLUES/MMA descrita em "Insumo para Matriz Substituição Energia".
 
   # normalize=TRUE: preserva intensidade energética total (necessário quando sc_e
   # pode ser muito grande, ex: transporte elétrico 0.36%→16.7% → sc_e=46×).
@@ -551,9 +551,18 @@ engine2_A_star <- function(cenario, ano) {
   # INDICADOR[t] = (consumo_bruto[t]/deriv_total[t]) / (consumo_bruto_2020/deriv_total_2020)
   # Interpreta: à medida que biomassa substitui petróleo cru (coprocessamento
   # 0%→52% em 100D 2050), o cru consumido por unidade de derivado cai.
-  # Aplicado a A[S05,S19]: insumo de petróleo bruto (S05) por unidade de refino.
-  # Aplicado a A[S19,S19]: auto-consumo de derivados na própria refinaria.
+  #
+  # Dois lados da substituição:
+  #   FÓSSIL ↓  A[S05,S19] = crude oil input         → × indicador_s19
+  #             A[S19,S19] = self-consumption deriv.  → × indicador_s19
+  #   BIOMASSA ↑ A[S22,S19] = bio-feedstock (bio-oil/pyrolysis) input
+  #             += A[S05,S19]_base × (1 − indicador_s19) × COPRO_BIO_RATIO
+  #             Assume price parity (COPRO_BIO_RATIO = 1): each R$ of crude
+  #             displaced is replaced by R$ 1 of bio-feedstock from S22.
+  #             Calibrate with EPE/ANP bio-oil price data when available.
+  #
   # Fonte: MMA Planilha 4, R39=consumo_bruto, R40+R41=deriv_dom+exp.
+  COPRO_BIO_RATIO <- 1.0   # bio-feedstock value per R$ of displaced crude (price parity)
   cb_t <- consumo_bruto[[cenario]][a]
   dt_t <- deriv_total[[cenario]][a]
   if (!anyNA(c(cb_t, dt_t)) &&
@@ -561,10 +570,21 @@ engine2_A_star <- function(cenario, ano) {
       !is.na(deriv_total_2020)   && deriv_total_2020   > 1e-6 &&
       dt_t > 1e-6) {
     indicador_s19 <- max((cb_t / dt_t) / (consumo_bruto_2020 / deriv_total_2020), 0)
+    # Guard: consumo_bruto for 25D/0D scenarios reads anomalously small (~781 ktep
+    # vs expected ~650 000 ktep) — likely a data layout issue in the MMA spreadsheet
+    # (row 39, cols 5-10 contain a different variable for those scenarios).
+    # If the raw consumo_bruto is < 1% of the 2020 base, the indicator is meaningless;
+    # fall back to indicador = 1 (no coprocessamento = appropriate for low-ambition paths).
+    if (!is.na(cb_t) && cb_t < 0.01 * consumo_bruto_2020) indicador_s19 <- 1.0
+    # Fossil side ↓
     if ("S05" %in% rownames(A_star) && "S19" %in% colnames(A_star))
       A_star["S05","S19"] <- A["S05","S19"] * indicador_s19
     if ("S19" %in% rownames(A_star) && "S19" %in% colnames(A_star))
       A_star["S19","S19"] <- A["S19","S19"] * indicador_s19
+    # Biomass side ↑ — bio-feedstock replaces the displaced crude in value terms
+    if ("S22" %in% rownames(A_star) && "S19" %in% colnames(A_star))
+      A_star["S22","S19"] <- A["S22","S19"] +
+        A["S05","S19"] * (1 - indicador_s19) * COPRO_BIO_RATIO
   }
 
   # ── Biodiesel S20 — INDICADOR mistura (blend ratio) ──────────────────────
