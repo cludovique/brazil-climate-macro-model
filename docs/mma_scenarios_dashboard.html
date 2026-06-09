@@ -220,7 +220,16 @@ table.dt tr:hover td{background:#1f2233}
   <div class="g2" style="margin-bottom:16px">
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
-        <div class="ct" style="margin:0">FBCF — Alocação por Setor IO (R$ bi, 100D · ano selecionado no filtro)</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="ct" style="margin:0">FBCF — Alocação por Setor IO (R$ bi, 100D · ano selecionado no filtro)</div>
+          <!-- Política de Localização toggle -->
+          <div id="aloc-pol-tog" style="display:inline-flex;border:1px solid var(--bdr);border-radius:6px;overflow:hidden;font-size:10px;cursor:pointer;flex-shrink:0">
+            <span id="aloc-btn-sem" onclick="setAlocPolicy('sem_localizacao')"
+              style="padding:3px 9px;background:rgba(59,109,17,.35);color:#7BC142;font-weight:600">Sem política</span>
+            <span id="aloc-btn-com" onclick="setAlocPolicy('com_localizacao')"
+              style="padding:3px 9px;background:transparent;color:var(--mut)">Com política</span>
+          </div>
+        </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
           <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mut)">
             <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#E24B4A"></span>Energéticos</span>
@@ -239,8 +248,10 @@ table.dt tr:hover td{background:#1f2233}
         <div class="ct">Engine 1b — Vetor de Alocação FBCF por Tema de Investimento</div>
         <p style="font-size:10.5px;color:var(--mut);line-height:1.8;margin:0 0 10px">
           O investimento total do MMA (R$ bi/ano por período, via CAE) é convertido num choque de demanda final
-          distribuído por 21 setores IO. O vetor de pesos <b style="color:var(--txt)">ALOC_INV</b> é fixo
-          (não varia por ano) — só o montante total muda entre períodos. Os pesos refletem
+          distribuído por setores IO. O vetor de pesos <b style="color:var(--txt)">ALOC_INV</b> varia por ano
+          e por política: o conteúdo doméstico de equipamentos importados (turbinas, painéis, baterias) cresce
+          de 2026 a 2050 sob a <b style="color:#3BD6F5">Política de Localização Industrial</b>
+          (40%→70% turbinas · 20%→55% painéis · 30%→65% baterias). Os pesos refletem
           <b style="color:var(--txt)">onde o capital de transição é efetivamente gasto</b>: equipamentos,
           obras, insumos e capacitação.
         </p>
@@ -1184,6 +1195,7 @@ const SECNAME={};
 // STATE
 // ════════════════════════════════════════════════════════════════════════════
 const S={ano:2035, grp:null, tab:0};
+let alocPolicy="sem_localizacao"; // toggle: "sem_localizacao" | "com_localizacao"
 
 // ════════════════════════════════════════════════════════════════════════════
 // CONTROLS
@@ -1333,6 +1345,38 @@ function showTab(n){
 }
 function rebuild(){_built.clear();INITS[S.tab]();}
 
+// ── Política de localização — helper functions ────────────────────────────
+function setAlocPolicy(pol){
+  alocPolicy=pol;
+  const btnSem=document.getElementById("aloc-btn-sem");
+  const btnCom=document.getElementById("aloc-btn-com");
+  if(btnSem&&btnCom){
+    btnSem.style.background = pol==="sem_localizacao"?"rgba(59,109,17,.35)":"transparent";
+    btnSem.style.color      = pol==="sem_localizacao"?"#7BC142":"var(--mut)";
+    btnSem.style.fontWeight = pol==="sem_localizacao"?"600":"400";
+    btnCom.style.background = pol==="com_localizacao"?"rgba(59,199,255,.25)":"transparent";
+    btnCom.style.color      = pol==="com_localizacao"?"#3BD6F5":"var(--mut)";
+    btnCom.style.fontWeight = pol==="com_localizacao"?"600":"400";
+  }
+  renderAlocChart(D.Aloc_Investimento||[]);
+}
+function renderAlocChart(aloc){
+  const rs=D.Resumo||[];
+  const invAno=(+(rs.find(r=>r.cenario==="100D"&&+r.ano===S.ano)||{}).inv_shock_bi)||0;
+  // Backward-compat: if data has no localiz_policy column, skip that filter
+  const hasLP=aloc.some(r=>r.localiz_policy!=null);
+  const alocS=[...aloc]
+    .filter(r=>r.cenario==="100D"&&+r.ano===S.ano&&(!hasLP||r.localiz_policy===alocPolicy))
+    .sort((a,b)=>(+(b.aloc_pct)||0)-(+(a.aloc_pct)||0));
+  mkHBar("ch-aloc",alocS.map(r=>r.cod+(r.nome?" "+String(r.nome).slice(0,18):"")),
+    [{label:"R$ bi (100D)",
+      data:alocS.map(r=>+((+(r.aloc_pct)||0)*invAno/100).toFixed(2)),
+      backgroundColor:alocS.map(r=>hexAlpha(nt4Color(r.cod),.78)),borderRadius:3}],
+    {plugins:{...CD.plugins,legend:{display:false},
+              tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>`R$ ${ctx.parsed.x.toFixed(2)} bi`}}},
+     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ bi (R$2018)",color:"#8892a4"}},y:CD.scales.y}});
+}
+
 // ════════════════════════════════════════════════════════════════════════════
 // TAB 0 — PREMISSAS
 // ════════════════════════════════════════════════════════════════════════════
@@ -1381,15 +1425,8 @@ function initPremissas(){
                 title:{display:true,text:"R$ bi/ano (R$ 2023)",color:"#8892a4"}}}});
 
   // ── 2c. FBCF sector allocation bar — absolute R$bi ───────────────────────
-  const invAno=(+(rs.find(r=>r.cenario==="100D"&&+r.ano===S.ano)||{}).inv_shock_bi)||0;
-  const alocS=[...aloc].filter(r=>r.cenario==="100D").sort((a,b)=>(+(b.aloc_pct)||0)-(+(a.aloc_pct)||0));
-  mkHBar("ch-aloc", alocS.map(r=>r.cod+(r.nome?" "+String(r.nome).slice(0,18):"")),
-    [{label:"R$ bi (100D)",
-      data:alocS.map(r=>+((+(r.aloc_pct)||0)*invAno/100).toFixed(2)),
-      backgroundColor:alocS.map(r=>hexAlpha(nt4Color(r.cod),.78)),borderRadius:3}],
-    {plugins:{...CD.plugins,legend:{display:false},
-              tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>`R$ ${ctx.parsed.x.toFixed(2)} bi`}}},
-     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ bi (R$2018)",color:"#8892a4"}},y:CD.scales.y}});
+  // Sync toggle button state (e.g. on year change / rebuild)
+  setAlocPolicy(alocPolicy);
 
 
   // ── 3a. Main energy groups — stacked 100% bar, 100D ───────────────────────
