@@ -245,95 +245,99 @@ table.dt tr:hover td{background:#1f2233}
     </div>
     <div class="card" style="display:flex;align-items:flex-start">
       <div style="width:100%;padding-top:2px">
-        <div class="ct">Engine 1b — Vetor de Alocação FBCF por Tema de Investimento</div>
-        <p style="font-size:10.5px;color:var(--mut);line-height:1.8;margin:0 0 10px">
-          O investimento total do MMA (R$ bi/ano por período, via CAE) é convertido num choque de demanda final
-          distribuído por setores IO. O vetor de pesos <b style="color:var(--txt)">ALOC_INV</b> varia por ano
-          e por política: o conteúdo doméstico de equipamentos importados (turbinas, painéis, baterias) cresce
-          de 2026 a 2050 sob a <b style="color:#3BD6F5">Política de Localização Industrial</b>
-          (40%→70% turbinas · 20%→55% painéis · 30%→65% baterias). Os pesos refletem
-          <b style="color:var(--txt)">onde o capital de transição é efetivamente gasto</b>: equipamentos,
-          obras, insumos e capacitação.
+        <div class="ct">Engine 1b — Mapeamento Tecnologia → Setor IO</div>
+        <p style="font-size:10.5px;color:var(--mut);line-height:1.8;margin:0 0 8px">
+          Pesos derivados dos dados físicos do MMA (ΔGW instalado × capex unitário por tecnologia).
+          Apenas a <b style="color:var(--txt)">fração doméstica</b> dos equipamentos importados estimula
+          a produção local — a parte importada cria déficit comercial, não produção interna.
+          Com a <b style="color:#3BD6F5">Política de Localização</b>, o conteúdo doméstico cresce:
+          turbinas 40%→70% · painéis 20%→55% · baterias 30%→65% (linear 2026→2050).
         </p>
 
-        <!-- Allocation groups table -->
-        <table style="width:100%;font-size:10.5px;border-collapse:collapse;margin-bottom:10px">
+        <!-- Allocation groups table — reflects actual derive_aloc_inv() mapping -->
+        <table style="width:100%;font-size:10.5px;border-collapse:collapse;margin-bottom:8px">
           <thead><tr>
-            <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:left">Tema de investimento</th>
-            <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:left">Setores IO</th>
-            <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:right">Peso</th>
-            <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:left">Rationale</th>
+            <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:left">Tecnologia / tema</th>
+            <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:left">Setor IO</th>
+            <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:right">~Peso¹</th>
+            <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:left">O que captura</th>
           </tr></thead>
           <tbody>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#F1C40F;font-weight:600">Energia elétrica</td>
-              <td style="padding:3px 6px;color:var(--mut)">S40 · S41 · S42</td>
-              <td style="padding:3px 6px;color:#F1C40F;font-weight:700;text-align:right">22.3%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Geração centralizada, distribuída e transmissão — backbone da descarbonização</td>
+              <td style="padding:3px 6px;color:#11B2C6;font-weight:600">Construção civil</td>
+              <td style="padding:3px 6px;color:var(--mut)">S45</td>
+              <td style="padding:3px 6px;color:#11B2C6;font-weight:700;text-align:right">~40%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Terraplenagem, fundações e montagem para eólica, solar, hidro, nuclear, bioCCS, biofuels, copro e edificações</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#11B2C6;font-weight:600">Infraestrutura urbana</td>
-              <td style="padding:3px 6px;color:var(--mut)">S44 · S45</td>
-              <td style="padding:3px 6px;color:#11B2C6;font-weight:700;text-align:right">15.5%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Saneamento, gestão de resíduos e obras civis (eólica, solar, linhas)</td>
+              <td style="padding:3px 6px;color:#1D9E75;font-weight:600">Biocombustíveis complexo</td>
+              <td style="padding:3px 6px;color:var(--mut)">S22</td>
+              <td style="padding:3px 6px;color:#1D9E75;font-weight:700;text-align:right">~19%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Plantas de biomassa-eletricidade+CCS, biometano, diesel verde (HVO), bioQAV e etanol+CCS</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#9B59B6;font-weight:600">Componentes &amp; Equip.</td>
-              <td style="padding:3px 6px;color:var(--mut)">S27 · S36 · S37</td>
-              <td style="padding:3px 6px;color:#9B59B6;font-weight:700;text-align:right">19.4%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Borracha/plástico, peças automotivas e equipamentos de transporte (VEs, turbinas)</td>
+              <td style="padding:3px 6px;color:#9B59B6;font-weight:600">Turbinas eólicas</td>
+              <td style="padding:3px 6px;color:var(--mut)">S34 <span style="color:#555;font-size:9px">CNAE 2821</span></td>
+              <td style="padding:3px 6px;color:#9B59B6;font-weight:700;text-align:right">~9%²</td>
+              <td style="padding:3px 6px;color:var(--mut)">Máq. e equip. mecânicos — naceles, caixas de câmbio, eixos. <b style="color:var(--txt)">Somente fração doméstica</b> (40→70% com política)</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#1D9E75;font-weight:600">Biocombustíveis</td>
-              <td style="padding:3px 6px;color:var(--mut)">S22 · S20</td>
-              <td style="padding:3px 6px;color:#1D9E75;font-weight:700;text-align:right">11.7%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Plantas de biocombustíveis avançados (SAF, HVO, etanol+CCS)</td>
+              <td style="padding:3px 6px;color:#F39C12;font-weight:600">Equipamentos elétricos</td>
+              <td style="padding:3px 6px;color:var(--mut)">S33</td>
+              <td style="padding:3px 6px;color:#F39C12;font-weight:700;text-align:right">~9%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Inversores, transformadores, HVAC, motores — presente em eólica, solar, baterias, copro, EVs e edificações</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#E24B4A;font-weight:600">Petróleo &amp; Gás</td>
-              <td style="padding:3px 6px;color:var(--mut)">S05 · S43</td>
-              <td style="padding:3px 6px;color:#E24B4A;font-weight:700;text-align:right">7.8%</td>
-              <td style="padding:3px 6px;color:var(--mut)">CCS em refino (S05) e expansão de biometano/gás (S43)</td>
+              <td style="padding:3px 6px;color:#378ADD;font-weight:600">Transmissão &amp; distribuição</td>
+              <td style="padding:3px 6px;color:var(--mut)">S42</td>
+              <td style="padding:3px 6px;color:#378ADD;font-weight:700;text-align:right">~7%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Expansão de linhas de transmissão e subestações para escoar geração eólica, solar e hidro</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#95A5A6;font-weight:600">Ind. pesada</td>
-              <td style="padding:3px 6px;color:var(--mut)">S29 · S28 · S04</td>
-              <td style="padding:3px 6px;color:#95A5A6;font-weight:700;text-align:right">7.8%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Aço e cimento verdes para infraestrutura; minerais críticos para baterias</td>
+              <td style="padding:3px 6px;color:#95A5A6;font-weight:600">Metalurgia</td>
+              <td style="padding:3px 6px;color:var(--mut)">S30</td>
+              <td style="padding:3px 6px;color:#95A5A6;font-weight:700;text-align:right">~4%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Turbinas hidráulicas, vasos de pressão bioCCS e reatores biofuels (metais não-ferrosos e fundição)</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#6B8E23;font-weight:600">Agropecuária</td>
-              <td style="padding:3px 6px;color:var(--mut)">S01 · S08</td>
-              <td style="padding:3px 6px;color:#6B8E23;font-weight:700;text-align:right">5.8%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Expansão de culturas energéticas e cadeia de alimentos para bioeconomia</td>
+              <td style="padding:3px 6px;color:#E67E22;font-weight:600">Refino &amp; coprocessamento</td>
+              <td style="padding:3px 6px;color:var(--mut)">S19 · S27</td>
+              <td style="padding:3px 6px;color:#E67E22;font-weight:700;text-align:right">~2.5%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Adaptação de refinarias para HVO/SAF (S19) e insumos petroquímicos do processo (S27)</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+              <td style="padding:3px 6px;color:#E24B4A;font-weight:600">Transporte elétrico</td>
+              <td style="padding:3px 6px;color:var(--mut)">S35 · S36</td>
+              <td style="padding:3px 6px;color:#E24B4A;font-weight:700;text-align:right">~2%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Veículos elétricos leves e pesados (S35) e peças/baterias automotivas (S36)</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+              <td style="padding:3px 6px;color:#7F8C8D;font-weight:600">Painéis &amp; armazenamento</td>
+              <td style="padding:3px 6px;color:var(--mut)">S32</td>
+              <td style="padding:3px 6px;color:#7F8C8D;font-weight:700;text-align:right">~1%²</td>
+              <td style="padding:3px 6px;color:var(--mut)">Painéis solares + baterias utility-scale + automação predial. <b style="color:var(--txt)">Somente fração doméstica</b> (painéis 20→55% · baterias 30→65%)</td>
             </tr>
             <tr>
-              <td style="padding:3px 6px;color:var(--mut);font-weight:600">Transporte &amp; Cap. pública</td>
-              <td style="padding:3px 6px;color:var(--mut)">S50 · S51 · S66 · S67</td>
-              <td style="padding:3px 6px;color:var(--mut);font-weight:700;text-align:right">9.7%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Aviação verde, logística de baixo carbono e capacidade institucional pública</td>
+              <td style="padding:3px 6px;color:#8E44AD;font-weight:600">Nuclear O&amp;M</td>
+              <td style="padding:3px 6px;color:var(--mut)">S39</td>
+              <td style="padding:3px 6px;color:#8E44AD;font-weight:700;text-align:right">~1%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Manutenção, reparação e instalação de máquinas — expansão da capacidade nuclear existente</td>
             </tr>
           </tbody>
         </table>
 
-        <p style="font-size:10px;color:var(--mut);line-height:1.7;margin:0 0 10px">
+        <p style="font-size:10px;color:var(--mut);line-height:1.7;margin:0 0 6px">
           <b style="color:var(--txt)">Mecanismo:</b>
-          CAE (R$ bi/ano) × ALOC_INV[s] → Δf[s] (choque FBCF setorial) → L* · Δf → Δx (produção induzida).<br>
-          <b style="color:var(--txt)">Normalização:</b> os pesos são normalizados para somar 1.0, garantindo que o total
-          do investimento seja integralmente alocado — sem vazamento nem dupla contagem.<br>
-          <b style="color:var(--txt)">Invariância temporal:</b> a distribuição setorial é constante entre 2020 e 2050;
-          apenas o volume total (CAE por período) varia.
+          CAE (R$ bi/ano) × ALOC_INV[s, ano] → Δf[s] (choque FBCF setorial) → L* · Δf → Δx (produção induzida).<br>
+          <b style="color:var(--txt)">Normalização:</b> pesos somam 1.0 — o total do investimento é integralmente alocado sem dupla contagem.<br>
+          <b style="color:var(--txt)">S20 excluído:</b> biodiesel/HVO já cresce via Engine 3 (volume físico MMA calibrado) — incluir FBCF em S20 criaria dupla contagem.<br>
+          <b style="color:var(--txt)">S40/S41 excluídos:</b> geração elétrica cresce via Engine 3; FBCF em S40/S41 seria também dupla contagem.
         </p>
-        <div style="background:rgba(243,156,18,.08);border-left:3px solid #F39C12;border-radius:3px;padding:8px 10px">
-          <div style="font-size:10px;font-weight:700;color:#F39C12;margin-bottom:3px">⚠ Ponto de melhoria</div>
-          <p style="font-size:10px;color:var(--mut);line-height:1.7;margin:0">
-            Os pesos atuais são <b style="color:var(--txt)">premissas manuais</b> baseadas em julgamento técnico —
-            não foram calibrados a partir das tabelas de investimento do próprio plano MMA.
-            O plano contém um detalhamento por tema/tecnologia (eólica, solar, VEs, biocombustíveis, etc.)
-            que deveria ser mapeado diretamente aos setores IO via <code>Mapeamento_Setores</code> para derivar
-            esses pesos de forma <b style="color:var(--txt)">data-driven</b>.
-          </p>
-        </div>
+        <p style="font-size:10px;color:var(--mut);line-height:1.6;margin:0">
+          ¹ Pesos aproximados, 100D · sem política · 2050. Variam por ano (capex incremental de cada tecnologia muda)
+          e por política (conteúdo doméstico de S34, S32, S36 sobe com localização industrial).<br>
+          ² Com <b style="color:#3BD6F5">Política de Localização ativa</b>, S34 sobe para ~14% e S32 para ~4% em 2050.
+        </p>
       </div>
     </div>
   </div>
@@ -1364,9 +1368,12 @@ function renderAlocChart(aloc){
   const rs=D.Resumo||[];
   const invAno=(+(rs.find(r=>r.cenario==="100D"&&+r.ano===S.ano)||{}).inv_shock_bi)||0;
   // Backward-compat: if data has no localiz_policy column, skip that filter
-  const hasLP=aloc.some(r=>r.localiz_policy!=null);
+  const hasLP =aloc.some(r=>r.localiz_policy!=null);
+  const hasAno=aloc.some(r=>r.ano!=null);
   const alocS=[...aloc]
-    .filter(r=>r.cenario==="100D"&&+r.ano===S.ano&&(!hasLP||r.localiz_policy===alocPolicy))
+    .filter(r=>r.cenario==="100D"
+      &&(!hasAno||+r.ano===S.ano)
+      &&(!hasLP||r.localiz_policy===alocPolicy))
     .sort((a,b)=>(+(b.aloc_pct)||0)-(+(a.aloc_pct)||0));
   mkHBar("ch-aloc",alocS.map(r=>r.cod+(r.nome?" "+String(r.nome).slice(0,18):"")),
     [{label:"R$ bi (100D)",
