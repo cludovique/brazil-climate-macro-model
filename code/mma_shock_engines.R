@@ -89,7 +89,12 @@ get_base2020 <- function(df, r) { suppressWarnings(as.numeric(df[[r, 3]])) }
 pp <- read_mma(9)
 gdp_idx  <- setNames(suppressWarnings(as.numeric(unlist(pp[4, 4:9]))), ANOS_STR)
 pop_mil  <- setNames(suppressWarnings(as.numeric(unlist(pp[3, 4:9]))), ANOS_STR)
-gdp_2018_factor <- 0.97   # PIB 2018 ≈ 97% do PIB 2020
+gdp_2018_factor <- 0.97   # GDP_2020 / GDP_2018 ≈ 0.97 (COVID contraction)
+# IBGE real GDP: 2018→2019 +1.1%, 2019→2020 -3.9% → 1.011×0.961 = 0.972.
+# The MMA gdp_idx is indexed to 2020=1; the MIP is in 2018 R$.
+# Multiply gdp_idx by this ratio to convert to a 2018-based growth factor.
+# NOTE: this factor is UNRELATED to the investment deflation (USD2023→R$2018),
+# which uses the US CPI (1/1.25 ≈ 0.80) in a separate step in Engine 1b.
 
 # ── 2.2  GHG agregado por cenário (ResultBLUES) --------------------------
 rb <- read_mma(1)
@@ -284,11 +289,24 @@ names(f_base) <- setores$cod
 # Setores calibrados pelo Engine 3: sua trajetória de produção é fixada pelos
 # volumes físicos MMA (Engine 3), não pelo crescimento do PIB (Engine 1).
 # Zeramos o componente GDP-scaling nesses setores para evitar dupla contagem.
-#   S05 = Extrativa petróleo/gás: pico 2030 + declínio 58% até 2050 (MMA)
-#   S19 = Refino/derivados: segue consumo+exportação de derivados (MMA R40+R41)
+# Regra: todo setor com apply_ratio() em engine3_delta_x deve estar aqui.
+#
+#   S05 = Extrativa petróleo/gás: pico 2030 + declínio 58% até 2050
+#   S19 = Refino/derivados: segue deriv_dom + deriv_exp (MMA R40+R41)
 #   S40 = Geração elétrica: segue TWh gerados (MMA R49)
-#   S42 = Transmissão: proporcional à geração (segue S40)
-ENGINE3_SECTORS <- c("S05","S19","S40","S42")
+#   S42 = Transmissão: proporcional à geração
+#   S22 = Biocombustíveis avançados: etanol+CCS + gasolina verde + BioQAV
+#   S20 = Biodiesel/HVO: diesel verde (MMA R78)
+#   S43 = Gás/Biometano: 900 PJ base + crescimento biometano (MMA R79)
+#   S29 = Siderurgia: produção de aço (MMA R27, Mt)
+#   S28 = Cimento/Minerais: produção de clínquer (MMA R41, Mt)
+# S01 (Agropecuária) NOT listed here: only ~47% of S01 is covered by Engine 3
+# (energy crops: soja/milho/cana/oleag.). The remaining 53% should still scale
+# with GDP. Instead, Engine 3 adds only the DIFFERENTIAL shock for those crops
+# (vs GDP baseline) — see engine3_delta_x below.
+ENGINE3_SECTORS <- c("S05","S19","S40","S42",
+                     "S22","S20","S43",
+                     "S29","S28")
 
 # 4a: Escala PIB — crescimento da demanda final relativo a 2018
 # Setores em ENGINE3_SECTORS recebem delta_f=0 aqui quando Engine 3 ativo.
@@ -592,27 +610,33 @@ engine3_delta_x <- function(cenario, ano) {
   }
 
   # Agropecuária — EPE/FIPE 73-sector has only S01 (aggregate Agriculture).
-  # S02 = Pecuária (livestock), S04 = Mineral extraction — NOT crop sectors.
-  # Apply weighted composite shock to S01 using each crop's approximate share
-  # of S01 gross output (IBGE PAM 2018 estimates: soja~28%, milho~10%, cana~8%).
-  # Oleaginosas energéticas (non-soja; palma/girassol/canola): weight estimated
-  # via volume ratio (4720/123491) × 0.28 ≈ 0.011 → 0.01.
-  # Each crop adds its weighted delta independently; the rest of S01 (~53%) is
-  # implicitly held at BASE2020 growth.
+  # S01 covers ~47% energy crops (soja 28%, milho 10%, cana 8%, oleag. 1%) and
+  # ~53% other agriculture (livestock, horticulture, other grains) that is NOT
+  # covered by Engine 3 physical targets. Because of this partial coverage, S01
+  # is NOT in ENGINE3_SECTORS and Engine 1a GDP-scaling runs on the full S01.
+  #
+  # To avoid double-counting the energy-crop portion, we apply a DIFFERENTIAL
+  # shock: each crop adds (physical_growth_vs_2020 - GDP_growth_vs_2020).
+  # If a crop grows at the GDP rate → Engine 3 adds zero (Engine 1a covers it).
+  # If cana grows faster than GDP → Engine 3 adds the incremental above GDP.
+  # If milho grows slower than GDP → Engine 3 subtracts the shortfall.
+  # Both gdp_idx and crop ratios are 2020-based, so the comparison is consistent.
   CROP_WT <- c(soja=0.28, milho=0.10, cana=0.08, olea=0.01)
   vs_soja  <- suppressWarnings(as.numeric(soja_prod[[cenario]][a]))
   vs_milho <- suppressWarnings(as.numeric(milho_prod[[cenario]][a]))
   vs_cana  <- suppressWarnings(as.numeric(cana_prod[[cenario]][a]))
   vs_olea  <- suppressWarnings(as.numeric(olea_prod[[cenario]][a]))
+  g_2020   <- suppressWarnings(as.numeric(gdp_idx[a]))  # GDP_t / GDP_2020 (MMA, 2020-based)
+  if (is.na(g_2020) || g_2020 <= 0) g_2020 <- 1
   if ("S01" %in% names(delta_x)) {
     if (!is.na(vs_soja)  && !is.na(soja_2020)  && soja_2020  > 0)
-      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["soja"]  * (vs_soja  / soja_2020  - 1)
+      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["soja"]  * (vs_soja  / soja_2020  - g_2020)
     if (!is.na(vs_milho) && !is.na(milho_2020) && milho_2020 > 0)
-      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["milho"] * (vs_milho / milho_2020 - 1)
+      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["milho"] * (vs_milho / milho_2020 - g_2020)
     if (!is.na(vs_cana)  && !is.na(cana_2020)  && cana_2020  > 0)
-      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["cana"]  * (vs_cana  / cana_2020  - 1)
+      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["cana"]  * (vs_cana  / cana_2020  - g_2020)
     if (!is.na(vs_olea)  && olea_2020 > 0)
-      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["olea"]  * (vs_olea  / olea_2020  - 1)
+      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["olea"]  * (vs_olea  / olea_2020  - g_2020)
   }
 
   # Indústria pesada
