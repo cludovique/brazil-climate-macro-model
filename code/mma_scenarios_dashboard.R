@@ -1413,7 +1413,7 @@ function initPremissas(){
 
   // ── 2c. FBCF sector allocation bar — absolute R$bi ───────────────────────
   const invAno=(+(rs.find(r=>r.cenario==="100D"&&+r.ano===S.ano)||{}).inv_shock_bi)||0;
-  const alocS=[...aloc].sort((a,b)=>(+(b.aloc_pct)||0)-(+(a.aloc_pct)||0));
+  const alocS=[...aloc].filter(r=>r.cenario==="100D").sort((a,b)=>(+(b.aloc_pct)||0)-(+(a.aloc_pct)||0));
   mkHBar("ch-aloc", alocS.map(r=>r.cod+(r.nome?" "+String(r.nome).slice(0,18):"")),
     [{label:"R$ bi (100D)",
       data:alocS.map(r=>+((+(r.aloc_pct)||0)*invAno/100).toFixed(2)),
