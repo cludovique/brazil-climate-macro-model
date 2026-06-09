@@ -258,8 +258,15 @@ GRUPOS <- list(
   eletricidade = c("S40","S41","S42","S43"),
   ind_aco      = c("S29"),   # S29 = Prod. ferro-gusa/ferroligas/siderurgia
   ind_cimento  = c("S28"),   # S28 = Fabricação de produtos de minerais não-metálicos
-  ind_quimico  = c("S24","S25","S26"),
+  # ind_quimico: apenas S24 (defensivos/tintas) — genuinamente petroquímico.
+  # S25 (cosméticos) e S26 (farmoquímicos) EXCLUÍDOS: A[S22,S25]=0.025 e
+  # A[S22,S26]=0.009 representam INSUMOS FEEDSTOCK (óleos vegetais, substratos de
+  # fermentação), não energia biomassa. Aplicar sc_bio química (até 28.9×) ou
+  # zerá-los em 2025 (sc_bio=0) gera explosão espúria de fóssil (+200%/+174%).
+  # S25 e S26 migram para ind_outros (manufactura leve — trajetória mais suave).
+  ind_quimico  = c("S24"),
   ind_outros   = c("S10","S11","S12","S13","S14","S15","S16","S17","S18","S23",
+                   "S25","S26",   # cosméticos e farmoquímicos — feedstock bio, não energia
                    "S27","S30","S31","S32","S33","S34",
                    "S35","S36","S37","S38","S39"),
   ind_all      = c("S10","S11","S12","S13","S14","S15","S16","S17","S18",
@@ -562,30 +569,38 @@ engine2_A_star <- function(cenario, ano) {
                           pe_c, pb_c, pg_c,
                           BASE2020$elec_cid, BASE2020$bio_cid, BASE2020$gas_cid)
 
-  # ── Geração Elétrica (S40/S41) — mix de geração muda A[S19/S43, S40/S41] ──
-  # A geração elétrica usa fóssil (gás/carvão) como insumo direto (A[S19,S40]).
-  # Conforme a grade descarboniza (fóssil: 14.6% → 0.7%), esse insumo cai.
-  # Biomassa (convencional + CCS) também varia: base=9.3% → 12.6% em 100D 2050.
-  # Hidro/Eólica/Solar/Nuclear não têm linha energética na MIP (insumos são
-  # capital, não combustível) → sc_e = pct_e_base/pct_e_base = 1 (sem alteração).
-  pf_g <- foss_gen_pct[[cenario]][a]; pb_g <- bio_gen_pct[[cenario]][a]
-  # Escala apenas as linhas fóssil (S19/S43) e biomassa (S20/S22) do gerador.
-  # A[S40,S40] e A[S41,S41] são fluxos intra-setor (perdas, armazenamento),
-  # NÃO combustível de geração — definimos pct_e_new = pct_e_base → sc_e = 1
-  # para que os auto-coeficientes elétricos não sejam alterados.
+  # ── Geração Elétrica S40 — mix tecnológico MMA (indicadores diretos) ────────
+  # Usa % de geração por fonte (foss_gen_pct / bio_gen_pct) carregados da planilha
+  # MMA Sheet 4 (linhas 68 e 65+66) para escalar diretamente os coeficientes.
   #
-  # Aplicado APENAS a S40 (geração centralizada): o mix de geração (fóssil/biomassa)
-  # reflete usinas termelétricas centralizadas. S41 (geração distribuída = solar,
-  # micro-hidro) NÃO usa biomassa como combustível — aplicar o mesmo mix a S41
-  # criaria um coeficiente A[S22,S41] espúrio a partir do zero via else-if de
-  # rebalancear(). S41 herda indirectamente a descarbonização via Engine 2 de
-  # Cidades (demanda), mas seu input de geração não usa o mix termelétrico.
-  pe_g_base <- max(1 - foss_gen_2020 - bio_gen_2020, 0)
-  if (!anyNA(c(pf_g, pb_g)))
-    A_star <- rebalancear(intersect(c("S40"), colnames(A_star)),
-                          pe_g_base, pb_g, pf_g,   # pct_e_new = base → sc_e = 1
-                          pe_g_base, bio_gen_2020, foss_gen_2020,
-                          normalize = FALSE)  # redução de intensidade genuína (fóssil −95%)
+  # FÓSSIL ↓  A[S19,S40]: derivados de petróleo (fuel oil, óleo diesel) nas UTEs.
+  #           A[S43,S40]: gás natural nas termelétricas a gás.
+  #           indicador = pct_fossil_t / pct_fossil_2020  (14.6% → 0.7% em 100D)
+  #
+  # BIOMASSA ↑/↓  A[S22,S40]: biomassa convencional + biomassa com CCS.
+  #           indicador = pct_bio_t / pct_bio_2020  (9.3% → 12.6% em 100D 2050)
+  #           bio_gen_pct já soma linha 65 (conv) + linha 66 (CCS) — ver safe_sum2.
+  #           A[S22,S40] CRESCE porque a biomassa residual (UTE-bio) vira maior
+  #           fracção de uma grade cada vez mais dominada por renováveis sem fuel.
+  #
+  # Hidro / Eólica / Solar / Nuclear: sem insumo de combustível na MIP →
+  #   coeficientes não são alterados (não há linha S40 de geração nula a escalar).
+  # S41 (distribuída = solar/micro-hidro): mesma lógica — sem combustível fóssil/
+  #   biomassa → não é tocado aqui.
+  pf_g <- foss_gen_pct[[cenario]][a]
+  pb_g <- bio_gen_pct[[cenario]][a]
+  if (!is.na(pf_g) && foss_gen_2020 > 1e-6) {
+    ind_foss_g <- max(pf_g / foss_gen_2020, 0)
+    if ("S19" %in% rownames(A_star) && "S40" %in% colnames(A_star))
+      A_star["S19","S40"] <- A["S19","S40"] * ind_foss_g
+    if ("S43" %in% rownames(A_star) && "S40" %in% colnames(A_star))
+      A_star["S43","S40"] <- A["S43","S40"] * ind_foss_g
+  }
+  if (!is.na(pb_g) && bio_gen_2020 > 1e-6) {
+    ind_bio_g <- max(pb_g / bio_gen_2020, 0)
+    if ("S22" %in% rownames(A_star) && "S40" %in% colnames(A_star))
+      A_star["S22","S40"] <- A["S22","S40"] * ind_bio_g
+  }
 
   # ── Refino S19 — INDICADOR coprocessamento ────────────────────────────────
   # INDICADOR[t] = (consumo_bruto[t]/deriv_total[t]) / (consumo_bruto_2020/deriv_total_2020)
