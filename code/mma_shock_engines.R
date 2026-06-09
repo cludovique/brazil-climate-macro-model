@@ -300,10 +300,16 @@ names(f_base) <- setores$cod
 #   S43 = Gás/Biometano: 900 PJ base + crescimento biometano (MMA R79)
 #   S29 = Siderurgia: produção de aço (MMA R27, Mt)
 #   S28 = Cimento/Minerais: produção de clínquer (MMA R41, Mt)
-# S01 (Agropecuária) NOT listed here: only ~47% of S01 is covered by Engine 3
-# (energy crops: soja/milho/cana/oleag.). The remaining 53% should still scale
-# with GDP. Instead, Engine 3 adds only the DIFFERENTIAL shock for those crops
-# (vs GDP baseline) — see engine3_delta_x below.
+# S01 (Agropecuária) NOT listed here. S01 is treated as GDP-only (Engine 1a)
+# plus Leontief backward linkages from the energy sectors (S22, S20, S19, etc.).
+# Those sectors already use soja/cana/olea as intermediate inputs (A matrix);
+# when Engine 3 scales their physical output, Leontief propagates the implied
+# agricultural demand back to S01 automatically via L[S01,S22], L[S01,S19], etc.
+# A manual Engine 3 crop calibration on S01 would (a) double-count that indirect
+# demand and (b) create a spurious negative "transition effect" in the dashboard
+# because energy crops grow below GDP pace in all scenarios.
+# Future improvement: Option 2 — differential 100D vs 25D policy delta for S01
+# — is documented but not yet implemented.
 ENGINE3_SECTORS <- c("S05","S19","S40","S42",
                      "S22","S20","S43",
                      "S29","S28")
@@ -609,35 +615,13 @@ engine3_delta_x <- function(cenario, ano) {
     delta_x[cod] <<- delta_x[cod] + x[cod] * (vs / b - 1)
   }
 
-  # Agropecuária — EPE/FIPE 73-sector has only S01 (aggregate Agriculture).
-  # S01 covers ~47% energy crops (soja 28%, milho 10%, cana 8%, oleag. 1%) and
-  # ~53% other agriculture (livestock, horticulture, other grains) that is NOT
-  # covered by Engine 3 physical targets. Because of this partial coverage, S01
-  # is NOT in ENGINE3_SECTORS and Engine 1a GDP-scaling runs on the full S01.
-  #
-  # To avoid double-counting the energy-crop portion, we apply a DIFFERENTIAL
-  # shock: each crop adds (physical_growth_vs_2020 - GDP_growth_vs_2020).
-  # If a crop grows at the GDP rate → Engine 3 adds zero (Engine 1a covers it).
-  # If cana grows faster than GDP → Engine 3 adds the incremental above GDP.
-  # If milho grows slower than GDP → Engine 3 subtracts the shortfall.
-  # Both gdp_idx and crop ratios are 2020-based, so the comparison is consistent.
-  CROP_WT <- c(soja=0.28, milho=0.10, cana=0.08, olea=0.01)
-  vs_soja  <- suppressWarnings(as.numeric(soja_prod[[cenario]][a]))
-  vs_milho <- suppressWarnings(as.numeric(milho_prod[[cenario]][a]))
-  vs_cana  <- suppressWarnings(as.numeric(cana_prod[[cenario]][a]))
-  vs_olea  <- suppressWarnings(as.numeric(olea_prod[[cenario]][a]))
-  g_2020   <- suppressWarnings(as.numeric(gdp_idx[a]))  # GDP_t / GDP_2020 (MMA, 2020-based)
-  if (is.na(g_2020) || g_2020 <= 0) g_2020 <- 1
-  if ("S01" %in% names(delta_x)) {
-    if (!is.na(vs_soja)  && !is.na(soja_2020)  && soja_2020  > 0)
-      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["soja"]  * (vs_soja  / soja_2020  - g_2020)
-    if (!is.na(vs_milho) && !is.na(milho_2020) && milho_2020 > 0)
-      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["milho"] * (vs_milho / milho_2020 - g_2020)
-    if (!is.na(vs_cana)  && !is.na(cana_2020)  && cana_2020  > 0)
-      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["cana"]  * (vs_cana  / cana_2020  - g_2020)
-    if (!is.na(vs_olea)  && olea_2020 > 0)
-      delta_x["S01"] <- delta_x["S01"] + x["S01"] * CROP_WT["olea"]  * (vs_olea  / olea_2020  - g_2020)
-  }
+  # S01 (Agropecuária) — NO Engine 3 shock applied here.
+  # S01 grows via Engine 1a GDP scaling + Leontief backward linkages from the
+  # energy sectors calibrated below (S22, S20, S19 use soja/cana/olea as
+  # intermediate inputs; their expansion propagates demand to S01 via L[S01,·]).
+  # Physical crop trajectories (cana, soja, milho, olea) are loaded and exported
+  # to the dashboard for reference but do not drive S01 production directly.
+  # Option 2 (100D vs 25D policy differential) deferred for future implementation.
 
   # Indústria pesada
   # S29 = Produção de ferro-gusa/ferroligas/siderurgia (NOT S14 = vestuário)
