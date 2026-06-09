@@ -355,21 +355,22 @@ engine1_gdp <- function(cenario, ano) {
 #   coprocessamento $15M/PJ, EV $15M/PJ, edificações $30B/unidade-fração
 #
 # Mapeamento tecnologia → setor IO (100D pesos pré-normalização):
-#   Eólica:      S37(50%) S45(30%) S33(10%) S42(10%)
-#   Solar:       S32(40%) S45(30%) S33(20%) S42(10%)
+#   Eólica:      S37(50%×40%dom) S45(30%) S33(10%) S42(10%)
+#   Solar:       S32(40%×20%dom) S45(30%) S33(20%) S42(10%)
 #   Hidro:       S45(60%) S30(25%) S42(15%)
 #   Nuclear:     S45(50%) S39(50%)
 #   BiomCCS:     S22(35%) S45(40%) S33(15%) S30(10%)
-#   Baterias:    S32(60%) S33(40%)
-#   Biofuels:    S22(50%) S45(30%) S20(20%)
+#   Baterias:    S32(60%×30%dom) S33(40%)
+#   Biofuels:    S22(50%) S45(42%) S30(8%)   [S20 removido — Engine3 já cresce S20]
 #   Coprocss:    S19(40%) S45(35%) S33(15%) S27(10%)
 #   EV fleet:    S35(40%) S36(40%) S33(20%)
 #   Edificações: S45(55%) S33(30%) S32(15%)
 #   [S45 = Construção; S44 = Água/esgoto — NÃO usar para capex civil]
+#   [%dom = conteúdo doméstico: turbinas 40%, painéis 20%, baterias 30%]
 #
-# Pesos resultantes (normalizados, 100D 2050):
-#   S45=34.0%, S37=20.2%, S22=17.3%, S33=7.9%, S42=5.8%, S20=5.8%,
-#   S30=2.4%, S32=2.4%, S19=1.7%, S39=0.8%, S35=0.7%, S36=0.7%, S27=0.4%
+# Pesos resultantes aprox. (normalizados, 100D 2050, pós-ajustes):
+#   S45~40%, S22~19%, S33~9%, S42~7%, S30~4%, S37~9%, S32~1%,
+#   S19~2%, S39~1%, S35~1%, S36~1%, S27~0.5%  [S20 excluído]
 #
 # NOTA: S40/S41/S29/S28 excluídos — crescem via Engine 3 (volume físico MMA).
 
@@ -425,28 +426,45 @@ derive_aloc_inv <- function(cenario) {
 
   # ── 6. Mapeamento tecnologia → setor IO ──────────────────────────────────
   # NOTA: S45 = Construção (obras civis), S44 = Água/esgoto (errado para capex)
+  #
+  # Ajuste 1 — LEAKAGE DE IMPORTAÇÕES:
+  #   Turbinas eólicas (S37): ~60% importado → conteúdo doméstico = 40%
+  #   Painéis solares (S32):  ~80% importado → conteúdo doméstico = 20%
+  #   Baterias utility (S32): ~70% importado → conteúdo doméstico = 30%
+  #   A parcela importada sai da economia doméstica (não entra no vetor f).
+  #
+  # Ajuste 2 — SEPARAR FBCF DE PRODUÇÃO em S20 (Biodiesel):
+  #   Engine 3 já calibra S20 via volume físico MMA. Injetar FBCF direto em
+  #   S20 duplo-conta o crescimento. Capex de plantas biodiesel → S45 civil
+  #   (obras) + S30 vasos/reatores (metalurgia) em vez de S20 produção.
+  dom_eol <- 0.40   # conteúdo doméstico turbinas eólicas (60% importado)
+  dom_sol <- 0.20   # conteúdo doméstico painéis solares (80% importado)
+  dom_bat <- 0.30   # conteúdo doméstico baterias utility (70% importado)
+
   raw <- c(
-    S37 = inv_eol    * 0.50,                            # turbinas eólicas
-    S32 = inv_sol    * 0.40 + inv_bat    * 0.60 +
-          inv_bldg   * 0.15,                            # painéis solares + células baterias
+    S37 = inv_eol    * 0.50 * dom_eol,                  # turbinas eólicas (fração doméstica)
+    S32 = inv_sol    * 0.40 * dom_sol +                  # painéis (fração doméstica)
+          inv_bat    * 0.60 * dom_bat +                  # baterias (fração doméstica)
+          inv_bldg   * 0.15,                             # controles smart edilícios
     S45 = inv_eol    * 0.30 + inv_sol    * 0.30 +
           inv_hid    * 0.60 + inv_nuc    * 0.50 +
-          inv_bioccs * 0.40 + inv_bfuel  * 0.30 +
-          inv_copro  * 0.35 + inv_bldg   * 0.55,       # Construção (obras civis, todas tecno.)
+          inv_bioccs * 0.40 + inv_bfuel  * 0.42 +       # +0.12 redirecionado de S20
+          inv_copro  * 0.35 + inv_bldg   * 0.55,        # Construção (obras civis, todas tecno.)
     S33 = inv_eol    * 0.10 + inv_sol    * 0.20 +
           inv_bat    * 0.40 + inv_bioccs * 0.15 +
           inv_copro  * 0.15 + inv_ev     * 0.20 +
-          inv_bldg   * 0.30,                            # equip. elétricos (inversores, HVAC)
+          inv_bldg   * 0.30,                             # equip. elétricos (inversores, HVAC)
     S42 = inv_eol    * 0.10 + inv_sol    * 0.10 +
-          inv_hid    * 0.15,                            # transmissão e distribuição
-    S30 = inv_hid    * 0.25 + inv_bioccs * 0.10,       # metalurgia (turbinas hidro, vasos CCS)
-    S22 = inv_bioccs * 0.35 + inv_bfuel  * 0.50,       # complexo biocombustíveis
-    S20 = inv_bfuel  * 0.20,                            # biodiesel/HVO
-    S39 = inv_nuc    * 0.50,                            # manutenção/engenharia nuclear
-    S19 = inv_copro  * 0.40,                            # coprocessamento em refinaria
-    S27 = inv_copro  * 0.10,                            # material plástico/borracha (tubulação)
-    S35 = inv_ev     * 0.40,                            # automóveis (prêmio EV)
-    S36 = inv_ev     * 0.40                             # peças/baterias veiculares
+          inv_hid    * 0.15,                             # transmissão e distribuição
+    S30 = inv_hid    * 0.25 + inv_bioccs * 0.10 +
+          inv_bfuel  * 0.08,                             # metalurgia + vasos biodiesel (de S20)
+    S22 = inv_bioccs * 0.35 + inv_bfuel  * 0.50,        # complexo biocombustíveis (supply chain)
+    # S20 removido: Engine 3 já cresce S20 via volume físico MMA; sem FBCF direto
+    S39 = inv_nuc    * 0.50,                             # manutenção/engenharia nuclear
+    S19 = inv_copro  * 0.40,                             # coprocessamento em refinaria
+    S27 = inv_copro  * 0.10,                             # material plástico/borracha (tubulação)
+    S35 = inv_ev     * 0.40,                             # automóveis (prêmio EV)
+    S36 = inv_ev     * 0.40                              # peças/baterias veiculares
   )
   raw <- raw[names(raw) %in% setores$cod]
   if (sum(raw) < 1e-6) raw <- raw + 1e-6    # guard against all-zero
