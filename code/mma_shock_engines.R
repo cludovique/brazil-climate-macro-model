@@ -489,14 +489,54 @@ engine2_A_star <- function(cenario, ano) {
                           pe, pb, pf,
                           elec_out_2020, bio_out_2020, foss_out_2020)
 
-  # ── Transporte — total (base agregada; evita share≈0 de freight em 2020) ───
+  # ── Transporte — por sub-modal ─────────────────────────────────────────────
+  # S48 terrestre + S51 armazenamento + S52 correio seguem o mix agregado MMA
+  # (eletrificação via VEs + biocombustíveis terrestres).
+  # S49 aquaviário e S50 aéreo NÃO se eletrificam no horizonte do modelo:
+  #   o fator sc_e = elec_tra_2020%→cenário% ≈ 46× aplicado sobre base≈0 de
+  #   eletricidade em S49/S50 produzia explosões espúrias (+2271%/+8360%).
+  #   Estes modais usam trajetórias físicas dedicadas dos dados MMA:
+  #     S49: pj_bunker_verde (bunker verde / amônia / HVO marítimo)
+  #     S50: pj_bioqav       (combustível de aviação sustentável — SAF)
   pe_t <- elec_tra_pct[[cenario]][a]; pb_t <- bio_tra_pct[[cenario]][a]
   pf_t <- max(1 - pe_t - pb_t, 0)
-  if (!anyNA(c(pe_t,pb_t)))
-    A_star <- rebalancear(GRUPOS$transporte,
+  if (!anyNA(c(pe_t, pb_t)))
+    A_star <- rebalancear(c("S48","S51","S52"),   # S49/S50 fora — tratados abaixo
                           pe_t, pb_t, pf_t,
                           BASE2020$elec_tra, BASE2020$bio_tra,
                           max(1 - BASE2020$elec_tra - BASE2020$bio_tra, 0))
+
+  # ── Transporte aquaviário S49 — INDICADOR bunker verde ────────────────────
+  # bunker_base_pj = consumo doméstico de óleo marítimo no Brasil 2020, BEN 2021.
+  # indicador_s49 = fração fóssil = base / (base + pj_bunker_verde[t]).
+  # Fossil ↓: A[S19,S49] × indicador.  Biomass ↑: complemento via S22.
+  # Eletricidade (A[S40,S49]) NÃO é escalada (navios elétricos irrelevantes 2050).
+  bunker_base_pj <- 40   # ~40 PJ bunker doméstico BR 2020 (BEN 2021, navegação interior)
+  bio_s49_t <- suppressWarnings(as.numeric(pj_bunker_verde[[cenario]][a]))
+  if (!is.na(bio_s49_t) && bio_s49_t >= 0) {
+    indicador_s49 <- bunker_base_pj / (bunker_base_pj + bio_s49_t)
+    if ("S19" %in% rownames(A_star) && "S49" %in% colnames(A_star))
+      A_star["S19","S49"] <- A["S19","S49"] * indicador_s49
+    if ("S22" %in% rownames(A_star) && "S49" %in% colnames(A_star))
+      A_star["S22","S49"] <- A["S22","S49"] +
+        A["S19","S49"] * (1 - indicador_s49)
+  }
+
+  # ── Transporte aéreo S50 — INDICADOR bioQAV ──────────────────────────────
+  # bioqav_base_pj = consumo de QAV no Brasil 2020, BEN 2021 (~270 PJ, 6450 ktep).
+  # indicador_s50 = fração fóssil = base / (base + pj_bioqav[t]).
+  # Fossil ↓: A[S19,S50] × indicador.  Biomass ↑: complemento via S22.
+  # Eletricidade (A[S40,S50]) NÃO é escalada (aeronaves elétricas irrelevantes 2050).
+  bioqav_base_pj <- 270  # ~270 PJ QAV BR 2020 (BEN 2021: 6450 ktep × 41.87 MJ/kg)
+  bio_s50_t <- suppressWarnings(as.numeric(pj_bioqav[[cenario]][a]))
+  if (!is.na(bio_s50_t) && bio_s50_t >= 0) {
+    indicador_s50 <- bioqav_base_pj / (bioqav_base_pj + bio_s50_t)
+    if ("S19" %in% rownames(A_star) && "S50" %in% colnames(A_star))
+      A_star["S19","S50"] <- A["S19","S50"] * indicador_s50
+    if ("S22" %in% rownames(A_star) && "S50" %in% colnames(A_star))
+      A_star["S22","S50"] <- A["S22","S50"] +
+        A["S19","S50"] * (1 - indicador_s50)
+  }
 
   # ── Cidades / Edifícios ────────────────────────────────────────────────────
   # GRUPOS$cidades = S52 (alojamento), S53 (alimentação), S59 (imobiliário),
