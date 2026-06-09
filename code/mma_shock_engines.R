@@ -501,7 +501,7 @@ engine2_A_star <- function(cenario, ano) {
   pe_t <- elec_tra_pct[[cenario]][a]; pb_t <- bio_tra_pct[[cenario]][a]
   pf_t <- max(1 - pe_t - pb_t, 0)
   if (!anyNA(c(pe_t, pb_t)))
-    A_star <- rebalancear(c("S48","S51","S52"),   # S49/S50 fora — tratados abaixo
+    A_star <- rebalancear(c("S48","S52"),          # S49/S50/S51 fora — S49/S50 tratados abaixo
                           pe_t, pb_t, pf_t,
                           BASE2020$elec_tra, BASE2020$bio_tra,
                           max(1 - BASE2020$elec_tra - BASE2020$bio_tra, 0))
