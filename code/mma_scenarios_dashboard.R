@@ -21,7 +21,7 @@ sheets_need <- c("Resumo","Resultados_Completos","Delta_F_Componentes",
                  "Ind_Ligacoes","Linkage_Comp",
                  "Mult_Producao","Mult_Emprego",
                  "Labor_Baseline","Tax_Choques","Tax_Base",
-                 "Macro_Base","Producao_Fisica")
+                 "Macro_Base","Producao_Fisica","Investimento_Custos")
 dat <- lapply(sheets_need, function(s) suppressMessages(read_excel(XLS, sheet = s)))
 names(dat) <- sheets_need
 
@@ -162,9 +162,11 @@ table.dt tr:hover td{background:#1f2233}
           <b style="color:var(--txt)">Engine 1a</b> escala o vetor de demanda final f₂₀₁₈ pela trajetória de PIB do MMA
           (fator 0.97 para conversão à base 2018). Todos os componentes da demanda final crescem proporcionalmente:
           consumo das famílias, governo, FBCF e exportações.<br><br>
-          <b style="color:var(--txt)">Engine 1b</b> converte o plano de investimentos de transição do MMA
-          em choques de FBCF setoriais — alocando capital verde (eólica, solar, redes, veículos elétricos,
-          biocombustíveis) nos setores IO correspondentes.
+          <b style="color:var(--txt)">Engine 1b</b> converte o plano de investimentos de transição do MMA em choques de FBCF setoriais.
+          Os CAEs do MMA são decompostos em marginais não-sobrepostos por período e distribuídos ano-a-ano
+          pelo ritmo de implantação de capacidade física. Os pesos setoriais (ALOC_INV) são incrementais —
+          refletem o que é construído em cada janela de 5 anos, não o estoque acumulado. A fração importada
+          de cada bem de capital (MAI IBGE 2018) é removida antes de entrar no Leontief.
         </p>
       </div>
       <div class="card" style="border-left:3px solid #E24B4A">
@@ -221,61 +223,67 @@ table.dt tr:hover td{background:#1f2233}
 
   <!-- 2 · INVESTIMENTO -->
   <div style="margin-bottom:4px"><span class="cost-label">💰 2 · Investimento de Transição — Engine 1b</span></div>
-  <!-- KPIs first -->
-  <div class="g3" style="margin-bottom:8px">
+
+  <!-- KPI row: VP por período (valores MMA, R$ bi 2023) -->
+  <div class="g3" style="margin-bottom:10px">
     <div class="card kpi">
       <div class="v" style="font-size:20px;color:#378ADD">R$ 11.638 bi</div>
-      <div class="l">VP Investimento 2020–2030</div><div class="s">10 anos · capex intenso · R$ bi 2023</div>
+      <div class="l">VP Investimento 2020–2030</div>
+      <div class="s">10 anos · aceleração da transição · R$ bi 2023</div>
     </div>
     <div class="card kpi">
       <div class="v" style="font-size:20px;color:#378ADD">R$ 3.805 bi</div>
-      <div class="l">VP Investimento 2031–2035</div><div class="s">5 anos · transição · R$ bi 2023</div>
+      <div class="l">VP Investimento 2031–2035</div>
+      <div class="s">5 anos · consolidação · R$ bi 2023</div>
     </div>
     <div class="card kpi">
       <div class="v" style="font-size:20px;color:#378ADD">R$ 4.584 bi</div>
-      <div class="l">VP Investimento 2036–2050</div><div class="s">15 anos · manutenção · R$ bi 2023</div>
+      <div class="l">VP Investimento 2036–2050</div>
+      <div class="s">15 anos · amadurecimento · R$ bi 2023</div>
     </div>
   </div>
-  <!-- VP + CAE side by side -->
-  <div class="g2" style="margin-bottom:8px">
+
+  <!-- Row 2: linha temporal (esq) + FBCF por setor no ano selecionado (dir) -->
+  <div class="g2" style="margin-bottom:10px">
     <div class="card">
-      <div class="ct">VP Investimento por Período — 100D (R$ bi total)</div>
-      <div class="cw"><canvas id="ch-inv-pv"></canvas></div>
+      <div class="ct">Investimento anual 100D — R$ bi/ano (R$2018) · escalonado pelo ritmo de implantação</div>
+      <p style="font-size:10px;color:var(--mut);line-height:1.6;margin:0 0 8px">
+        Os CAEs do MMA são decompostos em marginais não-sobrepostos por período e distribuídos pelo proxy de capex físico incremental. Perfil: pico 2030–2040 (881→847→846 bi), queda em 2045 (393 bi — platô de implantação) e recuperação em 2050 (722 bi — refinarias de biocombustíveis avançados).
+      </p>
+      <div class="cw"><canvas id="ch-inv-annual"></canvas></div>
     </div>
     <div class="card">
-      <div class="ct">CAE — Custo Anualizado Equivalente por Período — 100D (R$ bi/ano)</div>
-      <div class="cw"><canvas id="ch-inv-cae"></canvas></div>
-    </div>
-  </div>
-  <!-- FBCF by sector + allocation methodology -->
-  <div class="g2" style="margin-bottom:16px">
-    <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px">
-        <div class="ct" style="margin:0">FBCF — Alocação por Setor IO (R$ bi, 100D · ano selecionado no filtro)</div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mut)">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#E24B4A"></span>Energéticos</span>
-          <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mut)">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD"></span>Indústria</span>
-          <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mut)">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#B4B2A9"></span>Serviços</span>
-          <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--mut)">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#3B6D11"></span>Agropecuária</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        <div class="ct" style="margin:0">FBCF por Setor IO — 100D · ano selecionado (R$ bi)</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--mut)"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#E24B4A"></span>Energético</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--mut)"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#378ADD"></span>Indústria</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--mut)"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#B4B2A9"></span>Serviços</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--mut)"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#3B6D11"></span>Agro</span>
         </div>
       </div>
       <div class="cw xtall"><canvas id="ch-aloc"></canvas></div>
     </div>
-    <div class="card" style="display:flex;align-items:flex-start">
-      <div style="width:100%;padding-top:2px">
-        <div class="ct">Engine 1b — Mapeamento Tecnologia → Setor IO</div>
-        <p style="font-size:10.5px;color:var(--mut);line-height:1.8;margin:0 0 8px">
-          Pesos derivados dos dados físicos do MMA (ΔGW instalado × capex unitário por tecnologia).
-          Premissa simplificadora: <b style="color:var(--txt)">100% de produção doméstica</b> — todo o
-          investimento de transição estimula setores da economia brasileira sem ajuste de vazamento importado.
-        </p>
+  </div>
 
-        <!-- Allocation groups table — reflects actual derive_aloc_inv() mapping -->
-        <table style="width:100%;font-size:10.5px;border-collapse:collapse;margin-bottom:8px">
+  <!-- Row 3: FBCF por setor ao longo do tempo (full width) -->
+  <div style="margin-bottom:4px;font-size:10px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.07em">2b · FBCF por Setor IO — trajetória 2025–2050 · 100D · R$ bi/ano (R$2018) · após leakage de importação</div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="cw tall"><canvas id="ch-fbcf-time"></canvas></div>
+  </div>
+
+  <!-- Row 4: Methodology (full width) -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="ct">Engine 1b — Metodologia de Alocação</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+
+      <!-- Left: allocation table -->
+      <div>
+        <p style="font-size:10px;color:var(--mut);line-height:1.7;margin:0 0 8px">
+          Pesos derivados dos dados físicos do MMA — <b style="color:var(--txt)">ΔGW incremental por período × capex unitário por tecnologia</b> (IRENA/EPE referência, R$2018).
+          Pesos variam por ano: cada período reflete o que está sendo construído naquele intervalo, não o total acumulado desde 2020.
+        </p>
+        <table style="width:100%;font-size:10.5px;border-collapse:collapse">
           <thead><tr>
             <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:left">Tecnologia / tema</th>
             <th style="color:var(--mut);font-weight:500;padding:3px 6px;border-bottom:1px solid var(--bdr);text-align:left">Setor IO</th>
@@ -287,43 +295,55 @@ table.dt tr:hover td{background:#1f2233}
               <td style="padding:3px 6px;color:#11B2C6;font-weight:600">Construção civil</td>
               <td style="padding:3px 6px;color:var(--mut)">S45</td>
               <td style="padding:3px 6px;color:#11B2C6;font-weight:700;text-align:right">~40%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Terraplenagem, fundações e montagem para eólica, solar, hidro, nuclear, bioCCS, biofuels, copro e edificações</td>
+              <td style="padding:3px 6px;color:var(--mut)">Terraplenagem, fundações e montagem — eólica, solar, hidro, nuclear, bioCCS, biorefinarias e edificações</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#1D9E75;font-weight:600">Biocombustíveis complexo</td>
-              <td style="padding:3px 6px;color:var(--mut)">S22</td>
-              <td style="padding:3px 6px;color:#1D9E75;font-weight:700;text-align:right">~19%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Plantas de biomassa-eletricidade+CCS, biometano, diesel verde (HVO), bioQAV e etanol+CCS</td>
+              <td style="padding:3px 6px;color:#9B59B6;font-weight:600">Turbinas, máq. &amp; biorefinarias</td>
+              <td style="padding:3px 6px;color:var(--mut)">S34</td>
+              <td style="padding:3px 6px;color:#9B59B6;font-weight:700;text-align:right">~24%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Naceles eólicas, equip. nuclear, maq. bioCCS e maquinário de biorefinaria (biometano, HVO, bioQAV, gasolina verde, bunker verde)</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#9B59B6;font-weight:600">Turbinas eólicas</td>
-              <td style="padding:3px 6px;color:var(--mut)">S34 <span style="color:#555;font-size:9px">CNAE 2821</span></td>
-              <td style="padding:3px 6px;color:#9B59B6;font-weight:700;text-align:right">~9%²</td>
-              <td style="padding:3px 6px;color:var(--mut)">Máq. e equip. mecânicos — naceles, caixas de câmbio, eixos (CNAE 2821-6: turbinas, bombas, compressores)</td>
+              <td style="padding:3px 6px;color:#95A5A6;font-weight:600">Metalurgia &amp; reatores</td>
+              <td style="padding:3px 6px;color:var(--mut)">S30</td>
+              <td style="padding:3px 6px;color:#95A5A6;font-weight:700;text-align:right">~13%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Turbinas hidráulicas, vasos de pressão bioCCS, reatores e colunas de destilação de biorefinarias</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
               <td style="padding:3px 6px;color:#F39C12;font-weight:600">Equipamentos elétricos</td>
               <td style="padding:3px 6px;color:var(--mut)">S33</td>
-              <td style="padding:3px 6px;color:#F39C12;font-weight:700;text-align:right">~9%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Inversores, transformadores, HVAC, motores — presente em eólica, solar, baterias, copro, EVs e edificações</td>
+              <td style="padding:3px 6px;color:#F39C12;font-weight:700;text-align:right">~5%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Inversores, transformadores, HVAC, motores — eólica, solar, baterias, coprocessamento, EVs e edificações</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
               <td style="padding:3px 6px;color:#378ADD;font-weight:600">Transmissão &amp; distribuição</td>
               <td style="padding:3px 6px;color:var(--mut)">S42</td>
-              <td style="padding:3px 6px;color:#378ADD;font-weight:700;text-align:right">~7%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Expansão de linhas de transmissão e subestações para escoar geração eólica, solar e hidro</td>
+              <td style="padding:3px 6px;color:#378ADD;font-weight:700;text-align:right">~5%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Linhas de transmissão e subestações para escoar geração eólica, solar e hidro</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
-              <td style="padding:3px 6px;color:#95A5A6;font-weight:600">Metalurgia</td>
-              <td style="padding:3px 6px;color:var(--mut)">S30</td>
-              <td style="padding:3px 6px;color:#95A5A6;font-weight:700;text-align:right">~4%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Turbinas hidráulicas, vasos de pressão bioCCS e reatores biofuels (metais não-ferrosos e fundição)</td>
+              <td style="padding:3px 6px;color:#AAB7B8;font-weight:600">Manutenção &amp; eficiência</td>
+              <td style="padding:3px 6px;color:var(--mut)">S39</td>
+              <td style="padding:3px 6px;color:#AAB7B8;font-weight:700;text-align:right">~3%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Comissionamento, O&amp;M eólica/solar/bioCCS e retrofits de eficiência em edificações (CNAE 33)</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+              <td style="padding:3px 6px;color:#A9CCE3;font-weight:600">Engenharia &amp; P&amp;D</td>
+              <td style="padding:3px 6px;color:var(--mut)">S61</td>
+              <td style="padding:3px 6px;color:#A9CCE3;font-weight:700;text-align:right">~4%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Arquitetura, engenharia, testes técnicos e P&amp;D — projetos de usinas e consultorias. MAI IBGE: GIC83 (99% doméstico)</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+              <td style="padding:3px 6px;color:#5DADE2;font-weight:600">Serviços digitais</td>
+              <td style="padding:3px 6px;color:var(--mut)">S57</td>
+              <td style="padding:3px 6px;color:#5DADE2;font-weight:700;text-align:right">~2%</td>
+              <td style="padding:3px 6px;color:var(--mut)">SCADA, telemetria, digital twin, BMS. MAI IBGE: GIC79 (93% doméstico)</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
               <td style="padding:3px 6px;color:#E67E22;font-weight:600">Refino &amp; coprocessamento</td>
               <td style="padding:3px 6px;color:var(--mut)">S19 · S27</td>
-              <td style="padding:3px 6px;color:#E67E22;font-weight:700;text-align:right">~2.5%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Adaptação de refinarias para HVO/SAF (S19) e insumos petroquímicos do processo (S27)</td>
+              <td style="padding:3px 6px;color:#E67E22;font-weight:700;text-align:right">~2%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Upgrade de refinarias para HVO/SAF (S19) e insumos petroquímicos (S27)</td>
             </tr>
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
               <td style="padding:3px 6px;color:#E24B4A;font-weight:600">Transporte elétrico</td>
@@ -334,26 +354,49 @@ table.dt tr:hover td{background:#1f2233}
             <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
               <td style="padding:3px 6px;color:#7F8C8D;font-weight:600">Painéis &amp; armazenamento</td>
               <td style="padding:3px 6px;color:var(--mut)">S32</td>
-              <td style="padding:3px 6px;color:#7F8C8D;font-weight:700;text-align:right">~1%²</td>
-              <td style="padding:3px 6px;color:var(--mut)">Painéis solares + baterias utility-scale + automação predial (eletrônicos e ópticos)</td>
+              <td style="padding:3px 6px;color:#7F8C8D;font-weight:700;text-align:right">~1%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Painéis solares, baterias utility-scale e automação predial</td>
             </tr>
             <tr>
-              <td style="padding:3px 6px;color:#8E44AD;font-weight:600">Nuclear O&amp;M</td>
-              <td style="padding:3px 6px;color:var(--mut)">S39</td>
-              <td style="padding:3px 6px;color:#8E44AD;font-weight:700;text-align:right">~1%</td>
-              <td style="padding:3px 6px;color:var(--mut)">Manutenção, reparação e instalação de máquinas — expansão da capacidade nuclear existente</td>
+              <td style="padding:3px 6px;color:#27AE60;font-weight:600">Restauração florestal</td>
+              <td style="padding:3px 6px;color:var(--mut)">S03 · S01</td>
+              <td style="padding:3px 6px;color:#27AE60;font-weight:700;text-align:right">~1%</td>
+              <td style="padding:3px 6px;color:var(--mut)">Plantio e manejo florestal (S03) e agroflorestas/silvipastoris (S01). Dados: LULUCF Sheet 3, R36–R37</td>
             </tr>
           </tbody>
         </table>
+      </div>
 
-        <p style="font-size:10px;color:var(--mut);line-height:1.7;margin:0">
-          <b style="color:var(--txt)">Mecanismo:</b>
-          CAE (R$ bi/ano) × ALOC_INV[s, ano] → Δf[s] (choque FBCF setorial) → L* · Δf → Δx (produção induzida).<br>
-          <b style="color:var(--txt)">Normalização:</b> pesos somam 1.0 — o total do investimento é integralmente alocado sem dupla contagem.<br>
-          <b style="color:var(--txt)">S20 excluído:</b> biodiesel/HVO já cresce via Engine 3 (volume físico MMA calibrado) — incluir FBCF em S20 criaria dupla contagem.<br>
-          <b style="color:var(--txt)">S40/S41 excluídos:</b> geração elétrica cresce via Engine 3; FBCF em S40/S41 seria também dupla contagem.<br>
-          ¹ Pesos aproximados, 100D · 2050. Variam por ano conforme o capex incremental de cada tecnologia muda.
-        </p>
+      <!-- Right: design notes -->
+      <div style="font-size:10.5px;color:var(--mut);line-height:1.8">
+        <div style="margin-bottom:12px">
+          <div style="color:var(--txt);font-weight:600;margin-bottom:4px">Mecanismo</div>
+          <code style="background:rgba(255,255,255,.05);padding:3px 7px;border-radius:4px;font-size:10px;display:block;margin-bottom:6px">INV_ANNUAL[cen,ano] × ALOC_INV[s,ano] × dom_content[s] → Δf[s] → L* · Δf → Δx</code>
+          Cada setor recebe um choque de demanda final proporcional ao seu peso de alocação, ao investimento do período e à sua fração de produção doméstica. O produto Leontief propaga o impacto por toda a cadeia produtiva.
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="color:var(--txt);font-weight:600;margin-bottom:4px">Quantum temporal — INV_ANNUAL</div>
+          Os três CAEs do MMA (períodos sobrepostos 2020-2030, 2020-2035, 2020-2050) são decompostos em marginais não-sobrepostos. Dentro de 2040–2050, o quantum anual é escalonado pelo proxy de capex físico incremental — anos de maior implantação recebem maior fatia. Resultado 100D: <b style="color:#E24B4A">pico 2030–2040 (~860 bi R$2018/ano)</b>, queda em 2045 (~393 bi), recuperação em 2050 (~722 bi).
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="color:var(--txt);font-weight:600;margin-bottom:4px">Conteúdo doméstico — MAI IBGE 2018</div>
+          A fração importada de cada tipo de bem de capital (GIC) é removida antes de entrar no Leontief — ela vaza para o exterior. Referência: ON/OT por GIC, ano-base 2018.
+          <table style="width:100%;font-size:10px;margin-top:6px;border-collapse:collapse">
+            <tr><td style="color:var(--txt);padding:2px 6px">S45 Construção</td><td style="color:#1D9E75;padding:2px 6px;text-align:right">99.9%</td><td style="color:var(--mut);padding:2px 6px">GIC74</td></tr>
+            <tr><td style="color:var(--txt);padding:2px 6px">S34 Máquinas</td><td style="color:#F39C12;padding:2px 6px;text-align:right">76.1%</td><td style="color:var(--mut);padding:2px 6px">GIC68</td></tr>
+            <tr><td style="color:var(--txt);padding:2px 6px">S33 Equip. elétricos</td><td style="color:#F39C12;padding:2px 6px;text-align:right">65.0%</td><td style="color:var(--mut);padding:2px 6px">GIC66+GIC72</td></tr>
+            <tr><td style="color:var(--txt);padding:2px 6px">S32 Eletrônica</td><td style="color:#F39C12;padding:2px 6px;text-align:right">72.0%</td><td style="color:var(--mut);padding:2px 6px">GIC64</td></tr>
+            <tr><td style="color:var(--txt);padding:2px 6px">S57 Serviços TI</td><td style="color:#1D9E75;padding:2px 6px;text-align:right">92.9%</td><td style="color:var(--mut);padding:2px 6px">GIC79</td></tr>
+          </table>
+          <div style="margin-top:4px">Leakage total ponderado: <b style="color:#F39C12">~8%</b> do FBCF total.</div>
+        </div>
+        <div>
+          <div style="color:var(--txt);font-weight:600;margin-bottom:4px">Setores excluídos da FBCF</div>
+          <b style="color:var(--txt)">S20, S22</b> (biodiesel/HVO e biocombustíveis avançados) crescem via Engine 3 — incluir FBCF nesses setores criaria dupla contagem. O capex de biorefinaria flui aos fornecedores: S45 civil, S30 reatores, S34 maquinário.<br>
+          <b style="color:var(--txt)">S40, S41</b> (geração elétrica) idem — calibrados por trajetória física TWh.<br>
+          <br>
+          <span style="color:#555;font-size:9.5px">¹ Pesos médios, 100D. Variam por ano conforme adições incrementais de capacidade.</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1417,25 +1460,93 @@ function initPremissas(){
   const perBgPV =[hexAlpha(C100,.85),hexAlpha(C100,.65),hexAlpha(C100,.45)];
   const perBgCAE=[hexAlpha("#F39C12",.85),hexAlpha("#F39C12",.65),hexAlpha("#F39C12",.45)];
 
-  mkBar("ch-inv-pv", perLbls,
-    [{label:"VP (R$ bi)",data:perVP,
-      backgroundColor:perBgPV,borderColor:C100,borderWidth:1,borderRadius:5}],
-    {plugins:{...CD.plugins,legend:{display:false}},
-     scales:{x:CD.scales.x,
-             y:{...CD.scales.y,beginAtZero:true,
-                title:{display:true,text:"R$ bi (R$ 2023)",color:"#8892a4"}}}});
-
-  mkBar("ch-inv-cae", perLbls,
-    [{label:"CAE (R$ bi/ano)",data:perCAE,
-      backgroundColor:perBgCAE,borderColor:"#F39C12",borderWidth:1,borderRadius:5}],
-    {plugins:{...CD.plugins,legend:{display:false}},
-     scales:{x:CD.scales.x,
-             y:{...CD.scales.y,beginAtZero:true,
-                title:{display:true,text:"R$ bi/ano (R$ 2023)",color:"#8892a4"}}}});
-
-  // ── 2c. FBCF sector allocation bar — absolute R$bi ───────────────────────
+  // ── 2b. FBCF sector allocation bar — absolute R$bi ───────────────────────
   renderAlocChart(aloc);
 
+  // ── 2d. Investment by year — line chart ────────────────────────────────────
+  {
+    const ic = D.Investimento_Custos || [];
+    const YANOS = [2025,2030,2035,2040,2045,2050];
+    const getInv = (cen) => YANOS.map(a => {
+      const r = ic.find(x => x.cenario===cen && +x.ano===a);
+      return r ? +r.inv_bi_R2018 : null;
+    });
+    const dot = {pointRadius:5, pointHoverRadius:7, tension:0.35, fill:false, borderWidth:2.5};
+    mkLine("ch-inv-annual", YANOS.map(String), [
+      {...dot, label:"100D", data:getInv("100D"),
+       borderColor:"#E24B4A", backgroundColor:hexAlpha("#E24B4A",.12), pointBackgroundColor:"#E24B4A"}
+    ], {
+      plugins:{...CD.plugins,
+        legend:{display:false}},
+      scales:{
+        x:{...CD.scales.x},
+        y:{...CD.scales.y, beginAtZero:true,
+           title:{display:true, text:"R$ bi/ano (R$2018)", color:"#8892a4", font:{size:10}}}
+      }
+    });
+  }
+
+  // ── 2e. FBCF per sector over time ─────────────────────────────────────────
+  {
+    const dfc   = D.Delta_F_Componentes || [];
+    const ic    = D.Investimento_Custos || [];
+    const YANOS = [2025,2030,2035,2040,2045,2050];
+
+    // Sectors that ever receive investment in 100D (delta_f_inv > 0)
+    const invCods = [...new Set(
+      dfc.filter(r => r.cenario==="100D" && +(r.delta_f_inv||0) > 0.5)
+         .map(r => r.cod)
+    )].sort((a,b)=>{
+      // sort by total investment descending
+      const tot = cod => YANOS.reduce((s,yr)=>{
+        const r=dfc.find(x=>x.cenario==="100D"&&+x.ano===yr&&x.cod===cod);
+        return s+(r?+(r.delta_f_inv||0):0);
+      },0);
+      return tot(b)-tot(a);
+    });
+
+    const PAL = {
+      S45:"#11B2C6", S34:"#9B59B6", S30:"#95A5A6", S33:"#F39C12",
+      S42:"#378ADD", S39:"#AAB7B8", S32:"#7F8C8D", S03:"#27AE60",
+      S61:"#A9CCE3", S57:"#5DADE2", S19:"#E67E22", S35:"#E24B4A",
+      S36:"#C0392B", S01:"#3B6D11", S27:"#D35400"
+    };
+
+    const datasets = invCods.map(cod => {
+      const nome = (dfc.find(r=>r.cod===cod)||{}).nome || cod;
+      const shortLbl = cod + " " + (nome||"").substring(0,22);
+      return {
+        label: shortLbl,
+        data: YANOS.map(yr => {
+          const r = dfc.find(x=>x.cenario==="100D"&&+x.ano===yr&&x.cod===cod);
+          const v = r ? +(r.delta_f_inv||0)/1000 : 0;
+          return Math.round(v*10)/10;
+        }),
+        borderColor: PAL[cod]||"#8892a4",
+        backgroundColor:"transparent",
+        borderWidth:2.5, pointRadius:4, pointHoverRadius:6,
+        tension:0.35, fill:false
+      };
+    });
+
+    mkLine("ch-fbcf-time", YANOS.map(String), datasets, {
+      plugins:{...CD.plugins,
+        legend:{display:true, position:"right",
+          labels:{color:"#dde3ec",font:{size:10},boxWidth:14,padding:8,
+            generateLabels: chart => chart.data.datasets.map((ds,i)=>({
+              text:ds.label, fillStyle:ds.borderColor, strokeStyle:ds.borderColor,
+              lineWidth:2, datasetIndex:i, hidden:false
+            }))
+          }
+        }
+      },
+      scales:{
+        x:{...CD.scales.x},
+        y:{...CD.scales.y, beginAtZero:true,
+           title:{display:true, text:"R$ bi/ano (R$2018)", color:"#8892a4", font:{size:10}}}
+      }
+    });
+  }
 
   // ── 3a. Main energy groups — stacked 100% bar, 100D ───────────────────────
   ["Indústria","Transporte","Cidades"].forEach((tipo,ti)=>{

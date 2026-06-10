@@ -62,6 +62,23 @@ ANOS_MMA <- c(2025, 2030, 2035, 2040, 2045, 2050)
 CENS_MMA <- c("25D","100D","0D")
 ANOS_STR <- as.character(ANOS_MMA)
 
+# ── Column helpers: MMA sheets have a uniform layout across all tabs ──────────
+# 25D: cols 5-10 (2025-2050 by 5yr); 100D: cols 12-17; 0D: cols 19-24; base: col 3
+yr_col_mma <- function(cenario, ano) {
+  idx <- match(as.integer(ano), c(2025L, 2030L, 2035L, 2040L, 2045L, 2050L))
+  if (is.na(idx)) stop(paste("Unknown MMA year:", ano))
+  if (cenario == "100D") return(11L + idx)
+  if (cenario == "25D")  return(4L  + idx)
+  return(18L + idx)
+}
+prev_col_mma <- function(cenario, ano) {
+  prev <- switch(as.character(as.integer(ano)),
+    "2025" = NA_integer_, "2030" = 2025L, "2035" = 2030L,
+    "2040" = 2035L,       "2045" = 2040L, "2050" = 2045L)
+  if (is.na(prev)) return(3L)   # 2025: previous = 2020 base
+  yr_col_mma(cenario, prev)
+}
+
 # Lê planilha pelo índice (evita problemas de codificação)
 all_sheets <- excel_sheets(MMA_PATH)
 # 1=ResultBLUES, 2=Agropecuária, 3=LULUCF, 4=Energia,
@@ -212,7 +229,12 @@ elec_cid_2020 <- get_base2020(ci, 26)         # 0.625
 bio_cid_2020  <- get_base2020(ci, 27)         # ~0
 gas_cid_2020  <- get_base2020(ci, 29)         # 0.26
 
-# ── 2.7  Agropecuária — produção física -----------------------------------
+# ── 2.7  LULUCF — uso da terra e florestas --------------------------------
+lu <- read_mma(3)
+# R36=restauração de floresta nativa (1000 ha/ano), R37=restauração de savana/cerrado
+# col layout igual ao de Energia: base=col3, 25D=col5:10, 100D=col12:17
+
+# ── 2.8  Agropecuária — produção física -----------------------------------
 ag <- read_mma(2)
 # R68=cana(1000t), R72=milho total(1000t), R79=soja total(1000t)
 # R77=oleaginosas energéticas (non-soja; girassol/canola/palma) (1000t)
@@ -359,7 +381,8 @@ engine1_gdp <- function(cenario, ano) {
 #   Eólica:      S34(50%) S45(30%) S33(10%) S42(10%)  [S34=máq.mecânicos; produção 100% doméstica]
 #   Solar:       S32(40%×20%dom) S45(30%) S33(20%) S42(10%)
 #   Hidro:       S45(60%) S30(25%) S42(15%)
-#   Nuclear:     S45(50%) S39(50%)
+#   Nuclear:     S34(30%) S45(70%)   [S39 removido — capex redistribuído]
+#   LULUCF rest: S03(60%) S01(20%) S45(20%)
 #   BiomCCS:     S22(35%) S45(40%) S33(15%) S30(10%)
 #   Baterias:    S32(60%×30%dom) S33(40%)
 #   Biofuels:    S22(50%) S45(42%) S30(8%)   [S20 removido — Engine3 já cresce S20]
@@ -370,92 +393,79 @@ engine1_gdp <- function(cenario, ano) {
 #   [premissa: 100% conteúdo doméstico — sem ajuste de vazamento importado]
 #
 # Pesos resultantes aprox. (normalizados, 100D 2050, pós-ajustes):
-#   S45~40%, S22~19%, S33~9%, S42~7%, S30~4%, S34~9%, S32~1%,
-#   S19~2%, S39~1%, S35~1%, S36~1%, S27~0.5%  [S20 excluído]
+#   S45~40%, S22~18%, S34~10%, S33~7%, S42~6%, S30~5%, S39~2%,
+#   S19~2%, S35~1%, S36~1%, S32~1%, S27~0.5%, S03~0.5%, S01~0.2%
+#   [S20 excluído — Engine3; S39 = serviços instalação/O&M (eólica, solar, bioCCS, edif.)]
 #
 # NOTA: S40/S41/S29/S28 excluídos — crescem via Engine 3 (volume físico MMA).
 
-# Função auxiliar: deriva pesos por cenário × ano a partir dos dados físicos MMA
-derive_aloc_inv <- function(cenario, ano = "2050") {
-  # col 2050: 100D=col17, 25D e 0D=col10 (0D é near-BAU → usa 25D como proxy)
-  col50 <- if (cenario == "100D") 17L else 10L
+# ── Raw capex vector for a given cenario × ano (unnormalised, in $M) ─────────
+# Uses INCREMENTAL physical additions per 5-year period vs. previous period
+# so both the sector mix and the quantum track actual deployment pace.
+.inv_raw_vec <- function(cenario, ano) {
+  cc <- yr_col_mma(cenario, ano)     # current period column
+  pc <- prev_col_mma(cenario, ano)   # previous period column (or 2020 base)
 
-  get_en  <- function(row) { v <- suppressWarnings(as.numeric(en[[row, col50]])); if(is.na(v)) 0 else v }
-  get_en_b<- function(row) { v <- suppressWarnings(as.numeric(en[[row, 3]]));    if(is.na(v)) 0 else v }
-  get_tr  <- function(row) { v <- suppressWarnings(as.numeric(tr[[row, col50]])); if(is.na(v)) 0 else v }
-  get_tr_b<- function(row) { v <- suppressWarnings(as.numeric(tr[[row, 3]]));    if(is.na(v)) 0 else v }
-  get_ci  <- function(row) { v <- suppressWarnings(as.numeric(ci[[row, col50]])); if(is.na(v)) 0 else v }
-  get_ci_b<- function(row) { v <- suppressWarnings(as.numeric(ci[[row, 3]]));    if(is.na(v)) 0 else v }
+  ge <- function(r, col) { v <- suppressWarnings(as.numeric(en[[r, col]])); if(is.na(v)) 0 else v }
+  gt <- function(r, col) { v <- suppressWarnings(as.numeric(tr[[r, col]])); if(is.na(v)) 0 else v }
+  gcc_fn <- function(r, col) { v <- suppressWarnings(as.numeric(ci[[r, col]])); if(is.na(v)) 0 else v }
+  gl <- function(r, col) { v <- suppressWarnings(as.numeric(lu[[r, col]])); if(is.na(v)) 0 else v }
 
-  # ── 1. Eletricidade — adições de capacidade instalada (GW) ───────────────
-  d_eol    <- max(get_en(51) - get_en_b(51), 0)   # eólica
-  d_sol    <- max(get_en(52) - get_en_b(52), 0)   # solar
-  d_hid    <- max(get_en(53) - get_en_b(53), 0)   # hidro
-  d_nuc    <- max(get_en(56) - get_en_b(56), 0)   # nuclear
-  d_bioccs <- max(get_en(55), 0)                   # biomassa+CCS (base=0)
-  d_bat    <- max(get_en(58), 0)                   # armazenamento baterias (base=0)
+  # 1. Electricity — incremental GW added this period
+  d_eol    <- max(ge(51,cc) - ge(51,pc), 0)
+  d_sol    <- max(ge(52,cc) - ge(52,pc), 0)
+  d_hid    <- max(ge(53,cc) - ge(53,pc), 0)
+  d_nuc    <- max(ge(56,cc) - ge(56,pc), 0)
+  d_bioccs <- max(ge(55,cc) - ge(55,pc), 0)
+  d_bat    <- max(ge(58,cc) - ge(58,pc), 0)
 
-  inv_eol    <- d_eol    * 1200   # $M/GW — IRENA 2023 Brasil
+  inv_eol    <- d_eol    * 1200
   inv_sol    <- d_sol    * 700
   inv_hid    <- d_hid    * 2500
-  inv_nuc    <- d_nuc    * 8000   # referência Angra 3
-  inv_bioccs <- d_bioccs * 2500   # BECCS: capex similar à biomassa convencional
-  inv_bat    <- d_bat    * 300    # utility-scale battery (custo caindo)
+  inv_nuc    <- d_nuc    * 8000
+  inv_bioccs <- d_bioccs * 2500
+  inv_bat    <- d_bat    * 300
 
-  # ── 2. Biocombustíveis — PJ de capacidade instalada 2050 ─────────────────
-  pj_bmet  <- get_en(79)   # biometano
-  pj_dvrd  <- get_en(78)   # diesel verde (HVO)
-  pj_qav   <- get_en(80)   # bioQAV
-  pj_etccs <- get_en(76)   # etanol+CCS
+  # 2. Biofuels — incremental PJ of plant capacity built this period
+  bfuel_pj_delta <- max(
+    (ge(79,cc)+ge(78,cc)+ge(80,cc)+ge(77,cc)+ge(81,cc)) -
+    (ge(79,pc)+ge(78,pc)+ge(80,pc)+ge(77,pc)+ge(81,pc)), 0)
+  inv_bfuel <- bfuel_pj_delta * 40
 
-  inv_bfuel <- (pj_bmet + pj_dvrd + pj_qav) * 40   # $M/PJ — planta biorrefinaria
+  # 3. Coprocessamento — incremental HVO + etanol-CCS refinery upgrades
+  inv_copro <- (max(ge(78,cc)-ge(78,pc),0) + max(ge(76,cc)-ge(76,pc),0)) * 15
 
-  # ── 3. Coprocessamento em refinarias (S19) ────────────────────────────────
-  # Diesel verde + etanol CCS processados em refinarias de petróleo exigem
-  # upgrade de unidades de hidrotratamento e coprocessamento
-  inv_copro <- (pj_dvrd + pj_etccs) * 15   # $M/PJ — fração do capex de refinaria
+  # 4. EV transport — incremental PJ electric demand
+  inv_ev <- max(gt(13,cc)*gt(14,cc) - gt(13,pc)*gt(14,pc), 0) * 15
 
-  # ── 4. Eletrificação do transporte (frota EV) ────────────────────────────
-  # Sheet 6: R13=PJ total transporte, R14=% elétrico → ΔPJ elétrico
-  delta_pj_ev <- max(get_tr(13) * get_tr(14) - get_tr_b(13) * get_tr_b(14), 0)
-  inv_ev <- delta_pj_ev * 15   # $M/PJ — prêmio frota EV + infraestrutura recarga
+  # 5. Buildings — incremental electrification fraction
+  inv_bldg <- max(gcc_fn(26,cc) - gcc_fn(26,pc), 0) * 30000
 
-  # ── 5. Eficiência e eletrificação de edificações ─────────────────────────
-  # Sheet 7: R26=% elétrico nos usos finais de cidades (fração 0-1)
-  delta_elec_cid <- max(get_ci(26) - get_ci_b(26), 0)
-  inv_bldg <- delta_elec_cid * 30000   # $M por fração-unit (~0.2 → $6B)
-
-  # ── 6. Mapeamento tecnologia → setor IO ──────────────────────────────────
-  # Premissa: produção 100% doméstica (simplificador — sem ajuste de vazamento importado)
-  # NOTA: S45 = Construção (obras civis), S44 = Água/esgoto (errado para capex)
+  # 6. LULUCF — annual restoration rate (already a flow, no delta)
+  inv_lucf <- max(gl(36,cc), 0) * 3.0 + max(gl(37,cc), 0) * 1.5
 
   raw <- c(
-    S34 = inv_eol    * 0.50,                             # turbinas eólicas — máq. e equip. mecânicos (CNAE 2821-6)
-    S32 = inv_sol    * 0.40 +                            # painéis solares
-          inv_bat    * 0.60 +                            # baterias utility-scale
-          inv_bldg   * 0.15,                             # controles smart edilícios
-    S45 = inv_eol    * 0.30 + inv_sol    * 0.30 +
-          inv_hid    * 0.60 + inv_nuc    * 0.50 +
-          inv_bioccs * 0.40 + inv_bfuel  * 0.42 +       # +0.12 redirecionado de S20
-          inv_copro  * 0.35 + inv_bldg   * 0.55,        # Construção (obras civis, todas tecno.)
-    S33 = inv_eol    * 0.10 + inv_sol    * 0.20 +
-          inv_bat    * 0.40 + inv_bioccs * 0.15 +
-          inv_copro  * 0.15 + inv_ev     * 0.20 +
-          inv_bldg   * 0.30,                             # equip. elétricos (inversores, HVAC)
-    S42 = inv_eol    * 0.10 + inv_sol    * 0.10 +
-          inv_hid    * 0.15,                             # transmissão e distribuição
-    S30 = inv_hid    * 0.25 + inv_bioccs * 0.10 +
-          inv_bfuel  * 0.08,                             # metalurgia + vasos biodiesel (de S20)
-    S22 = inv_bioccs * 0.35 + inv_bfuel  * 0.50,        # complexo biocombustíveis (supply chain)
-    # S20 removido: Engine 3 já cresce S20 via volume físico MMA; sem FBCF direto
-    S39 = inv_nuc    * 0.50,                             # manutenção/engenharia nuclear
-    S19 = inv_copro  * 0.40,                             # coprocessamento em refinaria
-    S27 = inv_copro  * 0.10,                             # material plástico/borracha (tubulação)
-    S35 = inv_ev     * 0.40,                             # automóveis (prêmio EV)
-    S36 = inv_ev     * 0.40                              # peças/baterias veiculares
+    S34 = inv_eol*0.50 + inv_nuc*0.30 + inv_bioccs*0.10 + inv_bfuel*0.18,
+    S32 = inv_sol*0.40 + inv_bat*0.60 + inv_bldg*0.15,
+    S45 = inv_eol*0.30 + inv_sol*0.30 + inv_hid*0.60 + inv_nuc*0.70 +
+          inv_bioccs*0.55 + inv_bfuel*0.52 + inv_copro*0.35 + inv_bldg*0.55 + inv_lucf*0.20,
+    S33 = inv_eol*0.05 + inv_sol*0.15 + inv_bat*0.40 + inv_bioccs*0.10 +
+          inv_copro*0.15 + inv_ev*0.20 + inv_bldg*0.20,
+    S39 = inv_eol*0.05 + inv_sol*0.05 + inv_bioccs*0.05 + inv_bldg*0.10,
+    S42 = inv_eol*0.10 + inv_sol*0.10 + inv_hid*0.15,
+    S30 = inv_hid*0.25 + inv_bioccs*0.20 + inv_bfuel*0.30,
+    S03 = inv_lucf*0.60, S01 = inv_lucf*0.20,
+    S19 = inv_copro*0.40, S27 = inv_copro*0.10,
+    S35 = inv_ev*0.40, S36 = inv_ev*0.40,
+    S57 = (inv_eol+inv_sol+inv_hid+inv_bat)*0.04 + inv_bldg*0.06,
+    S61 = (inv_eol+inv_sol+inv_hid+inv_bioccs+inv_bfuel+inv_copro+inv_nuc)*0.04 + inv_bldg*0.05
   )
-  raw <- raw[names(raw) %in% setores$cod]
-  if (sum(raw) < 1e-6) raw <- raw + 1e-6    # guard against all-zero
+  raw[names(raw) %in% setores$cod]
+}
+
+derive_aloc_inv <- function(cenario, ano = 2050) {
+  raw <- .inv_raw_vec(cenario, ano)
+  if (sum(raw) < 1e-6) raw <- raw + 1e-6
   raw / sum(raw)
 }
 
@@ -473,26 +483,74 @@ for (cen in c("100D")) {
   }
 }
 
-# Período de investimento: CAE por faixa de horizonte
-# 2025 → zero (ainda não realizado; estamos em 2026)
-# 2030 → CAE período 2020-2030 (proxy: aceleração inicial 2026-2030)
-# 2035 → CAE período 2020-2035
-# 2040-2050 → CAE período 2020-2050
-periodo_idx <- function(ano) {
-  ano_n <- as.numeric(ano)
-  if (ano_n < 2030) return(0L)        # 2025: sem investimento (pré-2030)
-  if (ano_n <= 2030) return(1L)       # 2030: CAE período 2020-2030
-  if (ano_n <= 2035) return(2L)       # 2035: CAE período 2020-2035
-  return(3L)                           # 2040-2050: CAE período 2020-2050
+# ── INV_ANNUAL: year-specific investment quantum (bi R$2018/ano) ──────────────
+# Decomposes overlapping MMA CAEs into non-overlapping marginal annuals,
+# then scales 2040/2045/2050 by raw capex proxy so investment tracks deployment:
+#   m1 = CAE(2020-2030)                              — 2030 only
+#   m2 = (CAE(2020-35)×15 − CAE(2020-30)×10) / 5   — 2031-2035 implied
+#   m3 = (CAE(2020-50)×30 − CAE(2020-35)×15) / 15  — 2036-2050 implied,
+#        further scaled within {2040,2045,2050} by raw capex proxy ratio
+INV_ANNUAL <- setNames(lapply(CENS_MMA, function(cen) {
+  v    <- inv_annual_R2018[[cen]]           # c(CAE30, CAE35, CAE50) bi R$2018/yr
+  marg <- pmax(c(v[1],
+                 (v[2]*15 - v[1]*10) / 5,
+                 (v[3]*30 - v[2]*15) / 15), 0)
+
+  proxy  <- setNames(sapply(as.character(ANOS_MMA), function(a) {
+    r <- .inv_raw_vec(cen, a); max(sum(r), 1e-6)
+  }), as.character(ANOS_MMA))
+  mean_p3 <- mean(proxy[c("2040","2045","2050")])
+
+  setNames(lapply(as.character(ANOS_MMA), function(a) {
+    ano_n <- as.integer(a)
+    if (ano_n < 2030)  return(0)
+    if (ano_n == 2030) return(marg[1])
+    if (ano_n == 2035) return(marg[2])
+    marg[3] * proxy[[a]] / mean_p3          # 2040/2045/2050: scaled by deployment pace
+  }), as.character(ANOS_MMA))
+}), CENS_MMA)
+
+cat("  INV_ANNUAL (bi R$2018/ano):\n")
+for (cen in c("100D","25D")) {
+  cat(sprintf("    %s: %s\n", cen,
+    paste(sprintf("%s=%.0f", ANOS_STR,
+      sapply(ANOS_STR, function(a) INV_ANNUAL[[cen]][[a]])), collapse=" ")))
 }
 
+# ── Conteúdo doméstico por setor IO — calibrado pela MAI IBGE 2018 (ON/OT) ──
+# Finding B: a fração importada (1 - dom) é removida do choque doméstico.
+# O dinheiro importado não entra no sistema Leontief → leakage real de ~7% do FBCF.
+# Fonte: MAI IBGE 2000-2020, ON/OT ratio para cada GIC, ano base 2018.
+DOM_CONTENT <- c(
+  S45 = 0.999,  # GIC74 Construção: 99.9% doméstico
+  S34 = 0.761,  # GIC68 Máquinas e equipamentos: 76% doméstico (turbinas, bombas)
+  S22 = 0.980,  # Biocombustíveis: setor majoritariamente doméstico
+  S33 = 0.650,  # GIC66(68%)+GIC72(55%) blend: equip. elétricos e medição
+  S42 = 0.970,  # Transmissão: cabos e torres principalmente domésticos
+  S30 = 0.848,  # GIC63 Produtos de metal: 85% doméstico
+  S39 = 0.970,  # Serviços de manutenção: majoritariamente domésticos
+  S32 = 0.720,  # GIC64 Material eletrônico: 72% doméstico (painéis, baterias)
+  S19 = 0.999,  # Refino de petróleo: doméstico
+  S35 = 0.848,  # GIC69 Automóveis: 85% doméstico
+  S36 = 0.848,  # Peças/baterias: similar a automóveis
+  S27 = 0.960,  # Borracha e plástico: doméstico
+  S03 = 0.999,  # Silvicultura: 100% doméstico
+  S01 = 0.999,  # Agropecuária: 100% doméstico
+  S57 = 0.929,  # GIC79 Serviços de informação: 93% doméstico
+  S61 = 0.986   # GIC83 Serviços de engenharia: 99% doméstico
+)
+
 engine1_inv <- function(cenario, ano) {
-  pi <- periodo_idx(ano)
+  a_str   <- as.character(ano)
   delta_f <- numeric(N); names(delta_f) <- setores$cod
-  if (pi == 0L) return(delta_f)        # 2025: sem choque de investimento
-  inv_RM <- inv_annual_R2018[[cenario]][pi] * 1000
-  aloc   <- ALOC_INV[[cenario]][[as.character(ano)]]  # pesos ano-específicos
-  for (cod in names(aloc)) delta_f[cod] <- delta_f[cod] + inv_RM * aloc[cod]
+  inv_bi  <- INV_ANNUAL[[cenario]][[a_str]]
+  if (inv_bi == 0) return(delta_f)
+  inv_RM <- inv_bi * 1000                              # bi R$2018 → R$M (MIP units)
+  aloc   <- ALOC_INV[[cenario]][[a_str]]
+  for (cod in names(aloc)) {
+    dc <- if (cod %in% names(DOM_CONTENT)) DOM_CONTENT[cod] else 1.0
+    delta_f[cod] <- delta_f[cod] + inv_RM * aloc[cod] * dc
+  }
   delta_f
 }
 
@@ -1167,8 +1225,7 @@ tot_exp_bi  <- sum(demanda_final$Exportacoes,                 na.rm=TRUE) / 1000
 demanda_comp_df <- bind_rows(lapply(CENS_MMA, function(cen)
   bind_rows(lapply(ANOS_MMA, function(ano) {
     g   <- gdp_rel_2018[as.character(ano)] - 1
-    pi  <- periodo_idx(ano)
-    inv <- if (pi == 0L) 0 else inv_annual_R2018[[cen]][pi] * 1000 / 1000  # R$bi; 0 for 2025
+    inv <- INV_ANNUAL[[cen]][[as.character(ano)]]   # bi R$2018/yr; 0 for 2025
     data.frame(
       cenario             = cen,
       ano                 = as.integer(ano),
@@ -1407,8 +1464,7 @@ inv_df <- bind_rows(lapply(CENS_MMA, function(cen) {
   data.frame(
     cenario=cen, ano=ANOS_MMA,
     inv_bi_R2018=sapply(ANOS_MMA, function(a) {
-      pi <- periodo_idx(a)
-      round(if(pi==0L) 0 else inv_annual_R2018[[cen]][pi]*1e3/1e3, 2)
+      round(INV_ANNUAL[[cen]][[as.character(a)]], 2)
     }),
     stringsAsFactors=FALSE)
 }))
