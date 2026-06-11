@@ -1535,7 +1535,7 @@ function initPremissas(){
           labels:{color:"#e2e8f0",font:{size:11},boxWidth:14,padding:8,
             generateLabels: chart => chart.data.datasets.map((ds,i)=>({
               text:ds.label, fillStyle:ds.borderColor, strokeStyle:ds.borderColor,
-              lineWidth:2, datasetIndex:i, hidden:false
+              fontColor:"#e2e8f0", lineWidth:2, datasetIndex:i, hidden:false
             }))
           }
         }
