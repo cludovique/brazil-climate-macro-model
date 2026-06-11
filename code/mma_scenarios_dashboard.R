@@ -1320,11 +1320,11 @@ function refreshGrp(){
 // CHART HELPERS
 // ════════════════════════════════════════════════════════════════════════════
 const CD={responsive:true,maintainAspectRatio:false,animation:{duration:250},
-  plugins:{legend:{labels:{color:"#8892a4",font:{size:10},boxWidth:11}},
-           tooltip:{backgroundColor:"#1f2233",titleColor:"#e2e8f0",bodyColor:"#8892a4",
+  plugins:{legend:{labels:{color:"#e2e8f0",font:{size:11},boxWidth:12}},
+           tooltip:{backgroundColor:"#1f2233",titleColor:"#e2e8f0",bodyColor:"#c8d0dc",
                     borderColor:"#2a2d3e",borderWidth:1}},
-  scales:{x:{ticks:{color:"#8892a4",font:{size:10}},grid:{color:"#1f2233"}},
-          y:{ticks:{color:"#8892a4",font:{size:10}},grid:{color:"#1f2233"}}}};
+  scales:{x:{ticks:{color:"#c8d0dc",font:{size:10}},grid:{color:"#1f2233"}},
+          y:{ticks:{color:"#c8d0dc",font:{size:10}},grid:{color:"#1f2233"}}}};
 const CHARTS={};
 function dest(id){if(CHARTS[id]){CHARTS[id].destroy();delete CHARTS[id];}}
 function merge(...os){const r={};for(const o of os)for(const k in o){
@@ -1426,7 +1426,7 @@ function renderAlocChart(aloc){
                   return r?(r.cod+(r.nome?" — "+r.nome:"")):"";},
                 label:ctx=>`R$ ${ctx.parsed.x.toFixed(2)} bi  (${(+(alocS[ctx.dataIndex]?.aloc_pct)||0).toFixed(1)}%)`
               }}},
-     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ bi (R$2018)",color:"#8892a4"}},y:CD.scales.y}});
+     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ bi (R$2018)",color:"#c8d0dc"}},y:CD.scales.y}});
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -1445,7 +1445,7 @@ function initPremissas(){
       data:[1,...ANOS.map(a=>{const r=pp.find(x=>+x.ano===a);return r?(+(r.gdp_rel_2018)||0):null;})],
       borderColor:"#F39C12",backgroundColor:hexAlpha("#F39C12",.1),tension:.35,fill:false,pointRadius:4,borderWidth:2}],
     {plugins:{...CD.plugins,legend:{display:false}},
-     scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"relativo a 2018",color:"#8892a4"}}}});
+     scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"relativo a 2018",color:"#c8d0dc"}}}});
 
   // ── 2a. VP and CAE — both derived from the same discounted VP values ─────────
   // VP values come from the MMA model (match KPI cards above)
@@ -1481,7 +1481,7 @@ function initPremissas(){
       scales:{
         x:{...CD.scales.x},
         y:{...CD.scales.y, beginAtZero:true,
-           title:{display:true, text:"R$ bi/ano (R$2018)", color:"#8892a4", font:{size:10}}}
+           title:{display:true, text:"R$ bi/ano (R$2018)", color:"#c8d0dc", font:{size:10}}}
       }
     });
   }
@@ -1532,7 +1532,7 @@ function initPremissas(){
     mkLine("ch-fbcf-time", YANOS.map(String), datasets, {
       plugins:{...CD.plugins,
         legend:{display:true, position:"right",
-          labels:{color:"#dde3ec",font:{size:10},boxWidth:14,padding:8,
+          labels:{color:"#e2e8f0",font:{size:11},boxWidth:14,padding:8,
             generateLabels: chart => chart.data.datasets.map((ds,i)=>({
               text:ds.label, fillStyle:ds.borderColor, strokeStyle:ds.borderColor,
               lineWidth:2, datasetIndex:i, hidden:false
@@ -1543,7 +1543,7 @@ function initPremissas(){
       scales:{
         x:{...CD.scales.x},
         y:{...CD.scales.y, beginAtZero:true,
-           title:{display:true, text:"R$ bi/ano (R$2018)", color:"#8892a4", font:{size:10}}}
+           title:{display:true, text:"R$ bi/ano (R$2018)", color:"#c8d0dc", font:{size:10}}}
       }
     });
   }
@@ -1567,7 +1567,7 @@ function initPremissas(){
        backgroundColor:hexAlpha("#E24B4A",.85),borderRadius:2,stack:"s"}
     ],{scales:{x:{...CD.scales.x,stacked:true},
                y:{...CD.scales.y,min:0,max:100,stacked:true,
-                  title:{display:true,text:"%",color:"#8892a4"}}}});
+                  title:{display:true,text:"%",color:"#c8d0dc"}}}});
   });
 
   // ── 3b. Coefficient table and evolution chart (initial render) ───────────
@@ -1739,7 +1739,7 @@ function buildCoefTable(){
         plugins:{
           ...CD.plugins,
           legend:{labels:{
-            color:"#8892a4",font:{size:9},boxWidth:9,padding:8,
+            color:"#c8d0dc",font:{size:9},boxWidth:9,padding:8,
             generateLabels:chart=>chart.data.datasets.map((ds,i)=>{
               const parts=ds.label.split(" · ");
               const cod=parts[0], et=parts[1]||"";
@@ -1747,7 +1747,7 @@ function buildCoefTable(){
               return {
                 text:`${name}`,
                 fillStyle:ds.borderColor,strokeStyle:ds.borderColor,
-                fontColor:"#8892a4",hidden:ds.hidden||false,
+                fontColor:"#e2e8f0",hidden:ds.hidden||false,
                 datasetIndex:i,lineDash:ds.borderDash||[]
               };
             })
@@ -1766,7 +1766,7 @@ function buildCoefTable(){
           }}
         },
         scales:{x:CD.scales.x,y:{...CD.scales.y,
-          title:{display:true,text:"coeficiente A*",color:"#8892a4"}}}
+          title:{display:true,text:"coeficiente A*",color:"#c8d0dc"}}}
       })
     });
   }
@@ -1870,9 +1870,9 @@ function buildCoefTable(){
      tension:.35,fill:false,pointRadius:2,borderWidth:1.5,borderDash:[6,4]}
   ];
   mkLine("ch-eng3-energy",["2020",...ANOS_S],e3aDs,
-    {plugins:{...CD.plugins,legend:{labels:{color:"#8892a4",font:{size:9},boxWidth:9,padding:8}}},
+    {plugins:{...CD.plugins,legend:{labels:{color:"#e2e8f0",font:{size:11},boxWidth:11,padding:8}}},
      scales:{x:CD.scales.x,y:{...CD.scales.y,
-       title:{display:true,text:"Índice (base 2020 = 100)",color:"#8892a4"},
+       title:{display:true,text:"Índice (base 2020 = 100)",color:"#c8d0dc"},
        grid:{color:ctx=>ctx.tick.value===100?"rgba(255,255,255,0.22)":"#1f2233"}}}});
   // ── 4a-adv: Advanced biofuels — absolute PJ (base 2020 = 0, no index) ──────
   const ADV_BIO=[
@@ -1881,9 +1881,9 @@ function buildCoefTable(){
     {prod:"Bunker Verde",   color:"#FFB347", label:"Bunker Verde"}
   ];
   const advOpts={
-    plugins:{...CD.plugins,legend:{labels:{color:"#8892a4",font:{size:10},boxWidth:10,padding:10}}},
+    plugins:{...CD.plugins,legend:{labels:{color:"#e2e8f0",font:{size:11},boxWidth:11,padding:10}}},
     scales:{x:CD.scales.x,y:{...CD.scales.y,
-      title:{display:true,text:"PJ",color:"#8892a4"},min:0}}
+      title:{display:true,text:"PJ",color:"#c8d0dc"},min:0}}
   };
   mkLine("ch-eng3-bioadv",["2020",...ANOS_S],
     ADV_BIO.map(s=>({
@@ -1903,9 +1903,9 @@ function buildCoefTable(){
   };
 
   const indOpts={
-    plugins:{...CD.plugins,legend:{labels:{color:"#8892a4",font:{size:9},boxWidth:9,padding:8}}},
+    plugins:{...CD.plugins,legend:{labels:{color:"#e2e8f0",font:{size:11},boxWidth:11,padding:8}}},
     scales:{x:CD.scales.x,y:{...CD.scales.y,
-      title:{display:true,text:"Índice (base 2020 = 100)",color:"#8892a4"},
+      title:{display:true,text:"Índice (base 2020 = 100)",color:"#c8d0dc"},
       grid:{color:ctx=>ctx.tick.value===100?"rgba(255,255,255,0.22)":"#1f2233"}}}
   };
 
@@ -2008,7 +2008,7 @@ function initProducao(){
        borderColor:C100,backgroundColor:hexAlpha(C100,.1),tension:.35,fill:false,pointRadius:4,borderWidth:2},
       {label:"Linha de Base (só PIB)",data:d.dBase,
        borderColor:CBASE,backgroundColor:hexAlpha(CBASE,.1),tension:.35,fill:false,pointRadius:4,borderWidth:2,borderDash:[5,4]}
-    ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:ytxt,color:"#8892a4"}}},
+    ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:ytxt,color:"#c8d0dc"}}},
        plugins:{...CD.plugins,tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`}}}});
   };
   window.togTrajView=isAbs=>{
@@ -2036,7 +2036,7 @@ function initProducao(){
         borderRadius:4}],
       {plugins:{...CD.plugins,legend:{display:false},
         tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>fmt(ctx.parsed.y)}}},
-       scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:ytxt,color:"#8892a4"}}}});
+       scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:ytxt,color:"#c8d0dc"}}}});
   };
   window.togNetView=isAbs=>{
     netIsAbs=isAbs;
@@ -2059,7 +2059,7 @@ function initProducao(){
     [{label:"Δx 100D",data:top20.map(r=>+(r.delta_x_total)||0),
       backgroundColor:top20.map(r=>hexAlpha(nt4Color(r.cod),0.82)),borderRadius:3}],
     {plugins:{...CD.plugins,legend:{display:false},tooltip:{...CD.plugins.tooltip,...secTip}},
-     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ M",color:"#8892a4"}},y:CD.scales.y}});
+     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ M",color:"#c8d0dc"}},y:CD.scales.y}});
   // NT4 legend
   const t20lg=document.getElementById("chips-top20"); if(t20lg){
     t20lg.innerHTML="";
@@ -2080,7 +2080,7 @@ function initProducao(){
         return v>=0?hexAlpha(nt4Color(r.cod),0.82):hexAlpha("#E24B4A",0.75);
       }),borderRadius:3}],
     {plugins:{...CD.plugins,legend:{display:false},tooltip:{...CD.plugins.tooltip,...secTip}},
-     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ M",color:"#8892a4"}},y:CD.scales.y}});
+     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ M",color:"#c8d0dc"}},y:CD.scales.y}});
   // NT4 legend for transition chart
   const ttlg=document.getElementById("chips-trans"); if(ttlg){
     ttlg.innerHTML="";
@@ -2144,7 +2144,7 @@ function initProducao(){
       tension:.35,fill:false,pointRadius:3,borderWidth:2
     })),
     {scales:{x:CD.scales.x,y:{...CD.scales.y,
-      title:{display:true,text:"R$ bi (100D − Base)",color:"#8892a4"}}}});
+      title:{display:true,text:"R$ bi (100D − Base)",color:"#c8d0dc"}}}});
 
   // Bar: 100D−Base per energy sector for selected year, sorted by value
   const eRows=all100.filter(r=>ECODS.includes(r.cod));
@@ -2159,7 +2159,7 @@ function initProducao(){
       }),
       borderRadius:3}],
     {plugins:{...CD.plugins,legend:{display:false}},
-     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ M",color:"#8892a4"}},y:CD.scales.y}});
+     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ M",color:"#c8d0dc"}},y:CD.scales.y}});
 
   // ── Energy sector table (sorted by 100D−Base: winners first) ────────────────
   clrTbody("tbl-energy");
@@ -2251,7 +2251,7 @@ function buildSpillover(rcFull){
         }}
       },
       scales:{
-        x:{...CD.scales.x,title:{display:true,text:axLabel,color:"#8892a4"},
+        x:{...CD.scales.x,title:{display:true,text:axLabel,color:"#c8d0dc"},
            grid:{...CD.scales.x.grid,
              color:ctx=>ctx.tick.value===0?"rgba(255,255,255,0.18)":"#1f2233"}},
         y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,font:{size:9}}}
@@ -2364,7 +2364,7 @@ function initFatores(){
      data:[VA_BASE/1e3,...ANOS.map(a=>(VA_BASE+rsGet("100D",a,"delta_va_baseline_bi"))/1e3)],
      borderColor:CBASE,backgroundColor:hexAlpha(CBASE,.08),tension:.35,fill:false,pointRadius:4,borderWidth:1.5,borderDash:[6,4]}
   ],{scales:{x:CD.scales.x,
-    y:{...CD.scales.y,beginAtZero:false,title:{display:true,text:"R$ tri (R$2018)",color:"#8892a4"}}}});
+    y:{...CD.scales.y,beginAtZero:false,title:{display:true,text:"R$ tri (R$2018)",color:"#c8d0dc"}}}});
 
   // Right chart: PIB per capita in R$ mil/hab — single axis
   mkLine("ch-pib-pct", TRAJ_LBL,[
@@ -2375,7 +2375,7 @@ function initFatores(){
      data:[pcBase,...ANOS.map(a=>pcBsl(a))],
      borderColor:CBASE,backgroundColor:hexAlpha(CBASE,.08),tension:.35,fill:false,pointRadius:4,borderWidth:1.5,borderDash:[6,4]}
   ],{scales:{x:CD.scales.x,
-    y:{...CD.scales.y,beginAtZero:false,title:{display:true,text:"R$ mil / habitante (R$2018)",color:"#8892a4"}}}});
+    y:{...CD.scales.y,beginAtZero:false,title:{display:true,text:"R$ mil / habitante (R$2018)",color:"#c8d0dc"}}}});
 
   // PIB total % view
   mkLine("ch-pib-traj-p", TRAJ_LBL,[
@@ -2386,7 +2386,7 @@ function initFatores(){
      data:[0,...ANOS.map(a=>(rsGet("100D",a,"delta_va_baseline_bi")/VA_BASE*100))],
      borderColor:CBASE,backgroundColor:hexAlpha(CBASE,.08),tension:.35,fill:false,pointRadius:4,borderWidth:1.5,borderDash:[6,4]}
   ],{scales:{x:CD.scales.x,
-    y:{...CD.scales.y,title:{display:true,text:"% vs 2018",color:"#8892a4"}}}});
+    y:{...CD.scales.y,title:{display:true,text:"% vs 2018",color:"#c8d0dc"}}}});
 
   // PIB per capita % view
   mkLine("ch-pib-pct-p", TRAJ_LBL,[
@@ -2397,7 +2397,7 @@ function initFatores(){
      data:[0,...ANOS.map(a=>((pcBsl(a)-pcBase)/pcBase*100))],
      borderColor:CBASE,backgroundColor:hexAlpha(CBASE,.08),tension:.35,fill:false,pointRadius:4,borderWidth:1.5,borderDash:[6,4]}
   ],{scales:{x:CD.scales.x,
-    y:{...CD.scales.y,title:{display:true,text:"% vs 2018 (per capita)",color:"#8892a4"}}}});
+    y:{...CD.scales.y,title:{display:true,text:"% vs 2018 (per capita)",color:"#c8d0dc"}}}});
 
   // Contribution %: how much of total PIB growth is from transition — anchored at 2018=0
   mkLine("ch-pib-dirindir", TRAJ_LBL,[
@@ -2411,7 +2411,7 @@ function initFatores(){
      tension:.35,fill:true,pointRadius:4,borderWidth:2.5}
   ],{plugins:{...CD.plugins,legend:{display:false}},
      scales:{x:CD.scales.x,y:{...CD.scales.y,
-       title:{display:true,text:"% do crescimento total atribuível à transição",color:"#8892a4"},
+       title:{display:true,text:"% do crescimento total atribuível à transição",color:"#c8d0dc"},
        min:0,
        grid:{...CD.scales.y.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}}}});
 
@@ -2422,7 +2422,7 @@ function initFatores(){
   const transByGrpPct=transByGrp.map(v=>(v/transTotal*100));
   const grpBarOpts=(unit)=>({
     plugins:{...CD.plugins,legend:{display:false}},
-    scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:unit,color:"#8892a4"},
+    scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:unit,color:"#c8d0dc"},
       grid:{...CD.scales.y.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}}}});
   mkBar("ch-pib-trans-grp",G7K.map(g=>GRP7_LABELS[g]||g),
     [{label:"Prêmio (R$ bi)",data:transByGrp,
@@ -2443,7 +2443,7 @@ function initFatores(){
       backgroundColor:allTrans.map(r=>hexAlpha(r.pct>=0?CINV:"#E24B4A",.82)),
       borderRadius:3}],
     {plugins:{...CD.plugins,legend:{display:false},tooltip:{...CD.plugins.tooltip,...secTip}},
-     scales:{x:{...CD.scales.x,title:{display:true,text:"% vs produção 2018",color:"#8892a4"},
+     scales:{x:{...CD.scales.x,title:{display:true,text:"% vs produção 2018",color:"#c8d0dc"},
        grid:{...CD.scales.x.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}},y:CD.scales.y}});
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -2493,7 +2493,7 @@ function initFatores(){
      data:[EMP_BASE/1e6,...ANOS.map(a=>(EMP_BASE+rsGet("100D",a,"delta_emp_baseline"))/1e6)],
      borderColor:CBASE,backgroundColor:hexAlpha(CBASE,.08),tension:.35,fill:false,pointRadius:4,borderWidth:1.5,borderDash:[6,4]}
   ],{scales:{x:CD.scales.x,y:{...CD.scales.y,beginAtZero:false,
-     title:{display:true,text:"Milhões de postos",color:"#8892a4"}}}});
+     title:{display:true,text:"Milhões de postos",color:"#c8d0dc"}}}});
 
   // Trajectory: % view
   mkLine("ch-emp-traj-p", TRAJ_LBL,[
@@ -2503,7 +2503,7 @@ function initFatores(){
     {label:"Baseline PIB (%)",
      data:[0,...ANOS.map(a=>rsGet("100D",a,"delta_emp_baseline")/EMP_BASE*100)],
      borderColor:CBASE,backgroundColor:hexAlpha(CBASE,.08),tension:.35,fill:false,pointRadius:4,borderWidth:1.5,borderDash:[6,4]}
-  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"% vs 2018",color:"#8892a4"}}}});
+  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"% vs 2018",color:"#c8d0dc"}}}});
 
   // Premium decomposition: Direct vs Indirect (stacked bar, Mil postos, per projection year)
   // Approximation: transition premium split using same direct/indirect ratio as total
@@ -2525,9 +2525,9 @@ function initFatores(){
      backgroundColor:hexAlpha(CDIR2,.82),borderRadius:3,stack:"s"},
     {label:"Indireto (cadeia)",data:premIndYr,
      backgroundColor:hexAlpha(CIND2,.72),borderRadius:3,stack:"s"}
-  ],{plugins:{...CD.plugins,legend:{labels:{color:"#8892a4",font:{size:10},boxWidth:10,padding:8}}},
+  ],{plugins:{...CD.plugins,legend:{labels:{color:"#c8d0dc",font:{size:10},boxWidth:10,padding:8}}},
      scales:{x:{...CD.scales.x,stacked:true},
-       y:{...CD.scales.y,stacked:true,title:{display:true,text:"Milhões de postos (prêmio da transição)",color:"#8892a4"},
+       y:{...CD.scales.y,stacked:true,title:{display:true,text:"Milhões de postos (prêmio da transição)",color:"#c8d0dc"},
          grid:{...CD.scales.y.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}}}});
 
   // Top 20 sectors by TRANSITION premium — sorted descending so largest is at top
@@ -2550,8 +2550,8 @@ function initFatores(){
       backgroundColor:hexAlpha(CIND2,.65),borderRadius:2,stack:"s"}],
     {plugins:{...CD.plugins,
        tooltip:{...CD.plugins.tooltip,...secTip},
-       legend:{labels:{color:"#8892a4",font:{size:10},boxWidth:10,padding:8}}},
-     scales:{x:{...CD.scales.x,stacked:true,title:{display:true,text:"Mil postos — prêmio da transição",color:"#8892a4"},
+       legend:{labels:{color:"#c8d0dc",font:{size:10},boxWidth:10,padding:8}}},
+     scales:{x:{...CD.scales.x,stacked:true,title:{display:true,text:"Mil postos — prêmio da transição",color:"#c8d0dc"},
        grid:{...CD.scales.x.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}},
        y:{...CD.scales.y,stacked:true}}});
   mkChips("chips-emp",["Direto","Indireto (cadeia)"],[hexAlpha(CDIR2,.82),hexAlpha(CIND2,.65)],vis=>{
@@ -2567,8 +2567,8 @@ function initFatores(){
       borderColor:GRP7_COLS[g]||"#888",backgroundColor:hexAlpha(GRP7_COLS[g]||"#888",.08),
       tension:.35,fill:false,pointRadius:3,borderWidth:2
     })),
-    {plugins:{...CD.plugins,legend:{labels:{color:"#8892a4",font:{size:9},boxWidth:9,padding:8}}},
-     scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"Milhões de postos (prêmio da transição)",color:"#8892a4"},
+    {plugins:{...CD.plugins,legend:{labels:{color:"#e2e8f0",font:{size:11},boxWidth:11,padding:8}}},
+     scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"Milhões de postos (prêmio da transição)",color:"#c8d0dc"},
        grid:{...CD.scales.y.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}}}});
 
   // ── Energy sector zoom ──────────────────────────────────────────────────────
@@ -2601,17 +2601,17 @@ function initFatores(){
     {plugins:{...CD.plugins,
        tooltip:{...CD.plugins.tooltip,...engSecTip},
        legend:{labels:{
-         color:"#8892a4",font:{size:9},boxWidth:9,padding:6,
+         color:"#c8d0dc",font:{size:9},boxWidth:9,padding:6,
          generateLabels:chart=>chart.data.datasets.map((ds,i)=>({
            text:(SECNAME[ds.label]||ds.label).slice(0,26),
            fillStyle:ds.borderColor,strokeStyle:ds.borderColor,
-           fontColor:"#8892a4",
+           fontColor:"#e2e8f0",
            hidden:ds.hidden||false,datasetIndex:i,
            lineDash:ds.borderDash||[]
          }))
        }}},
      scales:{x:CD.scales.x,y:{...CD.scales.y,
-       title:{display:true,text:"Mil postos (prêmio da transição)",color:"#8892a4"},
+       title:{display:true,text:"Mil postos (prêmio da transição)",color:"#c8d0dc"},
        grid:{...CD.scales.y.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}}}});
 
   // Right: bar chart — current year, sorted by transition premium magnitude
@@ -2630,7 +2630,7 @@ function initFatores(){
       borderRadius:4}],
     {plugins:{...CD.plugins,legend:{display:false},
        tooltip:{...CD.plugins.tooltip,...engBarTip}},
-     scales:{x:{...CD.scales.x,title:{display:true,text:"Mil postos",color:"#8892a4"},
+     scales:{x:{...CD.scales.x,title:{display:true,text:"Mil postos",color:"#c8d0dc"},
        grid:{...CD.scales.x.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}},
        y:{...CD.scales.y}}});
 
@@ -2666,13 +2666,13 @@ function initFatores(){
          footer:ctx=>{
            const i=ctx[0].dataIndex;
            return `Total 100D: ${(engLvl[i].dir+engLvl[i].ind).toFixed(1)} Mil postos`;}}},
-       legend:{labels:{color:"#8892a4",font:{size:10},boxWidth:10,padding:10,
+       legend:{labels:{color:"#c8d0dc",font:{size:10},boxWidth:10,padding:10,
          generateLabels:chart=>chart.data.datasets.map((ds,i)=>({
            text:ds.label,
            fillStyle:i===0?"#4a5168":(i===1?"#1D9E75":"rgba(29,158,117,.35)"),
            strokeStyle:"transparent",
-           fontColor:"#8892a4", hidden:ds.hidden||false, datasetIndex:i}))}}},
-     scales:{x:{...CD.scales.x,stacked:true,title:{display:true,text:"Mil postos",color:"#8892a4"}},
+           fontColor:"#e2e8f0", hidden:ds.hidden||false, datasetIndex:i}))}}},
+     scales:{x:{...CD.scales.x,stacked:true,title:{display:true,text:"Mil postos",color:"#c8d0dc"}},
              y:{...CD.scales.y,stacked:true}}});
 
   // Matrix: sector group × demographic category — transition premium + % of 2018 base
@@ -2784,7 +2784,7 @@ function initFatores(){
     {label:"Baseline PIB",
      data:[0,...ANOS.map(a=>rsGet("100D",a,"delta_rem_baseline_bi"))],
      borderColor:CBASE,backgroundColor:hexAlpha(CBASE,.08),tension:.35,fill:false,pointRadius:4,borderWidth:1.5,borderDash:[6,4]}
-  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi (R$2018)",color:"#8892a4"}}}});
+  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi (R$2018)",color:"#c8d0dc"}}}});
 
   // Renda: Prêmio trajectory — anchored at 2018=0
   mkLine("ch-rem-dirindir", TRAJ_LBL,[
@@ -2792,7 +2792,7 @@ function initFatores(){
      data:[0,...ANOS.map(a=>rsGet("100D",a,"delta_rem_transition_bi"))],
      borderColor:"#9333EA",backgroundColor:hexAlpha("#9333EA",.22),tension:.35,fill:true,pointRadius:4,borderWidth:2.5}
   ],{plugins:{...CD.plugins,legend:{display:false}},
-     scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi — prêmio salarial da transição",color:"#8892a4"},
+     scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi — prêmio salarial da transição",color:"#c8d0dc"},
        grid:{...CD.scales.y.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}}}});
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -2822,7 +2822,7 @@ function initFatores(){
     {label:"Baseline PIB (proxy)",
      data:[0,...taxBase100],
      borderColor:CBASE,backgroundColor:hexAlpha(CBASE,.08),tension:.35,fill:false,pointRadius:4,borderWidth:1.5,borderDash:[6,4]}
-  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi (R$2018)",color:"#8892a4"}}}});
+  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi (R$2018)",color:"#c8d0dc"}}}});
 
   // Stacked direct / indirect 100D
   mkBar("ch-tax-decomp", ANOS_S,
@@ -2833,7 +2833,7 @@ function initFatores(){
       data:ANOS.map(a=>tcGet("100D",a,"delta_tax_indirect_bi")),
       backgroundColor:hexAlpha("#F39C12",.8),borderRadius:3,stack:"s"}],
     {scales:{x:{...CD.scales.x,stacked:true},y:{...CD.scales.y,stacked:true,
-      title:{display:true,text:"R$ bi (100D)",color:"#8892a4"}}}});
+      title:{display:true,text:"R$ bi (100D)",color:"#c8d0dc"}}}});
 
   // ══════════════════════════════════════════════════════════════════════════
   // SECTION 5 — COMÉRCIO EXTERIOR
@@ -2860,7 +2860,7 @@ function initFatores(){
       backgroundColor:G7K.map(g=>hexAlpha(GRP7_COLS[g]||"#888",.85)),borderRadius:3},
      {label:"0D",   data:G7K.map(g=>+(expGrp0[g]||0).toFixed(2)),
       backgroundColor:G7K.map(g=>hexAlpha(GRP7_COLS[g]||"#888",.35)),borderRadius:3}],
-    {scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi",color:"#8892a4"},
+    {scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi",color:"#c8d0dc"},
       grid:{...CD.scales.y.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}}}});
 
   // Trajectory winners vs losers
@@ -2879,7 +2879,7 @@ function initFatores(){
     {label:"Total 0D",
      data:ANOS.map(a=>deltaExpTotal("0D",a)),
      borderColor:CBASE,backgroundColor:"transparent",tension:.35,fill:false,pointRadius:4,borderWidth:1.5,borderDash:[6,4]}
-  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi",color:"#8892a4"},
+  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi",color:"#c8d0dc"},
     grid:{...CD.scales.y.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}}}});
 
   // Energy sector export balance (renewable vs fossil)
@@ -2894,7 +2894,7 @@ function initFatores(){
      data:ANOS.map(a=>rc.filter(r=>r.cenario==="100D"&&+r.ano===a&&FOSSIL_CODS.includes(r.cod))
        .reduce((s,r)=>s+(+(r.delta_x_total)||0)*(expCoef[r.cod]||0)/1e3,0)),
      borderColor:C100,backgroundColor:hexAlpha(C100,.15),tension:.35,fill:true,pointRadius:4,borderWidth:2.5}
-  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi",color:"#8892a4"},
+  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"R$ bi",color:"#c8d0dc"},
     grid:{...CD.scales.y.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}}}});
 
   // Top 10 export sectors 100D vs 0D
@@ -2908,7 +2908,7 @@ function initFatores(){
      {label:"0D",  data:allSecs.map(r=>+(expSec0[r.cod]||0).toFixed(3)),
       backgroundColor:allSecs.map(r=>hexAlpha(CBASE,.45)),borderRadius:3}],
     {plugins:{...CD.plugins,tooltip:{...CD.plugins.tooltip,...secTip}},
-     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ bi",color:"#8892a4"},
+     scales:{x:{...CD.scales.x,title:{display:true,text:"R$ bi",color:"#c8d0dc"},
        grid:{...CD.scales.x.grid,color:ctx=>ctx.tick.value===0?"rgba(255,255,255,.22)":"#1f2233"}},y:CD.scales.y}});
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -2961,7 +2961,7 @@ function initEnergia(){
       data:FONTES.map(f=>{const r=ei.find(x=>x.cenario==="100D"&&+x.ano===S.ano&&x.fonte===f);return r?(+(r.delta_ktep)||0):0;}),
       backgroundColor:FONTES.map(f=>FONTE_C[f]||"#888"),borderRadius:3}],
     {plugins:{...CD.plugins,legend:{display:false}},
-     scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"ktep",color:"#8892a4"}}}});
+     scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"ktep",color:"#c8d0dc"}}}});
 
   mkLine("ch-ei-traj", ANOS_S,[
     {label:"Fóssil (Derivados+Gás)",
@@ -2970,7 +2970,7 @@ function initEnergia(){
     {label:"Renovável",
      data:ANOS.map(a=>ei.filter(r=>r.cenario==="100D"&&+r.ano===a&&!FOSSIL.has(r.fonte)).reduce((s,r)=>s+(+(r.delta_ktep)||0),0)),
      borderColor:"#1D9E75",backgroundColor:hexAlpha("#1D9E75",.1),tension:.35,fill:false,pointRadius:4,borderWidth:2}
-  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"ktep",color:"#8892a4"}}}});
+  ],{scales:{x:CD.scales.x,y:{...CD.scales.y,title:{display:true,text:"ktep",color:"#c8d0dc"}}}});
 }
 
 // ════════════════════════════════════════════════════════════════════════════
