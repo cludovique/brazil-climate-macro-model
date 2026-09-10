@@ -1,0 +1,51 @@
+name: ERL paper model audit
+
+on:
+  push:
+    branches:
+      - paper/erl-draft
+    paths:
+      - paper/model_audit.R
+      - .github/workflows/paper-audit.yml
+
+permissions:
+  contents: write
+
+jobs:
+  model-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out paper branch
+        uses: actions/checkout@v4
+        with:
+          ref: paper/erl-draft
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install model dependencies
+        shell: Rscript {0}
+        run: |
+          pkgs <- c(
+            "readxl", "dplyr", "tidyr", "writexl", "stringr",
+            "ggplot2", "scales", "ggrepel", "patchwork", "forcats"
+          )
+          install.packages(setdiff(pkgs, rownames(installed.packages())))
+
+      - name: Run paper model audit
+        run: Rscript paper/model_audit.R
+
+      - name: Commit generated audit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add paper/results/
+          if git diff --cached --quiet; then
+            echo "No result changes to commit."
+          else
+            git commit -m "Generate ERL model audit results [skip ci]"
+            git push origin paper/erl-draft
+          fi
