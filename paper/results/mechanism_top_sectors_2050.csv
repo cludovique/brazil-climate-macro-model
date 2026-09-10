@@ -1,0 +1,61 @@
+"mechanism","direction","rank","cod","sector","group7","va_shapley_Rbn"
+"investment","positive",1,"S45","Construção","Infrastructure",163.949154605049
+"investment","positive",2,"S47","Comércio por atacado e a varejo, exceto veículos automotores","Services",42.889983553857
+"investment","positive",3,"S30","Metalurgia de metais não-ferosos e a fundição de metais","Manufacturing",34.6786506742197
+"investment","positive",4,"S34","Fabricação de máquinas e equipamentos mecânicos","Manufacturing",33.7263478257638
+"investment","positive",5,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","Services",20.0130381502026
+"investment","positive",6,"S58","Intermediação financeira, seguros e previdência complementar","Services",16.9494968052803
+"investment","positive",7,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","Services",13.3863250864056
+"investment","positive",8,"S48","Transporte terrestre","Infrastructure",11.3417499727062
+"investment","positive",9,"S28","Fabricação de produtos de minerais não-metálicos","Manufacturing",9.69019862854571
+"investment","positive",10,"S64","Outras atividades administrativas e serviços complementares","Services",8.69497631077373
+"investment","negative",1,"S73","Serviços domésticos","Services",0
+"investment","negative",2,"S12","Fabricação de produtos do fumo","Manufacturing",0.00447367546891511
+"investment","negative",3,"S70","Saúde privada","Services",0.00728745567297058
+"investment","negative",4,"S69","Saúde pública","Services",0.0175319567748084
+"investment","negative",5,"S21","Coquerias","Fossil energy",0.0219788690555316
+"investment","negative",6,"S15","Fabricação de calçados e de artefatos de couro","Manufacturing",0.0299097858169134
+"investment","negative",7,"S11","Fabricação de bebidas","Manufacturing",0.0791464475523505
+"investment","negative",8,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","Manufacturing",0.0877174596487233
+"investment","negative",9,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","Manufacturing",0.094358155026183
+"investment","negative",10,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","Manufacturing",0.100363054907163
+"rewiring","positive",1,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","Agriculture",27.7742032922744
+"rewiring","positive",2,"S22","Fabricação de biocombustíveis","Renewable energy",25.9659272410633
+"rewiring","positive",3,"S40","Geração centralizada de energia elétrica","Renewable energy",14.9644913803954
+"rewiring","positive",4,"S20","Biodiesel","Renewable energy",3.38754401129574
+"rewiring","positive",5,"S41","Geração distribuída de energia elétrica","Renewable energy",2.06093857127264
+"rewiring","positive",6,"S58","Intermediação financeira, seguros e previdência complementar","Services",2.01629214823706
+"rewiring","positive",7,"S48","Transporte terrestre","Infrastructure",1.73612863147803
+"rewiring","positive",8,"S42","Transmissão","Renewable energy",1.72693427785155
+"rewiring","positive",9,"S10","Outros produtos alimentares","Manufacturing",1.47086841005799
+"rewiring","positive",10,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","Manufacturing",1.03937454739541
+"rewiring","negative",1,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","Fossil energy",-38.1906876771088
+"rewiring","negative",2,"S19","Derivados de petróleo","Fossil energy",-16.2399823702195
+"rewiring","negative",3,"S43","Gás Natural","Fossil energy",-11.3540889877559
+"rewiring","negative",4,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","Services",-2.58089496777302
+"rewiring","negative",5,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","Services",-1.37580657292906
+"rewiring","negative",6,"S49","Transporte aquaviário","Infrastructure",-0.986741942134081
+"rewiring","negative",7,"S45","Construção","Infrastructure",-0.347605792816476
+"rewiring","negative",8,"S34","Fabricação de máquinas e equipamentos mecânicos","Manufacturing",-0.340660439934678
+"rewiring","negative",9,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","Manufacturing",-0.330163231618962
+"rewiring","negative",10,"S09","Fabricação e refino de açúcar","Manufacturing",-0.234087577275602
+"physical","positive",1,"S43","Gás Natural","Fossil energy",21.9733912073242
+"physical","positive",2,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","Manufacturing",19.7312530874858
+"physical","positive",3,"S40","Geração centralizada de energia elétrica","Renewable energy",14.0298293787507
+"physical","positive",4,"S28","Fabricação de produtos de minerais não-metálicos","Manufacturing",11.713824001959
+"physical","positive",5,"S20","Biodiesel","Renewable energy",3.91940415794024
+"physical","positive",6,"S42","Transmissão","Renewable energy",1.63857906902048
+"physical","positive",7,"S73","Serviços domésticos","Services",0
+"physical","positive",8,"S12","Fabricação de produtos do fumo","Manufacturing",-0.00151329843126708
+"physical","positive",9,"S69","Saúde pública","Services",-0.00385227664026024
+"physical","positive",10,"S70","Saúde privada","Services",-0.0054842269315947
+"physical","negative",1,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","Fossil energy",-134.603496067101
+"physical","negative",2,"S19","Derivados de petróleo","Fossil energy",-25.1963842501284
+"physical","negative",3,"S47","Comércio por atacado e a varejo, exceto veículos automotores","Services",-23.2506335623918
+"physical","negative",4,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","Agriculture",-20.4711868399721
+"physical","negative",5,"S58","Intermediação financeira, seguros e previdência complementar","Services",-14.507827340607
+"physical","negative",6,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","Services",-13.9353424502002
+"physical","negative",7,"S48","Transporte terrestre","Infrastructure",-11.281138184262
+"physical","negative",8,"S51","Armazenamento, atividades auxiliares dos transportes e correio","Infrastructure",-6.35904298680709
+"physical","negative",9,"S64","Outras atividades administrativas e serviços complementares","Services",-6.12473992766631
+"physical","negative",10,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","Manufacturing",-4.21827757843997
