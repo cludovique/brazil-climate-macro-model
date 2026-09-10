@@ -1,404 +1,251 @@
-# Paper Blueprint V0 — ERL
+# Paper Blueprint V1 — ERL
 
 ## Working title
 
 **From NDC pathways to production networks: Macroeconomic spillovers of Brazil’s net-zero transition**
 
-Alternative titles to keep in reserve:
+## Target journal
 
-- **Who gains from Brazil’s NDC transition? Production-network spillovers of net-zero investment**
-- **Translating NDC pathways into production networks: Economy-wide effects of Brazil’s climate transition**
-- **Green expansion, fossil contraction: Production-network effects of Brazil’s NDC transition**
+Environmental Research Letters (ERL). Main text should remain concise; detailed mappings, coefficients, calibration assumptions, sensitivity analyses, and expanded tables should move to Supplementary Information.
 
-## Target journal and article type
+## 1. Main research question
 
-Target: **Environmental Research Letters (ERL)**.
+**How do NDC-consistent investment and technology pathways propagate through Brazil’s production network, and how does enforcing consistency with sectoral physical production pathways alter the resulting macroeconomic and distributional effects?**
 
-The manuscript should be written as a concise Research Letter, with the main article focused on the scientific contribution and the detailed concordances, coefficients, sector mappings, robustness exercises, and expanded results moved to Supplementary Information.
+Supporting questions:
 
-## 1. Core scientific question
+1. How much of the transition differential is associated with the domestic investment wave?
+2. How does energy-input substitution redistribute activity between fossil, renewable, agricultural, manufacturing, infrastructure, and service supply chains?
+3. How much adjustment is required to keep selected sectoral outputs consistent with the NDC physical pathway?
+4. How sensitive is the domestic value-added gain to import leakage and domestic supply-chain participation?
+5. What labor requirements are implied under alternative employment-coefficient assumptions?
 
-### Main research question
+## 2. Conceptual architecture
 
-**How do NDC-consistent technology, investment, and production pathways propagate through Brazil’s production network, and under what conditions do transition-related gains offset the contraction of fossil-fuel activities?**
+The model should no longer be described as three symmetric transmission mechanisms.
 
-### Supporting questions
+Instead, it combines **two economic transmission channels** with **one physical consistency layer**:
 
-1. Through which channels does the NDC transition affect domestic production and value added: transition investment, changes in intermediate energy use, or changes in physical production trajectories?
-2. Which sectors capture the largest gains and losses from the transition?
-3. How sensitive are the macroeconomic gains to domestic supply-chain participation and import leakage?
-4. What are the implied labor requirements and distributional patterns under the 2018 labor-market structure?
+### Channel 1 — Transition investment
 
-## 2. Central argument
-
-Brazil is an analytically distinctive climate-transition case because its emissions profile is dominated by land use and agriculture while its power sector is already comparatively low-carbon. The implementation of its NDC therefore combines land-use mitigation with substantial restructuring of energy, transport, industry, buildings, and fuel supply chains.
-
-The paper does not ask only whether emissions can be reduced. It asks how the implementation pathway itself propagates through the domestic economy.
-
-The central argument is:
-
-> **Under the modeled NDC pathway, the expansion of low-carbon investment and value chains more than offsets contraction in fossil-fuel activities in the aggregate, but the magnitude and distribution of the resulting production and value-added gains depend on how the transition is transmitted through domestic supply chains.**
-
-The manuscript should avoid presenting the IO results as a forecast or as a causal estimate of climate policy. They are scenario-based production-network effects conditional on the modeled transition pathway, the counterfactual, and the fixed structural coefficients of the IO framework.
-
-## 3. Scientific contribution
-
-The contribution should be stated in three parts.
-
-### Contribution 1 — Translating a bottom-up NDC pathway into an economy-wide production network
-
-The model soft-links two different representations of the Brazilian economy:
-
-- the MMA/BLUES NDC pathway, which provides sectoral physical trajectories, technology mixes, land-use changes, and investment information;
-- the MIP-EPE 2018 input-output framework, which represents 73 economic sectors and contains value-added, employment, labor-composition, and energy satellite information.
-
-The contribution is not simply applying an IO multiplier to an aggregate investment vector. The translation layer converts the physical transition pathway into year- and sector-specific economic shocks.
-
-### Contribution 2 — Explicit decomposition into transmission mechanisms
-
-The soft link distinguishes three mechanisms:
-
-1. **Investment allocation (Engine 1)**: transition investment is transformed into sectoral final-demand shocks, with sector weights linked to technology deployment and adjusted for domestic content/import leakage.
-2. **Intermediate-input substitution (Engine 2)**: sectoral energy mixes modify selected technical coefficients in the IO matrix, producing a scenario-specific matrix \(A_t^s\) and Leontief inverse \(L_t^s=(I-A_t^s)^{-1}\).
-3. **Physical-production calibration (Engine 3)**: selected sectors follow physical trajectories from the NDC pathway rather than GDP-driven scaling; the target output path is translated into an equivalent final-demand shock.
-
-This decomposition should become the methodological centerpiece of the paper.
-
-### Contribution 3 — Identifying who captures the transition premium
-
-The model traces the transition through construction, machinery, metals, electricity, bioenergy, transport, services, agriculture, and fossil activities. It therefore reveals whether the main beneficiaries are the sectors directly deploying clean technologies or the broader supplier network, and whether the contraction of fossil activities is offset elsewhere in the economy.
-
-## 4. Model architecture
-
-### 4.1 Base input-output system
-
-Let \(Z\) be the 73×73 matrix of intermediate transactions, \(x\) gross output, and \(f\) final demand. The technical coefficient matrix is
+Transition expenditure enters as a sectorally allocated final-demand shock:
 
 \[
-A = Z\,\mathrm{diag}(x)^{-1}.
+\Delta f_{INV,j,t}^{s}=INV_t^s w_{j,t}^{s}d_j.
 \]
 
-The standard open Leontief system is
+This channel asks: where does transition expenditure occur, how much is supplied domestically, and how does it propagate through the production network?
+
+### Channel 2 — Intermediate energy substitution
+
+Scenario-specific energy shares modify selected technical coefficients:
 
 \[
-x=(I-A)^{-1}f = Lf.
-\]
-
-The transition analysis uses the open production model. Although the repository also contains a Type-II closed model with endogenous household consumption, that closed model is not used in the MMA scenario simulations. Therefore the main text should describe the reported network effects as **direct and indirect supply-chain effects**, not induced effects.
-
-### 4.2 Scenario-specific technical coefficients
-
-For a transition scenario \(s\) and year \(t\), Engine 2 constructs a modified technical coefficient matrix:
-
-\[
-A_t^s = A + \Delta A_t^s,
-\]
-
-and
-
-\[
+A_t^s=A+\Delta A_t^s,
+\qquad
 L_t^s=(I-A_t^s)^{-1}.
 \]
 
-Energy-related coefficients are reweighted using MMA sectoral shares for fossil fuels, biomass/biofuels, and electricity. Where appropriate, the procedure preserves aggregate energy-input intensity while changing the supplier composition.
+This channel asks: how does the transition change the composition of intermediate demand between fossil fuels, bioenergy, electricity, and their upstream suppliers?
 
-### 4.3 Final-demand and investment shocks
+### Physical consistency layer — NDC production constraints
 
-The model separates a GDP-driven component from transition investment:
-
-\[
-\Delta f_{1,t}^s = \Delta f_{GDP,t} + \Delta f_{INV,t}^s.
-\]
-
-Transition investment is allocated across IO sectors as
+Selected sectoral outputs are constrained to remain consistent with the MMA/BLUES physical production pathway:
 
 \[
-\Delta f_{INV,j,t}^s = INV_{t}^s\, w_{j,t}^s\, d_j,
+\Delta x_{j,t}^{NDC}=x_{j,2018}\left(\frac{q_{j,t}^s}{q_{j,2020}}-1\right).
 \]
 
-where \(INV_t^s\) is the annual investment quantum, \(w_{j,t}^s\) is the sector allocation weight, and \(d_j\) is the domestic-content share.
-
-The annual investment series is reconstructed from overlapping MMA annualized-cost windows and, for later years, distributed according to the pace of physical deployment.
-
-### 4.4 Physical calibration
-
-For sectors with explicit physical trajectories, the target production change is
+The corresponding balancing term is
 
 \[
-\Delta x_{3,j,t}^s = x_{j,2018}\left(\frac{q_{j,t}^s}{q_{j,2020}}-1\right),
+\Delta f_{C,t}^{s}=(I-A_t^s)\Delta x_{C,t}^{NDC}.
 \]
 
-where \(q\) is the corresponding physical quantity from the MMA pathway.
+This term is **not an autonomous final-demand shock**. It is the residual adjustment required for the scenario-specific IO system to reproduce the externally specified physical production level.
 
-This target is converted into an equivalent final-demand vector using
+For constrained sectors, the conceptual condition is:
 
 \[
-\Delta f_{3,t}^s=(I-A_t^s)\Delta x_{3,t}^s.
+x_{j,t}\stackrel{!}{=}x_{j,t}^{NDC}.
 \]
 
-The current code applies physical calibration to selected energy and heavy-industry sectors and suppresses GDP scaling for those sectors to avoid double counting.
+## 3. Why the consistency layer matters
 
-### 4.5 Total production effect
+Energy rewiring and physical constraints necessarily interact.
 
-The scenario production change is
+If transport or industry becomes less oil-intensive, the altered technical coefficients reduce endogenous intermediate demand for petroleum products. If the NDC pathway simultaneously prescribes a particular oil-production trajectory, the consistency layer reconciles the endogenous production-network demand with that external production level.
+
+For fossil sectors, this means that the balancing term can represent residual changes in final domestic demand, exports, inventories, or other final-demand components not explicitly modeled. The paper should therefore avoid interpreting the consistency adjustment as an independent economic shock or as the causal effect of physical decline.
+
+This interaction is not a model flaw; it is the reason the soft link is needed. The IO system provides endogenous production-network propagation, while the IAM provides external information on physical trajectories that the IO system cannot determine by itself.
+
+## 4. Baseline
+
+The preferred primary counterfactual is an **all-sector GDP-growth, fixed-structure baseline**:
+
+- final demand grows with the exogenous GDP path;
+- the 2018 technical-coefficient matrix remains unchanged;
+- no transition investment is added;
+- no energy-input rewiring occurs;
+- no physical NDC constraints are imposed.
+
+For any outcome \(X\):
 
 \[
-\Delta x_t^s=L_t^s\left(\Delta f_{1,t}^s+\Delta f_{3,t}^s\right).
+TP_t=X_{NDC,t}-X_{baseline,t}.
 \]
 
-Value added, wages, and labor requirements are then obtained using 2018 satellite coefficients:
+The current dashboard baseline should be treated as a sensitivity because it suppresses GDP scaling in the sectors later constrained by the physical layer.
+
+## 5. Result interpretation
+
+The paper should distinguish three different questions rather than present three causal components.
+
+### A. Economic impulse
+
+What additional domestic activity is associated with the transition investment wave?
+
+### B. Structural redistribution
+
+How does changing the technical coefficient matrix reallocate intermediate demand across fossil and low-carbon supply chains?
+
+### C. NDC consistency adjustment
+
+How much does the unconstrained production-network solution need to change to remain consistent with externally specified physical production trajectories?
+
+A Shapley decomposition can still be used as a **diagnostic accounting decomposition** because it allocates interactions across model components consistently. However, its physical component must be labelled as the contribution associated with enforcing the NDC consistency constraint, not as an autonomous “physical-production effect.”
+
+## 6. Current quantitative picture
+
+Using the all-sector GDP-growth counterfactual, the current 100D model gives in 2050:
+
+- Gross output: R$26.91 trillion versus R$26.28 trillion baseline; differential **+R$634 billion (+2.41%)**.
+- Value added: R$13.41 trillion versus R$13.15 trillion baseline; differential **+R$259 billion (+1.97%)**.
+
+The diagnostic Shapley attribution of 2050 value added is:
+
+- Transition investment: **+R$487.4 billion**.
+- Energy-input rewiring: **+R$15.3 billion**.
+- NDC physical consistency adjustment: **−R$243.2 billion**.
+
+These values add to the net differential but should not be interpreted as independent causal effects.
+
+The physical consistency adjustment becomes increasingly negative after 2035 because selected constrained sectors, especially fossil-related activities, grow more slowly than the all-sector GDP counterfactual or contract. Investment remains the dominant positive economic impulse.
+
+## 7. Main paper message
+
+Preferred framing:
+
+> **Brazil’s NDC transition generates a positive production-network differential because the domestic investment wave activates infrastructure, manufacturing, engineering, trade, and service supply chains. Energy substitution primarily redistributes intermediate demand away from fossil suppliers and toward low-carbon chains, while a physical consistency layer constrains selected sectoral outputs to remain aligned with the NDC pathway.**
+
+A second key result is that domestic capture matters: the diagnostic 100%-domestic investment case raises 2050 value added from roughly R$259 billion to R$303 billion, indicating an upper-bound gain of about R$43 billion relative to the current MAI-based import-leakage assumptions.
+
+## 8. Claims to make carefully
+
+Defensible:
+
+- The transition pathway is associated with a positive production and value-added differential relative to the stated counterfactual.
+- Transition investment is the dominant positive production-network impulse in the current model.
+- Energy-input substitution causes large sectoral redistribution even when its net aggregate contribution is small.
+- Enforcing the NDC physical pathway materially changes the unconstrained IO solution, especially for fossil activities.
+- Domestic supply-chain participation changes how much of the investment impulse is retained in Brazil.
+
+Avoid or qualify:
+
+- “Decarbonization causes GDP to increase by X%.”
+- “Physical decline destroys R$X billion.”
+- “Engine 3 is a third independent economic shock.”
+- “The model predicts X million jobs.”
+- “The model captures induced household effects” in the current scenario implementation.
+
+## 9. Figure plan
+
+### Figure 1 — Model architecture
+
+Show:
+
+MMA/BLUES pathway → two parallel translation channels:
+
+1. Investment → \(\Delta f_{INV}\)
+2. Energy shares → \(A_t^*\)
+
+These feed the IO production-network solution.
+
+Then show a **constraint loop** from MMA/BLUES physical trajectories back to selected sector outputs:
 
 \[
-\Delta VA_t^s=\hat{v}\,\Delta x_t^s,
+x_{j,t}\stackrel{!}{=}x_{j,t}^{NDC}
 \]
 
-\[
-\Delta EMP_t^s=\hat{e}\,\Delta x_t^s,
-\]
+with a balancing adjustment \(\Delta f_C\).
 
-where \(\hat{v}\) and \(\hat{e}\) contain sector-specific value-added and labor coefficients.
+Engine 3 should be visually different from Channels 1 and 2: not a third parallel arrow, but a calibration/constraint layer.
 
-The labor result should be described as **employment supported / labor requirements under constant 2018 labor intensity**, unless a different productivity treatment is introduced.
+### Figure 2 — How the net differential emerges
 
-## 5. Scenario design
+Preferred main panel:
 
-### Baseline counterfactual
+- transition investment contribution;
+- energy-rewiring contribution;
+- NDC consistency adjustment;
+- net value-added differential over time.
 
-The current baseline is a no-transition, fixed-structure counterfactual in which final demand grows with GDP while the 2018 IO structure remains unchanged. There is no transition investment, no Engine 2 rewiring, and no NDC physical calibration.
+Label the decomposition explicitly as **diagnostic/Shapley attribution**, not independent causal effects.
 
-The main transition quantity is therefore best described as a **scenario differential**:
+A possible second panel should compare the unconstrained transition solution (investment + rewiring) with the NDC-constrained solution. This directly visualizes the role of the physical consistency layer.
 
-\[
-TP_t = X_{NDC,t} - X_{baseline,t},
-\]
+### Figure 3 — Production-network winners and losers
 
-where \(X\) can be gross output, value added, wages, or labor requirements.
+Show 2050 sectoral value-added differences, separating where useful:
 
-Avoid language such as “causal effect of climate policy.”
+- gains associated with investment;
+- redistribution associated with energy rewiring;
+- largest consistency adjustments in constrained sectors and their suppliers.
 
-### Transition scenarios
+### Figure 4 — Domestic capture / labor distribution
 
-The repository contains 0D, 25D, and 100D MMA trajectories. The current presentation focuses on the 100D pathway. The paper should use 100D as the main NDC-transition case while using at least one alternative transition pathway as a robustness/sensitivity comparison if conceptually consistent with the MMA scenario definitions.
+Priority option: domestic-content sensitivity, because it connects directly to the paper’s industrial-policy implication.
 
-## 6. Main findings currently supported by the model/presentation
+Labor distribution should remain secondary until the coefficient and productivity sensitivities are resolved.
 
-These numbers are provisional until the audit and robustness runs are complete.
+## 10. Next model tests
 
-- The 100D transition pathway produces a positive aggregate production differential relative to the fixed-structure baseline by 2050.
-- The presentation reports a gross-output transition premium of approximately **R$1.7 trillion (+6.7%)** in 2050.
-- The presentation reports approximately **R$607 billion (+4.7%)** in additional value added in 2050.
-- Gains are concentrated in construction/infrastructure, machinery and equipment, electricity, biofuels, transmission, manufacturing, and supplier networks.
-- Fossil extraction and related activities contract relative to the baseline.
-- The employment module indicates a large positive labor-requirement differential, but the headline employment result must be re-audited before publication because it relies on fixed 2018 labor intensities and the repository contains both raw and NT-calibrated labor coefficients.
-- The 2030s appear to be the period of largest transition investment and therefore the largest production-network impulse.
-
-## 7. Claims we should make — and claims we should avoid
-
-### Defensible claims
-
-- NDC implementation can create positive economy-wide production and value-added spillovers even while fossil activities contract.
-- The transmission channels matter: investment, technical-coefficient changes, and physical production shifts affect different parts of the economy.
-- Domestic participation in capital-goods and infrastructure supply chains influences the size of the domestic macroeconomic dividend.
-- Aggregate gains coexist with sectoral losses, so industrial and labor-market policy affect how benefits and costs are distributed.
-- IO results identify structural exposure and supply-chain propagation under stated assumptions; they do not forecast equilibrium GDP or employment.
-
-### Avoid or qualify
-
-- “Decarbonization causes GDP to rise by 4.7%.”
-- “11 million new jobs will be created.”
-- “The model captures induced effects” in the current scenario implementation.
-- “Climate policy has a causal net benefit of R$X.”
-- “The transition is costless.”
-
-Preferred wording:
-
-> “Under the modeled NDC pathway, value added is 4.7% higher in 2050 than in the fixed-structure counterfactual.”
-
-and
-
-> “The employment satellite implies X million additional job-equivalents under constant 2018 sectoral labor intensities.”
-
-## 8. Main figures
-
-### Figure 1 — From NDC pathways to production networks
-
-A single framework diagram showing:
-
-MMA/BLUES transition pathway → translation layer → three transmission mechanisms → scenario-specific IO system → gross output, value added, wages, labor requirements.
-
-Include the three key equations for Engines 1–3.
-
-### Figure 2 — What drives the transition premium?
-
-**New analysis required.** Decompose the aggregate 100D–baseline differential over time into:
-
-- investment allocation;
-- technical-coefficient rewiring;
-- physical-output calibration;
-- interactions among mechanisms, if non-additivity is material.
-
-Suggested output: stacked bars or waterfall by year, with gross output and/or value added.
-
-This figure is essential because it makes the paper about mechanisms rather than only headline multipliers.
-
-### Figure 3 — Winners and losers across the production network
-
-Show sectoral value-added differentials in 2050, with the major positive and negative sectors. Prefer an absolute-value panel plus a normalized structural-change panel if space allows.
-
-### Figure 4 — Labor and distribution
-
-Use only after the employment audit. Possible structure:
-
-- labor-requirement differential by broad sector group;
-- distribution of implied jobs by skill, gender, or informality under the 2018 workforce composition.
-
-The caption must state clearly that the demographic allocation reflects the 2018 sectoral workforce structure.
-
-## 9. Supplementary Information plan
-
-SI should contain:
-
-1. Full 73-sector concordance.
-2. Mapping between MMA sectors/technologies and IO sectors.
-3. Detailed investment-allocation coefficients and CAPEX assumptions.
-4. Domestic-content factors and sources.
-5. Reconstruction of annual investment from MMA overlapping windows.
-6. Technical-coefficient substitution equations by sector/subsector.
-7. Physical calibration sectors, units, and base values.
-8. Alternative scenario results (25D/0D where appropriate).
-9. Full sectoral output/value-added/labor tables.
-10. Robustness and sensitivity analysis.
-11. Validation against the original MIP-EPE technical note/replication exercises.
-12. Reproducibility and code/data availability statement.
-
-## 10. Priority robustness tests
-
-### R1 — Domestic-content sensitivity
-
-Re-run transition investment with alternative domestic-content assumptions, for example:
-
-- observed/base values;
-- lower domestic participation;
-- higher/localized supply-chain participation.
-
-Main question: how much does domestic capture alter the 2050 value-added premium?
-
-### R2 — Investment-allocation sensitivity
-
-Perturb technology-to-sector allocation weights or compare alternative mappings for major capital-goods categories. Report the effect on aggregate and sectoral results.
-
-### R3 — Mechanism decomposition
-
-Run counterfactual combinations:
-
-- baseline only;
-- baseline + Engine 1 investment;
-- baseline + Engine 2 only;
-- baseline + Engine 3 only;
-- Engines 1+2;
-- Engines 1+3;
-- Engines 2+3;
-- full model.
-
-Because Engine 2 changes the Leontief inverse, the combined effect may not equal the simple sum of standalone effects. If so, report the interaction term explicitly.
-
-### R4 — Employment coefficient sensitivity
-
-Compare:
-
-- raw 2018 labor intensity;
-- NT-calibrated labor coefficient used in the replication exercise;
-- if possible, a simple productivity-growth sensitivity.
-
-The main text should not report a single employment number until this exercise is complete.
-
-### R5 — Baseline sensitivity
-
-Assess whether the sign and ranking of transition effects remain robust under a different structural baseline or an alternative scenario comparison (e.g., 100D vs 25D) where conceptually appropriate.
+1. **Unconstrained vs constrained solution.** Run investment + rewiring without the physical layer, then impose physical constraints. Quantify the balancing adjustment by sector and year.
+2. **Constraint residual interpretation.** For oil/refining and other major constrained sectors, calculate how much of the balancing term is plausibly associated with exports/final demand versus changes already generated by intermediate-demand rewiring.
+3. **Engine 2 × constraint interaction.** Explicitly quantify the difference between imposing physical constraints under the original \(A\) and under the rewired \(A_t^*\).
+4. **Domestic-content sensitivity.** Replace the 100%-domestic upper bound with empirically grounded low/base/high localization cases.
+5. **Baseline sensitivity.** Compare all-sector GDP baseline, current dashboard baseline, and an alternative MMA scenario where conceptually appropriate.
+6. **Employment sensitivity.** Resolve raw versus NT-calibrated coefficients and add an exogenous productivity sensitivity before reporting headline labor numbers.
 
 ## 11. Manuscript structure
 
-### 1. Introduction — target 650–750 words
+### Introduction
 
-Paragraph 1: NDC implementation challenge and why macroeconomic transmission matters.
+Frame the paper around translating NDC implementation into production-network consequences, not around a generic “green vs brown” claim.
 
-Paragraph 2: Brazil’s distinctive emissions and energy-system context.
+### Methods
 
-Paragraph 3: Literature gap — most NDC/IAM analyses describe technology/emissions pathways; macroeconomic IO studies often apply exogenous demand shocks without reproducing the detailed implementation pathway.
+1. Data and sectoral representation.
+2. Baseline/counterfactual.
+3. Channel 1: investment.
+4. Channel 2: energy-input substitution.
+5. Physical consistency layer: sectoral NDC constraints and balancing adjustment.
+6. Satellite accounts.
+7. Diagnostic decomposition and sensitivities.
 
-Paragraph 4: Research question and methodological contribution.
+### Results
 
-Paragraph 5: Main results and broader relevance.
+1. Aggregate transition differential.
+2. Economic impulse versus NDC consistency adjustment.
+3. Sectoral redistribution and production-network propagation.
+4. Domestic supply-chain capture.
+5. Labor requirements, if robust enough.
 
-### 2. Methods — target 1,100–1,250 words
+### Discussion
 
-2.1 Data and sectoral representation.
+Focus on why NDC implementation cannot be represented by investment multipliers alone: economic propagation and physical consistency must be reconciled. Discuss implications for industrial policy, fossil-sector contraction, trade/export assumptions, and transferability to other emerging economies.
 
-2.2 Scenario design and counterfactual.
+## 12. Key sentence
 
-2.3 Engine 1: investment allocation.
-
-2.4 Engine 2: intermediate energy substitution.
-
-2.5 Engine 3: physical-output calibration.
-
-2.6 Value-added and labor satellite accounts.
-
-2.7 Interpretation and limitations.
-
-### 3. Results — target 1,150–1,250 words
-
-3.1 Aggregate production-network effects.
-
-3.2 Mechanism decomposition.
-
-3.3 Sectoral winners and losers.
-
-3.4 Labor requirements and distribution.
-
-### 4. Discussion — target 650–750 words
-
-4.1 Why low-carbon expansion can offset fossil contraction in Brazil.
-
-4.2 Domestic-content and industrial-policy implications.
-
-4.3 Timing of the investment wave.
-
-4.4 Generalizability to other emerging economies.
-
-4.5 Limitations and interpretation.
-
-### 5. Conclusion — target 150–200 words
-
-One concise takeaway: NDCs are not only emissions trajectories; their implementation restructures production networks, and the domestic distribution of the gains depends on how investment and supply chains are organized.
-
-## 12. Immediate audit questions before drafting Results
-
-1. Confirm whether the latest presentation numbers correspond exactly to the current `main` output files.
-2. Verify the 2050 100D value-added and gross-output transition premiums from the current `mma_shock_results.xlsx`/RDS.
-3. Verify which components are included in the presentation’s “baseline” and “transition premium.”
-4. Remove “induced” terminology from the current paper unless the scenario engine is explicitly re-run using the closed Type-II model.
-5. Resolve the employment coefficient choice (`labor_coef_raw` versus the NT-calibrated coefficient) and document the rationale.
-6. Rebuild the direct/indirect decomposition so Engine 3’s equivalent final-demand transformation is not misinterpreted as economically direct employment or value added.
-7. Document all assumptions currently hard-coded in the investment and Engine 2 mappings.
-8. Check whether any placeholder or approximate physical base values should be replaced by documented official values before submission.
-9. Decide whether the 100D scenario is best described as an NDC-consistent pathway, a net-zero pathway, or a specific MMA mitigation scenario. Use the source nomenclature consistently.
-10. Freeze one version/tag of the model for the manuscript once all audit corrections are complete.
-
-## 13. Draft abstract logic — not final prose
-
-**Context:** NDCs define emissions goals but do not directly reveal how implementation propagates across domestic production networks.
-
-**Method:** We soft-link Brazil’s NDC implementation pathways with a 73-sector energy-disaggregated IO model through three channels: transition investment, intermediate energy substitution, and physical-production calibration.
-
-**Result:** Under the main NDC-transition pathway, expansion in low-carbon infrastructure, manufacturing, electricity, and bioenergy outweighs contraction in fossil-related activities at the aggregate level, producing positive gross-output and value-added differentials relative to a fixed-structure counterfactual.
-
-**Distribution:** Gains are concentrated in transition supply chains and depend on domestic-content assumptions; labor effects are uneven across skill, gender, and formality categories under the 2018 workforce structure.
-
-**Implication:** The macroeconomic consequences of NDC implementation depend not only on emissions targets but also on the production networks through which investment and technology deployment occur.
-
-## 14. Current preferred paper sentence
-
-> **NDC implementation is not only an emissions pathway; it is a reallocation of investment, intermediate inputs, and production across interconnected domestic supply chains.**
-
-This should guide the paper’s framing.
+> **NDC implementation is not only an emissions pathway or an investment shock: it is a restructuring of production networks subject to physical constraints on how key sectors evolve.**
