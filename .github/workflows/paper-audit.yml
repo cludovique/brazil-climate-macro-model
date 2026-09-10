@@ -6,6 +6,7 @@ on:
       - paper/erl-draft
     paths:
       - paper/model_audit.R
+      - paper/summarize_audit.R
       - .github/workflows/paper-audit.yml
 
 permissions:
@@ -37,6 +38,9 @@ jobs:
 
       - name: Run paper model audit
         run: Rscript paper/model_audit.R
+
+      - name: Summarize mechanism results
+        run: Rscript paper/summarize_audit.R
 
       - name: Commit generated audit results
         run: |
