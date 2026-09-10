@@ -7,6 +7,7 @@ on:
     paths:
       - paper/model_audit.R
       - paper/summarize_audit.R
+      - paper/baseline_levels.R
       - .github/workflows/paper-audit.yml
 
 permissions:
@@ -41,6 +42,9 @@ jobs:
 
       - name: Summarize mechanism results
         run: Rscript paper/summarize_audit.R
+
+      - name: Calculate baseline levels and percentages
+        run: Rscript paper/baseline_levels.R
 
       - name: Commit generated audit results
         run: |
