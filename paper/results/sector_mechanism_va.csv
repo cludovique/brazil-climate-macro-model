@@ -1,142 +1,142 @@
 "year","cod","sector","mechanism","va_shapley_Rbn"
 2025,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",0
-2025,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",0.44874989043343
-2025,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","physical",-1.4678323178302
+2025,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",0.448749890433428
+2025,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","physical",-1.46783231783019
 2025,"S02","Pecuária, inclusive o apoio à pecuária","investment",0
-2025,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.00915540562273782
-2025,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.0388430435937917
+2025,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.00915540562273327
+2025,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.0388430435937908
 2025,"S03","Produção florestal; pesca e aquicultura","investment",0
-2025,"S03","Produção florestal; pesca e aquicultura","rewiring",0.0030070182376171
-2025,"S03","Produção florestal; pesca e aquicultura","physical",-0.0591797350911365
+2025,"S03","Produção florestal; pesca e aquicultura","rewiring",0.00300701823761847
+2025,"S03","Produção florestal; pesca e aquicultura","physical",-0.0591797350911374
 2025,"S04","Extração de carvão mineral e de minerais não-metálicos","investment",0
-2025,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.00233409835867479
+2025,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.00233409835867451
 2025,"S04","Extração de carvão mineral e de minerais não-metálicos","physical",-0.127604583715739
 2025,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","investment",0
-2025,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","rewiring",-0.644446591460523
+2025,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","rewiring",-0.644446591460516
 2025,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","physical",17.6801183652877
 2025,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","investment",0
-2025,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.00160546276586001
+2025,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.00160546276586092
 2025,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","physical",-0.425412224172435
 2025,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","investment",0
-2025,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.000281897302030586
-2025,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.0454449711752888
+2025,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.000281897302030757
+2025,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.045444971175289
 2025,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0
-2025,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.00467413729785267
+2025,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.00467413729785085
 2025,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.0168945455307389
 2025,"S09","Fabricação e refino de açúcar","investment",0
-2025,"S09","Fabricação e refino de açúcar","rewiring",-0.000999845776127529
+2025,"S09","Fabricação e refino de açúcar","rewiring",-0.000999845776127756
 2025,"S09","Fabricação e refino de açúcar","physical",-0.0926078009941766
 2025,"S10","Outros produtos alimentares","investment",0
-2025,"S10","Outros produtos alimentares","rewiring",0.0244275417063623
-2025,"S10","Outros produtos alimentares","physical",-0.117367740058428
+2025,"S10","Outros produtos alimentares","rewiring",0.0244275417063582
+2025,"S10","Outros produtos alimentares","physical",-0.117367740058427
 2025,"S11","Fabricação de bebidas","investment",0
-2025,"S11","Fabricação de bebidas","rewiring",-0.000102349136967405
-2025,"S11","Fabricação de bebidas","physical",-0.00648095668240103
+2025,"S11","Fabricação de bebidas","rewiring",-0.00010234913696786
+2025,"S11","Fabricação de bebidas","physical",-0.00648095668240057
 2025,"S12","Fabricação de produtos do fumo","investment",0
 2025,"S12","Fabricação de produtos do fumo","rewiring",-0.00000229233434495768
 2025,"S12","Fabricação de produtos do fumo","physical",-0.00016403756168873
 2025,"S13","Fabricação de produtos têxteis","investment",0
-2025,"S13","Fabricação de produtos têxteis","rewiring",0.00016911857922355
-2025,"S13","Fabricação de produtos têxteis","physical",-0.0137083650806264
+2025,"S13","Fabricação de produtos têxteis","rewiring",0.000169118579223777
+2025,"S13","Fabricação de produtos têxteis","physical",-0.0137083650806269
 2025,"S14","Confecção de artefatos do vestuário e acessórios","investment",0
-2025,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.000362012538309045
+2025,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.0003620125383095
 2025,"S14","Confecção de artefatos do vestuário e acessórios","physical",-0.0102353878902541
 2025,"S15","Fabricação de calçados e de artefatos de couro","investment",0
-2025,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.000172687713304867
-2025,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.00306591833073071
+2025,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.00017268771330464
+2025,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.00306591833073094
 2025,"S16","Fabricação de produtos da madeira","investment",0
 2025,"S16","Fabricação de produtos da madeira","rewiring",0.000536811684149257
 2025,"S16","Fabricação de produtos da madeira","physical",-0.022626981667575
 2025,"S17","Fabricação de celulose, papel e produtos de papel","investment",0
-2025,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.0012402574615021
-2025,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.05999134648362
+2025,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.00124025746150141
+2025,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.0599913464836202
 2025,"S18","Impressão e reprodução de gravações","investment",0
 2025,"S18","Impressão e reprodução de gravações","rewiring",0.000208426378595277
 2025,"S18","Impressão e reprodução de gravações","physical",-0.0353336036987348
 2025,"S19","Derivados de petróleo","investment",0
-2025,"S19","Derivados de petróleo","rewiring",-0.160174811027013
+2025,"S19","Derivados de petróleo","rewiring",-0.160174811027014
 2025,"S19","Derivados de petróleo","physical",10.3593287242645
 2025,"S20","Biodiesel","investment",0
 2025,"S20","Biodiesel","rewiring",0.0145542523884413
 2025,"S20","Biodiesel","physical",-0.0207436302424216
 2025,"S21","Coquerias","investment",0
-2025,"S21","Coquerias","rewiring",-0.0000469092023069777
+2025,"S21","Coquerias","rewiring",-0.000046909202306983
 2025,"S21","Coquerias","physical",-0.00393731676114458
 2025,"S22","Fabricação de biocombustíveis","investment",0
-2025,"S22","Fabricação de biocombustíveis","rewiring",0.414351275537719
+2025,"S22","Fabricação de biocombustíveis","rewiring",0.41435127553772
 2025,"S22","Fabricação de biocombustíveis","physical",-1.13811459442297
 2025,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","investment",0
 2025,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",0.0168551995851228
 2025,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","physical",-0.231546186654176
 2025,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","investment",0
-2025,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.0104786913510211
-2025,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.0810668517566762
+2025,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.0104786913510218
+2025,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.0810668517566764
 2025,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","investment",0
-2025,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.000364705516527465
+2025,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.000364705516527692
 2025,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","physical",-0.0135058425742995
 2025,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0
 2025,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.000165036435262664
 2025,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","physical",-0.0224510217691459
 2025,"S27","Fabricação de produtos de borracha e de material plástico","investment",0
 2025,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.00168102645978252
-2025,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.0904921951303791
+2025,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.0904921951303795
 2025,"S28","Fabricação de produtos de minerais não-metálicos","investment",0
-2025,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.00246107878699718
+2025,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.0024610787869949
 2025,"S28","Fabricação de produtos de minerais não-metálicos","physical",9.84055629852473
 2025,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","investment",0
-2025,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.00649302297864256
+2025,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.00649302297864028
 2025,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","physical",3.93065832225947
 2025,"S30","Metalurgia de metais não-ferosos e a fundição de metais","investment",0
-2025,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",-0.0000839537323314517
-2025,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.0687484377715906
+2025,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",-0.0000839537323309969
+2025,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.0687484377715904
 2025,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","investment",0
-2025,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",-0.00294455456811238
-2025,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-0.223970962035567
+2025,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",-0.00294455456811261
+2025,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-0.223970962035566
 2025,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","investment",0
-2025,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.000479071768170684
-2025,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.0195887489455901
+2025,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.000479071768171025
+2025,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.0195887489455899
 2025,"S33","Fabricação de máquinas e equipamentos elétricos","investment",0
-2025,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",-0.00144929435301356
+2025,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",-0.00144929435301333
 2025,"S33","Fabricação de máquinas e equipamentos elétricos","physical",-0.136830425161728
 2025,"S34","Fabricação de máquinas e equipamentos mecânicos","investment",0
-2025,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.00618239387611675
+2025,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.0061823938761172
 2025,"S34","Fabricação de máquinas e equipamentos mecânicos","physical",-0.162030846312594
 2025,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","investment",0
-2025,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",-0.00000991529398334023
-2025,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.00286341741375782
+2025,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",-0.00000991529398311286
+2025,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.00286341741375759
 2025,"S36","Fabricação de peças e acessórios para veículos automotores","investment",0
 2025,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",0.00020050891776873
 2025,"S36","Fabricação de peças e acessórios para veículos automotores","physical",-0.0496931121207267
 2025,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","investment",0
-2025,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",-0.0000287334663470347
-2025,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.00411418080383612
+2025,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",-0.0000287334663466936
+2025,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.00411418080383601
 2025,"S38","Fabricação de móveis e de produtos de indústrias diversas","investment",0
-2025,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.000307452881255813
-2025,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.0196544681504092
+2025,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.000307452881255358
+2025,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.0196544681504097
 2025,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","investment",0
-2025,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.000820503392102637
-2025,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","physical",-0.446655143882482
+2025,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.000820503392103319
+2025,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","physical",-0.446655143882483
 2025,"S40","Geração centralizada de energia elétrica","investment",0
-2025,"S40","Geração centralizada de energia elétrica","rewiring",0.0428345154101462
-2025,"S40","Geração centralizada de energia elétrica","physical",11.2431924027159
+2025,"S40","Geração centralizada de energia elétrica","rewiring",0.0428345154101535
+2025,"S40","Geração centralizada de energia elétrica","physical",11.2431924027158
 2025,"S41","Geração distribuída de energia elétrica","investment",0
-2025,"S41","Geração distribuída de energia elétrica","rewiring",0.00706581919106657
+2025,"S41","Geração distribuída de energia elétrica","rewiring",0.00706581919106668
 2025,"S41","Geração distribuída de energia elétrica","physical",-0.113770776519302
 2025,"S42","Transmissão","investment",0
-2025,"S42","Transmissão","rewiring",0.00494219944745566
+2025,"S42","Transmissão","rewiring",0.00494219944745532
 2025,"S42","Transmissão","physical",1.30688146289925
 2025,"S43","Gás Natural","investment",0
 2025,"S43","Gás Natural","rewiring",-0.178688436745982
-2025,"S43","Gás Natural","physical",-0.575900439665472
+2025,"S43","Gás Natural","physical",-0.575900439665471
 2025,"S44","Água, esgoto e gestão de resíduos","investment",0
-2025,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.000267820166222009
-2025,"S44","Água, esgoto e gestão de resíduos","physical",-0.237377867855458
+2025,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.000267820166223828
+2025,"S44","Água, esgoto e gestão de resíduos","physical",-0.237377867855457
 2025,"S45","Construção","investment",0
-2025,"S45","Construção","rewiring",-0.00617813107658003
-2025,"S45","Construção","physical",-0.161268147426046
+2025,"S45","Construção","rewiring",-0.00617813107657639
+2025,"S45","Construção","physical",-0.161268147426043
 2025,"S46","Comércio e reparação de veículos automotores e motocicletas","investment",0
-2025,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.000059460469370606
-2025,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.122335979725025
+2025,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.000059460469372425
+2025,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.122335979725027
 2025,"S47","Comércio por atacado e a varejo, exceto veículos automotores","investment",0
 2025,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",0.0169589016265672
 2025,"S47","Comércio por atacado e a varejo, exceto veículos automotores","physical",-2.43843496835518
@@ -148,25 +148,25 @@
 2025,"S49","Transporte aquaviário","physical",-0.272920727712729
 2025,"S50","Transporte aéreo","investment",0
 2025,"S50","Transporte aéreo","rewiring",-0.00330869297170455
-2025,"S50","Transporte aéreo","physical",-0.0683709665178397
+2025,"S50","Transporte aéreo","physical",-0.0683709665178395
 2025,"S51","Armazenamento, atividades auxiliares dos transportes e correio","investment",0
-2025,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",-0.000624520284128266
-2025,"S51","Armazenamento, atividades auxiliares dos transportes e correio","physical",-0.674948214144774
+2025,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",-0.000624520284125538
+2025,"S51","Armazenamento, atividades auxiliares dos transportes e correio","physical",-0.674948214144773
 2025,"S52","Alojamento","investment",0
-2025,"S52","Alojamento","rewiring",-0.000626654304381873
-2025,"S52","Alojamento","physical",-0.0401719415464661
+2025,"S52","Alojamento","rewiring",-0.000626654304381759
+2025,"S52","Alojamento","physical",-0.0401719415464662
 2025,"S53","Alimentação","investment",0
 2025,"S53","Alimentação","rewiring",-0.00116183742663634
 2025,"S53","Alimentação","physical",-0.0517357260111057
 2025,"S54","Edição e edição integrada à impressão","investment",0
-2025,"S54","Edição e edição integrada à impressão","rewiring",-0.0000196405637818771
+2025,"S54","Edição e edição integrada à impressão","rewiring",-0.0000196405637821044
 2025,"S54","Edição e edição integrada à impressão","physical",-0.0135585449400562
 2025,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","investment",0
-2025,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",-0.0000969309156496365
-2025,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.084669807298568
+2025,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",-0.0000969309156498639
+2025,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.0846698072985678
 2025,"S56","Telecomunicações","investment",0
-2025,"S56","Telecomunicações","rewiring",0.0000748409599127626
-2025,"S56","Telecomunicações","physical",-0.123794033634827
+2025,"S56","Telecomunicações","rewiring",0.0000748409599118531
+2025,"S56","Telecomunicações","physical",-0.123794033634825
 2025,"S57","Desenvolvimento de sistemas e outros serviços de informação","investment",0
 2025,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.000201424572097494
 2025,"S57","Desenvolvimento de sistemas e outros serviços de informação","physical",-0.252533100090343
@@ -183,518 +183,518 @@
 2025,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",-0.000924073688055159
 2025,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","physical",-0.258965730665441
 2025,"S62","Outras atividades profissionais, científicas e técnicas","investment",0
-2025,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",-0.000286771919962575
+2025,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",-0.000286771919961666
 2025,"S62","Outras atividades profissionais, científicas e técnicas","physical",-0.229034277292334
 2025,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","investment",0
-2025,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-0.024014589946451
-2025,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","physical",-0.476205411391204
+2025,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-0.0240145899464508
+2025,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","physical",-0.476205411391205
 2025,"S64","Outras atividades administrativas e serviços complementares","investment",0
-2025,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.00862453006832402
-2025,"S64","Outras atividades administrativas e serviços complementares","physical",-0.636216079206495
+2025,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.0086245300683222
+2025,"S64","Outras atividades administrativas e serviços complementares","physical",-0.636216079206493
 2025,"S65","Atividades de vigilância, segurança e investigação","investment",0
-2025,"S65","Atividades de vigilância, segurança e investigação","rewiring",-0.000460440013195239
+2025,"S65","Atividades de vigilância, segurança e investigação","rewiring",-0.000460440013197058
 2025,"S65","Atividades de vigilância, segurança e investigação","physical",-0.144608912698854
 2025,"S66","Administração pública, defesa e seguridade social","investment",0
 2025,"S66","Administração pública, defesa e seguridade social","rewiring",-0.000545023022445093
-2025,"S66","Administração pública, defesa e seguridade social","physical",-0.167371869958974
+2025,"S66","Administração pública, defesa e seguridade social","physical",-0.167371869958959
 2025,"S67","Educação pública","investment",0
-2025,"S67","Educação pública","rewiring",-0.0000214157492919185
-2025,"S67","Educação pública","physical",-0.008391368370485
+2025,"S67","Educação pública","rewiring",-0.0000214157492810045
+2025,"S67","Educação pública","physical",-0.00839136837048136
 2025,"S68","Educação privada","investment",0
-2025,"S68","Educação privada","rewiring",-0.000678767816563777
+2025,"S68","Educação privada","rewiring",-0.000678767816561958
 2025,"S68","Educação privada","physical",-0.083324098205554
 2025,"S69","Saúde pública","investment",0
 2025,"S69","Saúde pública","rewiring",0.000000872280163093819
 2025,"S69","Saúde pública","physical",-0.000407547714303291
 2025,"S70","Saúde privada","investment",0
-2025,"S70","Saúde privada","rewiring",0.0000035617917219497
-2025,"S70","Saúde privada","physical",-0.000576018468231268
+2025,"S70","Saúde privada","rewiring",0.00000356179172376869
+2025,"S70","Saúde privada","physical",-0.000576018468229449
 2025,"S71","Atividades artísticas, criativas e de espetáculos","investment",0
-2025,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",-0.0000269495404145346
+2025,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",-0.0000269495404140798
 2025,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.0170451544737075
 2025,"S72","Organizações associativas e outros serviços pessoais","investment",0
-2025,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.00187941024606789
+2025,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.00187941024606971
 2025,"S72","Organizações associativas e outros serviços pessoais","physical",-0.118162586046691
 2025,"S73","Serviços domésticos","investment",0
 2025,"S73","Serviços domésticos","rewiring",0
 2025,"S73","Serviços domésticos","physical",0
 2030,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",13.3972470197109
-2030,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",0.16214488360721
+2030,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",0.162144883607222
 2030,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","physical",-2.38938282870411
-2030,"S02","Pecuária, inclusive o apoio à pecuária","investment",0.72466303206651
-2030,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.00330965952587849
-2030,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.0645201135323596
+2030,"S02","Pecuária, inclusive o apoio à pecuária","investment",0.724663032066511
+2030,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.00330965952587182
+2030,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.0645201135323608
 2030,"S03","Produção florestal; pesca e aquicultura","investment",50.5724959813849
-2030,"S03","Produção florestal; pesca e aquicultura","rewiring",0.00108175579749059
-2030,"S03","Produção florestal; pesca e aquicultura","physical",-0.103530560448908
+2030,"S03","Produção florestal; pesca e aquicultura","rewiring",0.00108175579749483
+2030,"S03","Produção florestal; pesca e aquicultura","physical",-0.103530560448903
 2030,"S04","Extração de carvão mineral e de minerais não-metálicos","investment",3.29971776556181
-2030,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.00089168384945583
+2030,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.000891683849455565
 2030,"S04","Extração de carvão mineral e de minerais não-metálicos","physical",-0.225202231643499
 2030,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","investment",5.32526847153673
-2030,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","rewiring",-0.401775608667337
+2030,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","rewiring",-0.401775608667334
 2030,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","physical",26.7814599708397
 2030,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","investment",1.84593637241304
-2030,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.000808085117953851
+2030,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.000808085117954761
 2030,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","physical",-0.755427181153987
 2030,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","investment",4.15622899453774
-2030,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.000141669510771711
-2030,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.0807344513021632
+2030,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.000141669510772961
+2030,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.0807344513021629
 2030,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0.0877283599783147
-2030,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.00175178089338048
-2030,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.0277377760918874
+2030,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.00175178089338503
+2030,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.0277377760918847
 2030,"S09","Fabricação e refino de açúcar","investment",0.193787170616777
-2030,"S09","Fabricação e refino de açúcar","rewiring",-0.00546830065907807
+2030,"S09","Fabricação e refino de açúcar","rewiring",-0.00546830065907845
 2030,"S09","Fabricação e refino de açúcar","physical",-0.164210929277241
 2030,"S10","Outros produtos alimentares","investment",0.788779836008419
-2030,"S10","Outros produtos alimentares","rewiring",0.00744116451992856
-2030,"S10","Outros produtos alimentares","physical",-0.196369374589379
-2030,"S11","Fabricação de bebidas","investment",0.0888476995653044
-2030,"S11","Fabricação de bebidas","rewiring",-0.00012789290838388
-2030,"S11","Fabricação de bebidas","physical",-0.0115266915297922
+2030,"S10","Outros produtos alimentares","rewiring",0.00744116451992583
+2030,"S10","Outros produtos alimentares","physical",-0.196369374589378
+2030,"S11","Fabricação de bebidas","investment",0.0888476995653036
+2030,"S11","Fabricação de bebidas","rewiring",-0.000127892908381909
+2030,"S11","Fabricação de bebidas","physical",-0.0115266915297916
 2030,"S12","Fabricação de produtos do fumo","investment",0.00423844297870712
-2030,"S12","Fabricação de produtos do fumo","rewiring",-0.00000273733716754047
-2030,"S12","Fabricação de produtos do fumo","physical",-0.000291758923019681
+2030,"S12","Fabricação de produtos do fumo","rewiring",-0.00000273733716759731
+2030,"S12","Fabricação de produtos do fumo","physical",-0.000291758923019624
 2030,"S13","Fabricação de produtos têxteis","investment",0.323860641157632
-2030,"S13","Fabricação de produtos têxteis","rewiring",-0.000161923679389853
-2030,"S13","Fabricação de produtos têxteis","physical",-0.0241867973208856
+2030,"S13","Fabricação de produtos têxteis","rewiring",-0.000161923679390081
+2030,"S13","Fabricação de produtos têxteis","physical",-0.0241867973208845
 2030,"S14","Confecção de artefatos do vestuário e acessórios","investment",0.133309314560427
-2030,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.000501868916717134
-2030,"S14","Confecção de artefatos do vestuário e acessórios","physical",-0.0182445137004791
+2030,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.000501868916717588
+2030,"S14","Confecção de artefatos do vestuário e acessórios","physical",-0.0182445137004787
 2030,"S15","Fabricação de calçados e de artefatos de couro","investment",0.0426136161128179
-2030,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.000419328460924589
-2030,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.00543747725838193
+2030,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.000419328460924817
+2030,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.0054374772583817
 2030,"S16","Fabricação de produtos da madeira","investment",2.05127886956851
-2030,"S16","Fabricação de produtos da madeira","rewiring",0.000639318333897791
-2030,"S16","Fabricação de produtos da madeira","physical",-0.0398753368379255
+2030,"S16","Fabricação de produtos da madeira","rewiring",0.000639318333897942
+2030,"S16","Fabricação de produtos da madeira","physical",-0.0398753368379249
 2030,"S17","Fabricação de celulose, papel e produtos de papel","investment",1.32077125371657
-2030,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.000221511600919105
-2030,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.105752252796471
-2030,"S18","Impressão e reprodução de gravações","investment",0.688663452076143
-2030,"S18","Impressão e reprodução de gravações","rewiring",-0.0000249766195798505
-2030,"S18","Impressão e reprodução de gravações","physical",-0.0625228369880277
+2030,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.000221511600917438
+2030,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.105752252796469
+2030,"S18","Impressão e reprodução de gravações","investment",0.688663452076142
+2030,"S18","Impressão e reprodução de gravações","rewiring",-0.0000249766195796989
+2030,"S18","Impressão e reprodução de gravações","physical",-0.0625228369880278
 2030,"S19","Derivados de petróleo","investment",3.43587744578665
-2030,"S19","Derivados de petróleo","rewiring",-0.236320322077239
+2030,"S19","Derivados de petróleo","rewiring",-0.236320322077244
 2030,"S19","Derivados de petróleo","physical",7.64935653224063
 2030,"S20","Biodiesel","investment",0.118020763285257
 2030,"S20","Biodiesel","rewiring",0.0572270810183809
-2030,"S20","Biodiesel","physical",-0.0360650669959937
+2030,"S20","Biodiesel","physical",-0.0360650669959936
 2030,"S21","Coquerias","investment",0.0211953679627949
-2030,"S21","Coquerias","rewiring",-0.00000552704924461326
+2030,"S21","Coquerias","rewiring",-0.00000552704924462214
 2030,"S21","Coquerias","physical",-0.0070083780228562
 2030,"S22","Fabricação de biocombustíveis","investment",0.444226841843991
 2030,"S22","Fabricação de biocombustíveis","rewiring",0.159674076086624
 2030,"S22","Fabricação de biocombustíveis","physical",-1.82096240175538
 2030,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","investment",2.55688910008246
-2030,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",0.00350307158314854
+2030,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",0.00350307158314945
 2030,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","physical",-0.402312320854043
-2030,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","investment",2.13842469252941
-2030,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.0034784304020227
-2030,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.138736904055163
+2030,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","investment",2.13842469252942
+2030,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.0034784304020211
+2030,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.138736904055164
 2030,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","investment",0.214068475484634
-2030,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",-0.0000129119409214885
+2030,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",-0.0000129119409208063
 2030,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","physical",-0.0237592564777993
-2030,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0.16341894102903
-2030,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.000358315131296877
-2030,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","physical",-0.0398564441593235
-2030,"S27","Fabricação de produtos de borracha e de material plástico","investment",4.44739342941199
-2030,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.000496090436580744
-2030,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.159628571547786
+2030,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0.163418941029031
+2030,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.000358315131297786
+2030,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","physical",-0.0398564441593239
+2030,"S27","Fabricação de produtos de borracha e de material plástico","investment",4.44739342941198
+2030,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.000496090436582714
+2030,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.159628571547787
 2030,"S28","Fabricação de produtos de minerais não-metálicos","investment",11.4945164775746
-2030,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.00315593267516063
+2030,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.00315593267515669
 2030,"S28","Fabricação de produtos de minerais não-metálicos","physical",11.32323219001
 2030,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","investment",6.85499904311902
-2030,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.00328542926226176
+2030,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.00328542926226388
 2030,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","physical",8.05047897192502
 2030,"S30","Metalurgia de metais não-ferosos e a fundição de metais","investment",28.9179737403974
-2030,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.000100251959626727
-2030,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.121927303118883
+2030,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.000100251959629153
+2030,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.121927303118882
 2030,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","investment",8.55731615321108
-2030,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",0.00112249014276737
-2030,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-0.398630020022886
+2030,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",0.0011224901427651
+2030,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-0.398630020022885
 2030,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","investment",3.57563157211001
-2030,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.000159946464106573
-2030,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.0349389823272521
+2030,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.000159946464106421
+2030,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.0349389823272517
 2030,"S33","Fabricação de máquinas e equipamentos elétricos","investment",7.60781575519967
-2030,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",0.00204589320093116
+2030,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",0.00204589320092964
 2030,"S33","Fabricação de máquinas e equipamentos elétricos","physical",-0.243047172545597
 2030,"S34","Fabricação de máquinas e equipamentos mecânicos","investment",23.7916404346972
-2030,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.00388882273409611
+2030,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.00388882273409672
 2030,"S34","Fabricação de máquinas e equipamentos mecânicos","physical",-0.290064650621582
 2030,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","investment",0.217552968414031
-2030,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",0.000010604412960068
-2030,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.00507790024191596
+2030,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",0.0000106044129629481
+2030,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.00507790024191581
 2030,"S36","Fabricação de peças e acessórios para veículos automotores","investment",1.43719965909576
-2030,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",-0.0000744683758298379
-2030,"S36","Fabricação de peças e acessórios para veículos automotores","physical",-0.0879638695486556
-2030,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","investment",0.0938681506027356
-2030,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",-0.00000909336876975431
-2030,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.0073078088803004
+2030,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",-0.00007446837582908
+2030,"S36","Fabricação de peças e acessórios para veículos automotores","physical",-0.0879638695486557
+2030,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","investment",0.0938681506027354
+2030,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",-0.00000909336876899639
+2030,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.00730780888030055
 2030,"S38","Fabricação de móveis e de produtos de indústrias diversas","investment",0.681654000822381
-2030,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.000164022837585738
-2030,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.0349816242704645
+2030,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.000164022837586344
+2030,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.0349816242704655
 2030,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","investment",9.71047262518712
-2030,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",-0.000532936302452375
-2030,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","physical",-0.791548323993742
-2030,"S40","Geração centralizada de energia elétrica","investment",5.11435070146107
-2030,"S40","Geração centralizada de energia elétrica","rewiring",0.388748048291211
+2030,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",-0.000532936302449646
+2030,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","physical",-0.79154832399374
+2030,"S40","Geração centralizada de energia elétrica","investment",5.11435070146106
+2030,"S40","Geração centralizada de energia elétrica","rewiring",0.38874804829122
 2030,"S40","Geração centralizada de energia elétrica","physical",14.4692710370549
 2030,"S41","Geração distribuída de energia elétrica","investment",0.812278112402983
-2030,"S41","Geração distribuída de energia elétrica","rewiring",0.0551992094387405
+2030,"S41","Geração distribuída de energia elétrica","rewiring",0.0551992094387407
 2030,"S41","Geração distribuída de energia elétrica","physical",-0.202060591357956
 2030,"S42","Transmissão","investment",45.1213576228328
-2030,"S42","Transmissão","rewiring",0.0448517885222309
+2030,"S42","Transmissão","rewiring",0.0448517885222293
 2030,"S42","Transmissão","physical",1.68232317827143
 2030,"S43","Gás Natural","investment",2.0407382957271
-2030,"S43","Gás Natural","rewiring",-0.500816137501151
-2030,"S43","Gás Natural","physical",0.339105724791592
-2030,"S44","Água, esgoto e gestão de resíduos","investment",4.56271662379925
-2030,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.000962269469078213
-2030,"S44","Água, esgoto e gestão de resíduos","physical",-0.421068189305376
+2030,"S43","Gás Natural","rewiring",-0.500816137501152
+2030,"S43","Gás Natural","physical",0.339105724791591
+2030,"S44","Água, esgoto e gestão de resíduos","investment",4.56271662379926
+2030,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.000962269469078516
+2030,"S44","Água, esgoto e gestão de resíduos","physical",-0.421068189305377
 2030,"S45","Construção","investment",191.823127458662
-2030,"S45","Construção","rewiring",-0.0041059479559323
-2030,"S45","Construção","physical",-0.288699429586245
+2030,"S45","Construção","rewiring",-0.00410594795598202
+2030,"S45","Construção","physical",-0.288699429586236
 2030,"S46","Comércio e reparação de veículos automotores e motocicletas","investment",2.7083898261858
-2030,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",-0.0000851043601930238
-2030,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.216824948924394
+2030,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",-0.0000851043601918112
+2030,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.216824948924395
 2030,"S47","Comércio por atacado e a varejo, exceto veículos automotores","investment",46.4251399681594
-2030,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",-0.03285641795975
+2030,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",-0.0328564179597549
 2030,"S47","Comércio por atacado e a varejo, exceto veículos automotores","physical",-4.31196535252734
 2030,"S48","Transporte terrestre","investment",12.7938597661015
-2030,"S48","Transporte terrestre","rewiring",-0.00153698498367521
+2030,"S48","Transporte terrestre","rewiring",-0.00153698498368006
 2030,"S48","Transporte terrestre","physical",-2.03550131999991
 2030,"S49","Transporte aquaviário","investment",0.519722950025568
-2030,"S49","Transporte aquaviário","rewiring",-0.0108407986246164
-2030,"S49","Transporte aquaviário","physical",-0.4913659907271
-2030,"S50","Transporte aéreo","investment",0.551929593812635
-2030,"S50","Transporte aéreo","rewiring",-0.00219462409963952
-2030,"S50","Transporte aéreo","physical",-0.12264618506349
+2030,"S49","Transporte aquaviário","rewiring",-0.0108407986246152
+2030,"S49","Transporte aquaviário","physical",-0.491365990727101
+2030,"S50","Transporte aéreo","investment",0.551929593812634
+2030,"S50","Transporte aéreo","rewiring",-0.00219462409963982
+2030,"S50","Transporte aéreo","physical",-0.122646185063491
 2030,"S51","Armazenamento, atividades auxiliares dos transportes e correio","investment",4.56902994011604
-2030,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",-0.00755747425794046
+2030,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",-0.00755747425794774
 2030,"S51","Armazenamento, atividades auxiliares dos transportes e correio","physical",-1.19627572109164
 2030,"S52","Alojamento","investment",0.846127898053218
-2030,"S52","Alojamento","rewiring",-0.000520248757101626
-2030,"S52","Alojamento","physical",-0.0714596251357802
-2030,"S53","Alimentação","investment",0.55754966415612
-2030,"S53","Alimentação","rewiring",-0.000704322649148404
-2030,"S53","Alimentação","physical",-0.0921886434183076
+2030,"S52","Alojamento","rewiring",-0.000520248757101854
+2030,"S52","Alojamento","physical",-0.0714596251357807
+2030,"S53","Alimentação","investment",0.557549664156119
+2030,"S53","Alimentação","rewiring",-0.000704322649141735
+2030,"S53","Alimentação","physical",-0.0921886434183101
 2030,"S54","Edição e edição integrada à impressão","investment",0.200799194814201
-2030,"S54","Edição e edição integrada à impressão","rewiring",0.0000363927343876564
-2030,"S54","Edição e edição integrada à impressão","physical",-0.0240295353605896
-2030,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","investment",1.19962156642205
-2030,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.00118944530899254
-2030,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.150206095619469
+2030,"S54","Edição e edição integrada à impressão","rewiring",0.0000363927343879595
+2030,"S54","Edição e edição integrada à impressão","physical",-0.02402953536059
+2030,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","investment",1.19962156642206
+2030,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.00118944530899186
+2030,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.150206095619468
 2030,"S56","Telecomunicações","investment",1.95459634226741
-2030,"S56","Telecomunicações","rewiring",-0.000273225297385882
-2030,"S56","Telecomunicações","physical",-0.219387898926427
+2030,"S56","Telecomunicações","rewiring",-0.000273225297388914
+2030,"S56","Telecomunicações","physical",-0.219387898926426
 2030,"S57","Desenvolvimento de sistemas e outros serviços de informação","investment",21.2371488027709
-2030,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.00364659461361589
-2030,"S57","Desenvolvimento de sistemas e outros serviços de informação","physical",-0.447772466812941
+2030,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.00364659461361346
+2030,"S57","Desenvolvimento de sistemas e outros serviços de informação","physical",-0.44777246681294
 2030,"S58","Intermediação financeira, seguros e previdência complementar","investment",20.9580815739475
-2030,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",0.0123124236430376
-2030,"S58","Intermediação financeira, seguros e previdência complementar","physical",-2.66362945759967
+2030,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",0.0123124236430037
+2030,"S58","Intermediação financeira, seguros e previdência complementar","physical",-2.66362945759966
 2030,"S59","Atividades imobiliárias","investment",5.96686732198375
-2030,"S59","Atividades imobiliárias","rewiring",0.000960519725219152
+2030,"S59","Atividades imobiliárias","rewiring",0.000960519725190049
 2030,"S59","Atividades imobiliárias","physical",-0.704673393993032
 2030,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","investment",14.833714839873
-2030,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-0.0394662823192133
-2030,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","physical",-2.74942392272934
+2030,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-0.0394662823192139
+2030,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","physical",-2.74942392272933
 2030,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","investment",21.6003913801141
 2030,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",0.00254460724531267
 2030,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","physical",-0.459672175098338
 2030,"S62","Outras atividades profissionais, científicas e técnicas","investment",3.22513755441
-2030,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.00340069113567218
-2030,"S62","Outras atividades profissionais, científicas e técnicas","physical",-0.406334800281085
+2030,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.00340069113567006
+2030,"S62","Outras atividades profissionais, científicas e técnicas","physical",-0.406334800281083
 2030,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","investment",2.85646365420641
-2030,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-0.0151568711602087
-2030,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","physical",-0.855102569132067
+2030,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-0.0151568711602076
+2030,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","physical",-0.855102569132068
 2030,"S64","Outras atividades administrativas e serviços complementares","investment",10.5940532412245
-2030,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.00845195739520689
+2030,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.00845195739518992
 2030,"S64","Outras atividades administrativas e serviços complementares","physical",-1.12404757198928
 2030,"S65","Atividades de vigilância, segurança e investigação","investment",2.38978653053557
-2030,"S65","Atividades de vigilância, segurança e investigação","rewiring",-0.000252552369376796
-2030,"S65","Atividades de vigilância, segurança e investigação","physical",-0.256559367540652
-2030,"S66","Administração pública, defesa e seguridade social","investment",2.19106090023567
-2030,"S66","Administração pública, defesa e seguridade social","rewiring",-0.000217232262419808
-2030,"S66","Administração pública, defesa e seguridade social","physical",-0.296963260133353
+2030,"S65","Atividades de vigilância, segurança e investigação","rewiring",-0.000252552369381344
+2030,"S65","Atividades de vigilância, segurança e investigação","physical",-0.256559367540653
+2030,"S66","Administração pública, defesa e seguridade social","investment",2.19106090023566
+2030,"S66","Administração pública, defesa e seguridade social","rewiring",-0.000217232262458613
+2030,"S66","Administração pública, defesa e seguridade social","physical",-0.296963260133363
 2030,"S67","Educação pública","investment",0.267308389953134
-2030,"S67","Educação pública","rewiring",0.000093951128081244
+2030,"S67","Educação pública","rewiring",0.0000939511280957959
 2030,"S67","Educação pública","physical",-0.0148917726023283
 2030,"S68","Educação privada","investment",1.05872725275977
-2030,"S68","Educação privada","rewiring",-0.000320706461151834
-2030,"S68","Educação privada","physical",-0.148033295098099
-2030,"S69","Saúde pública","investment",0.0182913440079143
-2030,"S69","Saúde pública","rewiring",0.00000876210937955572
-2030,"S69","Saúde pública","physical",-0.000722580233340826
+2030,"S68","Educação privada","rewiring",-0.000320706461145771
+2030,"S68","Educação privada","physical",-0.1480332950981
+2030,"S69","Saúde pública","investment",0.0182913440079137
+2030,"S69","Saúde pública","rewiring",0.00000876210937349242
+2030,"S69","Saúde pública","physical",-0.000722580233337794
 2030,"S70","Saúde privada","investment",0.00879585877285353
-2030,"S70","Saúde privada","rewiring",0.00000146549938654061
-2030,"S70","Saúde privada","physical",-0.00101939672611115
+2030,"S70","Saúde privada","rewiring",0.00000146549939745455
+2030,"S70","Saúde privada","physical",-0.00101939672612207
 2030,"S71","Atividades artísticas, criativas e de espetáculos","investment",0.239477817348625
-2030,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.000220168238224232
+2030,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.000220168238225142
 2030,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.0302410263031247
 2030,"S72","Organizações associativas e outros serviços pessoais","investment",1.22464792630112
-2030,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.000593792819519877
-2030,"S72","Organizações associativas e outros serviços pessoais","physical",-0.210354870016963
+2030,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.000593792819518664
+2030,"S72","Organizações associativas e outros serviços pessoais","physical",-0.210354870016964
 2030,"S73","Serviços domésticos","investment",0
 2030,"S73","Serviços domésticos","rewiring",0
 2030,"S73","Serviços domésticos","physical",0
-2035,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",3.8889582890047
-2035,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",1.02160297925809
-2035,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","physical",-4.3229562095522
-2035,"S02","Pecuária, inclusive o apoio à pecuária","investment",0.465468130596694
-2035,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.0209260513892465
-2035,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.115754444395171
+2035,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",3.88895828900471
+2035,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",1.02160297925813
+2035,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","physical",-4.32295620955221
+2035,"S02","Pecuária, inclusive o apoio à pecuária","investment",0.465468130596692
+2035,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.020926051389232
+2035,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.115754444395177
 2035,"S03","Produção florestal; pesca e aquicultura","investment",9.45516793278765
-2035,"S03","Produção florestal; pesca e aquicultura","rewiring",0.00687442941339729
-2035,"S03","Produção florestal; pesca e aquicultura","physical",-0.181919876225716
+2035,"S03","Produção florestal; pesca e aquicultura","rewiring",0.00687442941340062
+2035,"S03","Produção florestal; pesca e aquicultura","physical",-0.181919876225714
 2035,"S04","Extração de carvão mineral e de minerais não-metálicos","investment",2.49045764999373
-2035,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.00594981227371636
-2035,"S04","Extração de carvão mineral e de minerais não-metálicos","physical",-0.394338244821278
+2035,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.00594981227371682
+2035,"S04","Extração de carvão mineral e de minerais não-metálicos","physical",-0.394338244821279
 2035,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","investment",5.04593854611703
-2035,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","rewiring",-1.57044357838747
-2035,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","physical",5.12061126405784
+2035,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","rewiring",-1.57044357838746
+2035,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","physical",5.12061126405783
 2035,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","investment",2.42254166599878
-2035,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.00362617608762048
+2035,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.00362617608761987
 2035,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","physical",-1.31984459079291
 2035,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","investment",2.52622283397919
-2035,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.000625779806532743
-2035,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.141004755450891
-2035,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0.0877924511378193
-2035,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.010812085394006
-2035,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.0500030264013779
-2035,"S09","Fabricação e refino de açúcar","investment",0.202701492407551
-2035,"S09","Fabricação e refino de açúcar","rewiring",-0.0138880765229317
+2035,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.000625779806532591
+2035,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.141004755450892
+2035,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0.0877924511378175
+2035,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.0108120853940097
+2035,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.0500030264013797
+2035,"S09","Fabricação e refino de açúcar","investment",0.202701492407552
+2035,"S09","Fabricação e refino de açúcar","rewiring",-0.013888076522932
 2035,"S09","Fabricação e refino de açúcar","physical",-0.286773631131313
-2035,"S10","Outros produtos alimentares","investment",0.474705012746756
-2035,"S10","Outros produtos alimentares","rewiring",0.0525897977585816
-2035,"S10","Outros produtos alimentares","physical",-0.351220114763351
+2035,"S10","Outros produtos alimentares","investment",0.474705012746755
+2035,"S10","Outros produtos alimentares","rewiring",0.0525897977585755
+2035,"S10","Outros produtos alimentares","physical",-0.351220114763355
 2035,"S11","Fabricação de bebidas","investment",0.0978760787519219
 2035,"S11","Fabricação de bebidas","rewiring",-0.000407438229256816
-2035,"S11","Fabricação de bebidas","physical",-0.0201052027312738
-2035,"S12","Fabricação de produtos do fumo","investment",0.00690052832914478
-2035,"S12","Fabricação de produtos do fumo","rewiring",-0.00000759084605522276
-2035,"S12","Fabricação de produtos do fumo","physical",-0.00050912999704633
+2035,"S11","Fabricação de bebidas","physical",-0.0201052027312756
+2035,"S12","Fabricação de produtos do fumo","investment",0.0069005283291447
+2035,"S12","Fabricação de produtos do fumo","rewiring",-0.00000759084605518486
+2035,"S12","Fabricação de produtos do fumo","physical",-0.000509129997046292
 2035,"S13","Fabricação de produtos têxteis","investment",0.371295012741803
-2035,"S13","Fabricação de produtos têxteis","rewiring",0.0000745805906362875
-2035,"S13","Fabricação de produtos têxteis","physical",-0.0423090650892668
-2035,"S14","Confecção de artefatos do vestuário e acessórios","investment",0.12704942701138
-2035,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.00143808228880152
-2035,"S14","Confecção de artefatos do vestuário e acessórios","physical",-0.0317289212378364
+2035,"S13","Fabricação de produtos têxteis","rewiring",0.0000745805906358328
+2035,"S13","Fabricação de produtos têxteis","physical",-0.0423090650892664
+2035,"S14","Confecção de artefatos do vestuário e acessórios","investment",0.127049427011379
+2035,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.00143808228880274
+2035,"S14","Confecção de artefatos do vestuário e acessórios","physical",-0.0317289212378367
 2035,"S15","Fabricação de calçados e de artefatos de couro","investment",0.0397751250083434
 2035,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.00106363787284772
 2035,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.0094027936179059
 2035,"S16","Fabricação de produtos da madeira","investment",1.70310627308856
-2035,"S16","Fabricação de produtos da madeira","rewiring",0.00181098584525231
-2035,"S16","Fabricação de produtos da madeira","physical",-0.0697926913988434
+2035,"S16","Fabricação de produtos da madeira","rewiring",0.00181098584525277
+2035,"S16","Fabricação de produtos da madeira","physical",-0.0697926913988438
 2035,"S17","Fabricação de celulose, papel e produtos de papel","investment",1.32390342989263
-2035,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.00249595919158128
-2035,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.185189913954053
+2035,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.00249595919157703
+2035,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.185189913954054
 2035,"S18","Impressão e reprodução de gravações","investment",0.683429737409926
-2035,"S18","Impressão e reprodução de gravações","rewiring",0.000286808856635616
+2035,"S18","Impressão e reprodução de gravações","rewiring",0.000286808856635465
 2035,"S18","Impressão e reprodução de gravações","physical",-0.109295853478139
 2035,"S19","Derivados de petróleo","investment",3.40733096157736
-2035,"S19","Derivados de petróleo","rewiring",-0.79142365594831
-2035,"S19","Derivados de petróleo","physical",-5.74130814715032
+2035,"S19","Derivados de petróleo","rewiring",-0.791423655948303
+2035,"S19","Derivados de petróleo","physical",-5.74130814715031
 2035,"S20","Biodiesel","investment",0.115738939264077
 2035,"S20","Biodiesel","rewiring",0.229142789822127
-2035,"S20","Biodiesel","physical",0.0103263007031171
+2035,"S20","Biodiesel","physical",0.0103263007031172
 2035,"S21","Coquerias","investment",0.0276842034510832
-2035,"S21","Coquerias","rewiring",-0.00000333667374885434
+2035,"S21","Coquerias","rewiring",-0.00000333667374886737
 2035,"S21","Coquerias","physical",-0.0122337476959597
-2035,"S22","Fabricação de biocombustíveis","investment",0.515479062225062
-2035,"S22","Fabricação de biocombustíveis","rewiring",0.965589616575597
+2035,"S22","Fabricação de biocombustíveis","investment",0.515479062225063
+2035,"S22","Fabricação de biocombustíveis","rewiring",0.965589616575599
 2035,"S22","Fabricação de biocombustíveis","physical",-2.50411787380917
 2035,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","investment",2.03625535370183
-2035,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",0.0354730380406202
+2035,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",0.0354730380406205
 2035,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","physical",-0.708684176027289
 2035,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","investment",1.61860409729545
-2035,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.0235455416103152
-2035,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.245895074969202
-2035,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","investment",0.199902762888044
-2035,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.000610247283269321
-2035,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","physical",-0.0416407348376287
-2035,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0.140807265954091
-2035,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.000577307269388257
-2035,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","physical",-0.0696096530950008
+2035,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.0235455416103147
+2035,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.245895074969201
+2035,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","investment",0.199902762888043
+2035,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.00061024728326917
+2035,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","physical",-0.0416407348376284
+2035,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0.140807265954092
+2035,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.00057730726938856
+2035,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","physical",-0.0696096530950011
 2035,"S27","Fabricação de produtos de borracha e de material plástico","investment",5.1041927636198
-2035,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.00373345765704228
-2035,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.279464263731329
-2035,"S28","Fabricação de produtos de minerais não-metálicos","investment",8.62294729473945
-2035,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.00896653862230232
+2035,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.00373345765704168
+2035,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.27946426373133
+2035,"S28","Fabricação de produtos de minerais não-metálicos","investment",8.62294729473946
+2035,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.00896653862230172
 2035,"S28","Fabricação de produtos de minerais não-metálicos","physical",11.6433551811419
 2035,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","investment",9.41877176448389
-2035,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.0146971066896446
+2035,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.0146971066896464
 2035,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","physical",11.6681765279186
 2035,"S30","Metalurgia de metais não-ferosos e a fundição de metais","investment",16.6401923612702
-2035,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.0000579538785176131
+2035,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.0000579538785191289
 2035,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.212984723898108
 2035,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","investment",9.41381137562737
-2035,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",-0.00278551601639386
-2035,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-0.695372835402558
+2035,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",-0.00278551601639144
+2035,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-0.695372835402559
 2035,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","investment",1.53039438766255
-2035,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.00100637868396916
-2035,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.0608683174897051
+2035,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.00100637868396992
+2035,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.0608683174897058
 2035,"S33","Fabricação de máquinas e equipamentos elétricos","investment",11.4768513399224
-2035,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",-0.000724999235805626
-2035,"S33","Fabricação de máquinas e equipamentos elétricos","physical",-0.423480897311454
+2035,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",-0.000724999235810173
+2035,"S33","Fabricação de máquinas e equipamentos elétricos","physical",-0.42348089731145
 2035,"S34","Fabricação de máquinas e equipamentos mecânicos","investment",69.420510342143
-2035,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.0150084574120068
-2035,"S34","Fabricação de máquinas e equipamentos mecânicos","physical",-0.50491954618994
+2035,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.0150084574120083
+2035,"S34","Fabricação de máquinas e equipamentos mecânicos","physical",-0.504919546189941
 2035,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","investment",1.74091170496995
-2035,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",-0.0000115639638515859
-2035,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.00886250902967277
+2035,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",-0.0000115639638464321
+2035,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.00886250902967307
 2035,"S36","Fabricação de peças e acessórios para veículos automotores","investment",6.34590081345774
-2035,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",0.000274145384087205
-2035,"S36","Fabricação de peças e acessórios para veículos automotores","physical",-0.153731284539419
+2035,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",0.000274145384088721
+2035,"S36","Fabricação de peças e acessórios para veículos automotores","physical",-0.153731284539417
 2035,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","investment",0.124953973447675
-2035,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",-0.000048571829885077
-2035,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.0127590476300024
+2035,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",-0.0000485718298840159
+2035,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.0127590476300023
 2035,"S38","Fabricação de móveis e de produtos de indústrias diversas","investment",0.835425223839532
-2035,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.000705525392006469
-2035,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.0610177155055765
+2035,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.000705525392008591
+2035,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.0610177155055796
 2035,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","investment",14.5111134149558
-2035,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.00249203643403689
+2035,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.00249203643403325
 2035,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","physical",-1.38350241649085
-2035,"S40","Geração centralizada de energia elétrica","investment",4.27096296692966
-2035,"S40","Geração centralizada de energia elétrica","rewiring",0.643421755129679
+2035,"S40","Geração centralizada de energia elétrica","investment",4.27096296692965
+2035,"S40","Geração centralizada de energia elétrica","rewiring",0.643421755129687
 2035,"S40","Geração centralizada de energia elétrica","physical",13.3116276545599
-2035,"S41","Geração distribuída de energia elétrica","investment",0.668652677843562
-2035,"S41","Geração distribuída de energia elétrica","rewiring",0.0898084050954458
-2035,"S41","Geração distribuída de energia elétrica","physical",-0.351035303576969
+2035,"S41","Geração distribuída de energia elétrica","investment",0.668652677843561
+2035,"S41","Geração distribuída de energia elétrica","rewiring",0.0898084050954455
+2035,"S41","Geração distribuída de energia elétrica","physical",-0.351035303576967
 2035,"S42","Transmissão","investment",28.417102766222
 2035,"S42","Transmissão","rewiring",0.0742315990074059
-2035,"S42","Transmissão","physical",1.54906166419363
+2035,"S42","Transmissão","physical",1.54906166419364
 2035,"S43","Gás Natural","investment",1.83248200396089
 2035,"S43","Gás Natural","rewiring",-1.18684685382474
 2035,"S43","Gás Natural","physical",3.33452783936789
 2035,"S44","Água, esgoto e gestão de resíduos","investment",3.66708639073168
-2035,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.00191128378833067
-2035,"S44","Água, esgoto e gestão de resíduos","physical",-0.7358054284733
+2035,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.00191128378833491
+2035,"S44","Água, esgoto e gestão de resíduos","physical",-0.735805428473302
 2035,"S45","Construção","investment",140.666871552968
-2035,"S45","Construção","rewiring",-0.0152181519548903
+2035,"S45","Construção","rewiring",-0.015218151954854
 2035,"S45","Construção","physical",-0.502561556271874
 2035,"S46","Comércio e reparação de veículos automotores e motocicletas","investment",5.20534291356669
-2035,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.000225812035258665
-2035,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.378835421518227
-2035,"S47","Comércio por atacado e a varejo, exceto veículos automotores","investment",48.3187041198652
-2035,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",-0.0282116545887839
-2035,"S47","Comércio por atacado e a varejo, exceto veículos automotores","physical",-7.54120696295863
+2035,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.000225812035255027
+2035,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.378835421518231
+2035,"S47","Comércio por atacado e a varejo, exceto veículos automotores","investment",48.3187041198653
+2035,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",-0.0282116545887062
+2035,"S47","Comércio por atacado e a varejo, exceto veículos automotores","physical",-7.54120696295861
 2035,"S48","Transporte terrestre","investment",12.7869893238503
-2035,"S48","Transporte terrestre","rewiring",0.0419594383682864
-2035,"S48","Transporte terrestre","physical",-3.5649511901138
+2035,"S48","Transporte terrestre","rewiring",0.0419594383683119
+2035,"S48","Transporte terrestre","physical",-3.56495119011381
 2035,"S49","Transporte aquaviário","investment",0.64304454950953
-2035,"S49","Transporte aquaviário","rewiring",-0.0411139611293458
-2035,"S49","Transporte aquaviário","physical",-0.853465872344034
+2035,"S49","Transporte aquaviário","rewiring",-0.0411139611293475
+2035,"S49","Transporte aquaviário","physical",-0.853465872344035
 2035,"S50","Transporte aéreo","investment",0.538071330730548
-2035,"S50","Transporte aéreo","rewiring",-0.00842795357854561
+2035,"S50","Transporte aéreo","rewiring",-0.00842795357854546
 2035,"S50","Transporte aéreo","physical",-0.213215874685558
-2035,"S51","Armazenamento, atividades auxiliares dos transportes e correio","investment",4.72939083234195
-2035,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",-0.00833634828259649
+2035,"S51","Armazenamento, atividades auxiliares dos transportes e correio","investment",4.72939083234196
+2035,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",-0.00833634828259346
 2035,"S51","Armazenamento, atividades auxiliares dos transportes e correio","physical",-2.09046638073696
 2035,"S52","Alojamento","investment",0.891643398816906
-2035,"S52","Alojamento","rewiring",-0.00178777689130569
+2035,"S52","Alojamento","rewiring",-0.00178777689130463
 2035,"S52","Alojamento","physical",-0.124628037911273
 2035,"S53","Alimentação","investment",0.586498858566585
 2035,"S53","Alimentação","rewiring",-0.00295700234628748
 2035,"S53","Alimentação","physical",-0.160640194458581
 2035,"S54","Edição e edição integrada à impressão","investment",0.192559250385821
-2035,"S54","Edição e edição integrada à impressão","rewiring",-0.0000281309871340151
-2035,"S54","Edição e edição integrada à impressão","physical",-0.0419490855943936
+2035,"S54","Edição e edição integrada à impressão","rewiring",-0.0000281309871334088
+2035,"S54","Edição e edição integrada à impressão","physical",-0.0419490855943932
 2035,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","investment",1.17361184047896
-2035,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.00156416496716929
-2035,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.262272724967973
+2035,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.0015641649671658
+2035,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.262272724967972
 2035,"S56","Telecomunicações","investment",2.10023221972419
-2035,"S56","Telecomunicações","rewiring",0.000071695755600255
-2035,"S56","Telecomunicações","physical",-0.383335670229514
+2035,"S56","Telecomunicações","rewiring",0.0000716957555911601
+2035,"S56","Telecomunicações","physical",-0.383335670229516
 2035,"S57","Desenvolvimento de sistemas e outros serviços de informação","investment",17.8775712152521
-2035,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.00546699181128618
-2035,"S57","Desenvolvimento de sistemas e outros serviços de informação","physical",-0.782018255107267
+2035,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.00546699181127042
+2035,"S57","Desenvolvimento de sistemas e outros serviços de informação","physical",-0.782018255107261
 2035,"S58","Intermediação financeira, seguros e previdência complementar","investment",19.5177386958256
-2035,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",0.0534001643779581
-2035,"S58","Intermediação financeira, seguros e previdência complementar","physical",-4.65960243996159
-2035,"S59","Atividades imobiliárias","investment",5.98710800378462
-2035,"S59","Atividades imobiliárias","rewiring",0.00604539567906371
-2035,"S59","Atividades imobiliárias","physical",-1.23191080873121
+2035,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",0.0534001643778902
+2035,"S58","Intermediação financeira, seguros e previdência complementar","physical",-4.65960243996157
+2035,"S59","Atividades imobiliárias","investment",5.98710800378461
+2035,"S59","Atividades imobiliárias","rewiring",0.0060453956789861
+2035,"S59","Atividades imobiliárias","physical",-1.23191080873122
 2035,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","investment",15.3048899107564
-2035,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-0.123475121261317
-2035,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","physical",-4.79183796116944
+2035,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-0.123475121261313
+2035,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","physical",-4.79183796116943
 2035,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","investment",22.3327087054485
-2035,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",0.00314534693892407
-2035,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","physical",-0.802560991863137
+2035,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",0.00314534693892347
+2035,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","physical",-0.802560991863142
 2035,"S62","Outras atividades profissionais, científicas e técnicas","investment",3.13848570139648
-2035,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.0044275585023964
-2035,"S62","Outras atividades profissionais, científicas e técnicas","physical",-0.709469686242395
+2035,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.00442755850239397
+2035,"S62","Outras atividades profissionais, científicas e técnicas","physical",-0.709469686242394
 2035,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","investment",2.81143176625576
-2035,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-0.0586878161774863
+2035,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-0.0586878161774872
 2035,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","physical",-1.48669416689971
 2035,"S64","Outras atividades administrativas e serviços complementares","investment",11.3358726343073
-2035,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.0278498770237663
-2035,"S64","Outras atividades administrativas e serviços complementares","physical",-1.96616983885823
+2035,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.0278498770237396
+2035,"S64","Outras atividades administrativas e serviços complementares","physical",-1.96616983885822
 2035,"S65","Atividades de vigilância, segurança e investigação","investment",2.50569485154726
-2035,"S65","Atividades de vigilância, segurança e investigação","rewiring",-0.00111855495775399
-2035,"S65","Atividades de vigilância, segurança e investigação","physical",-0.4480741397232
-2035,"S66","Administração pública, defesa e seguridade social","investment",2.14792531253327
-2035,"S66","Administração pública, defesa e seguridade social","rewiring",-0.000860648866185026
-2035,"S66","Administração pública, defesa e seguridade social","physical",-0.518651975477546
-2035,"S67","Educação pública","investment",0.293287100055485
-2035,"S67","Educação pública","rewiring",0.000104538166289179
-2035,"S67","Educação pública","physical",-0.0260012432993559
+2035,"S65","Atividades de vigilância, segurança e investigação","rewiring",-0.00111855495775641
+2035,"S65","Atividades de vigilância, segurança e investigação","physical",-0.448074139723201
+2035,"S66","Administração pública, defesa e seguridade social","investment",2.14792531253326
+2035,"S66","Administração pública, defesa e seguridade social","rewiring",-0.000860648866311143
+2035,"S66","Administração pública, defesa e seguridade social","physical",-0.518651975477556
+2035,"S67","Educação pública","investment",0.293287100055483
+2035,"S67","Educação pública","rewiring",0.000104538166315857
+2035,"S67","Educação pública","physical",-0.0260012432993511
 2035,"S68","Educação privada","investment",1.04127269342701
-2035,"S68","Educação privada","rewiring",-0.00151334368558916
-2035,"S68","Educação privada","physical",-0.258415423855563
-2035,"S69","Saúde pública","investment",0.0202679458947205
-2035,"S69","Saúde pública","rewiring",0.0000140692624809162
-2035,"S69","Saúde pública","physical",-0.0012619730639708
+2035,"S68","Educação privada","rewiring",-0.00151334368558188
+2035,"S68","Educação privada","physical",-0.258415423855559
+2035,"S69","Saúde pública","investment",0.0202679458947168
+2035,"S69","Saúde pública","rewiring",0.0000140692624663643
+2035,"S69","Saúde pública","physical",-0.00126197306396716
 2035,"S70","Saúde privada","investment",0.00885155475658151
-2035,"S70","Saúde privada","rewiring",0.00000862963038283245
-2035,"S70","Saúde privada","physical",-0.00178205682393551
+2035,"S70","Saúde privada","rewiring",0.00000862963039010841
+2035,"S70","Saúde privada","physical",-0.00178205682392824
 2035,"S71","Atividades artísticas, criativas e de espetáculos","investment",0.234631555789522
-2035,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.000276464004440944
-2035,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.0528025027901428
+2035,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.00027646400444246
+2035,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.0528025027901431
 2035,"S72","Organizações associativas e outros serviços pessoais","investment",1.24575122884237
 2035,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.00362427318271754
 2035,"S72","Organizações associativas e outros serviços pessoais","physical",-0.366885674224707
 2035,"S73","Serviços domésticos","investment",0
 2035,"S73","Serviços domésticos","rewiring",0
 2035,"S73","Serviços domésticos","physical",0
-2040,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",3.12361642303826
-2040,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",8.37028691075023
-2040,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","physical",-8.67926417106792
-2040,"S02","Pecuária, inclusive o apoio à pecuária","investment",0.439594237613938
-2040,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.171598196665617
-2040,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.220166553522862
+2040,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",3.12361642303825
+2040,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",8.37028691075025
+2040,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","physical",-8.67926417106791
+2040,"S02","Pecuária, inclusive o apoio à pecuária","investment",0.439594237613936
+2040,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.1715981966656
+2040,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.220166553522864
 2040,"S03","Produção florestal; pesca e aquicultura","investment",4.20900477668888
 2040,"S03","Produção florestal; pesca e aquicultura","rewiring",0.0574579855041593
-2040,"S03","Produção florestal; pesca e aquicultura","physical",-0.297021035043099
+2040,"S03","Produção florestal; pesca e aquicultura","physical",-0.297021035043093
 2040,"S04","Extração de carvão mineral e de minerais não-metálicos","investment",2.37543990104613
-2040,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.0495440143928043
+2040,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.0495440143928037
 2040,"S04","Extração de carvão mineral e de minerais não-metálicos","physical",-0.626017320424267
-2040,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","investment",4.03552466583665
+2040,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","investment",4.03552466583664
 2040,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","rewiring",-11.7307645145299
 2040,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","physical",-36.2171773487243
-2040,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","investment",2.3946670177451
-2040,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.0265631741604636
+2040,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","investment",2.39466701774511
+2040,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.026563174160463
 2040,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","physical",-2.05316798828349
 2040,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","investment",2.2539901989076
-2040,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.00397915216988667
+2040,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.00397915216988834
 2040,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.219011860310895
-2040,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0.0919572552855607
-2040,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.0878950459832249
-2040,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.098170409356926
+2040,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0.0919572552855619
+2040,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.0878950459832243
+2040,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.0981704093569266
 2040,"S09","Fabricação e refino de açúcar","investment",0.193960325526697
-2040,"S09","Fabricação e refino de açúcar","rewiring",-0.0465983270019584
-2040,"S09","Fabricação e refino de açúcar","physical",-0.446401115466685
-2040,"S10","Outros produtos alimentares","investment",0.456682894486443
-2040,"S10","Outros produtos alimentares","rewiring",0.449045785059978
-2040,"S10","Outros produtos alimentares","physical",-0.65428953026907
+2040,"S09","Fabricação e refino de açúcar","rewiring",-0.0465983270019571
+2040,"S09","Fabricação e refino de açúcar","physical",-0.446401115466683
+2040,"S10","Outros produtos alimentares","investment",0.456682894486439
+2040,"S10","Outros produtos alimentares","rewiring",0.44904578505997
+2040,"S10","Outros produtos alimentares","physical",-0.654289530269074
 2040,"S11","Fabricação de bebidas","investment",0.0981028108070865
-2040,"S11","Fabricação de bebidas","rewiring",-0.00176537692492214
+2040,"S11","Fabricação de bebidas","rewiring",-0.00176537692492578
 2040,"S11","Fabricação de bebidas","physical",-0.0310714568602301
-2040,"S12","Fabricação de produtos do fumo","investment",0.00711988734517748
-2040,"S12","Fabricação de produtos do fumo","rewiring",-0.0000406232688841707
-2040,"S12","Fabricação de produtos do fumo","physical",-0.000787008210962919
+2040,"S12","Fabricação de produtos do fumo","investment",0.00711988734517755
+2040,"S12","Fabricação de produtos do fumo","rewiring",-0.0000406232688845497
+2040,"S12","Fabricação de produtos do fumo","physical",-0.000787008210963071
 2040,"S13","Fabricação de produtos têxteis","investment",0.327787740716271
-2040,"S13","Fabricação de produtos têxteis","rewiring",0.00388664129110627
-2040,"S13","Fabricação de produtos têxteis","physical",-0.0670954966731482
+2040,"S13","Fabricação de produtos têxteis","rewiring",0.00388664129110566
+2040,"S13","Fabricação de produtos têxteis","physical",-0.0670954966731479
 2040,"S14","Confecção de artefatos do vestuário e acessórios","investment",0.124953402782794
 2040,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.00586695277295621
 2040,"S14","Confecção de artefatos do vestuário e acessórios","physical",-0.0485060915957238
@@ -702,81 +702,81 @@
 2040,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.00260890935222051
 2040,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.014448752552491
 2040,"S16","Fabricação de produtos da madeira","investment",1.65213023593394
-2040,"S16","Fabricação de produtos da madeira","rewiring",0.014957412151516
+2040,"S16","Fabricação de produtos da madeira","rewiring",0.0149574121515169
 2040,"S16","Fabricação de produtos da madeira","physical",-0.111461665996107
-2040,"S17","Fabricação de celulose, papel e produtos de papel","investment",1.33497096895313
-2040,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.025712415386494
-2040,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.294977938507168
+2040,"S17","Fabricação de celulose, papel e produtos de papel","investment",1.33497096895314
+2040,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.0257124153864879
+2040,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.294977938507171
 2040,"S18","Impressão e reprodução de gravações","investment",0.703417739686338
-2040,"S18","Impressão e reprodução de gravações","rewiring",0.00631414186276152
+2040,"S18","Impressão e reprodução de gravações","rewiring",0.00631414186276136
 2040,"S18","Impressão e reprodução de gravações","physical",-0.171949458183744
-2040,"S19","Derivados de petróleo","investment",2.98881704163332
-2040,"S19","Derivados de petróleo","rewiring",-4.00302745786001
+2040,"S19","Derivados de petróleo","investment",2.98881704163331
+2040,"S19","Derivados de petróleo","rewiring",-4.00302745786
 2040,"S19","Derivados de petróleo","physical",-17.3886046059217
 2040,"S20","Biodiesel","investment",0.131373171109944
 2040,"S20","Biodiesel","rewiring",0.613551385273674
 2040,"S20","Biodiesel","physical",0.171715261631125
 2040,"S21","Coquerias","investment",0.0274665507829109
-2040,"S21","Coquerias","rewiring",-0.000672955961012974
+2040,"S21","Coquerias","rewiring",-0.000672955961012984
 2040,"S21","Coquerias","physical",-0.0188813016806994
 2040,"S22","Fabricação de biocombustíveis","investment",0.959969518965089
-2040,"S22","Fabricação de biocombustíveis","rewiring",7.78059001408353
+2040,"S22","Fabricação de biocombustíveis","rewiring",7.78059001408352
 2040,"S22","Fabricação de biocombustíveis","physical",-1.92902843231557
 2040,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","investment",1.94267638348559
-2040,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",0.313923660313343
+2040,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",0.313923660313346
 2040,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","physical",-1.18111916924153
-2040,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","investment",1.55248947626575
-2040,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.196768128063778
-2040,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.429364314275634
-2040,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","investment",0.197033884981162
-2040,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.00688313624250153
-2040,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","physical",-0.0667341150917338
-2040,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0.136115529339021
-2040,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.00240247768242928
+2040,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","investment",1.55248947626576
+2040,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.196768128063776
+2040,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.429364314275632
+2040,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","investment",0.197033884981161
+2040,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.00688313624250395
+2040,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","physical",-0.0667341150917341
+2040,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0.136115529339019
+2040,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.0024024776824311
 2040,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","physical",-0.108264624459436
 2040,"S27","Fabricação de produtos de borracha e de material plástico","investment",4.94498655554232
-2040,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.0367564605354625
+2040,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.0367564605354661
 2040,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.444237396483711
-2040,"S28","Fabricação de produtos de minerais não-metálicos","investment",8.24629031617014
-2040,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.0639600038781828
+2040,"S28","Fabricação de produtos de minerais não-metálicos","investment",8.24629031617015
+2040,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.0639600038781797
 2040,"S28","Fabricação de produtos de minerais não-metálicos","physical",11.1931238523944
-2040,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","investment",9.34257138612971
-2040,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.107726195819905
+2040,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","investment",9.34257138612972
+2040,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.1077261958199
 2040,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","physical",14.6258912073043
 2040,"S30","Metalurgia de metais não-ferosos e a fundição de metais","investment",14.6715492886751
-2040,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.00449438725938277
-2040,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.332689342978192
+2040,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.00449438725938459
+2040,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.332689342978193
 2040,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","investment",9.38551742251632
-2040,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",-0.0230737885192393
-2040,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-1.07434206737328
+2040,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",-0.0230737885192266
+2040,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-1.07434206737329
 2040,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","investment",3.9182607073923
-2040,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.0061950878162664
-2040,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.0932745558588898
+2040,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.00619508781626852
+2040,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.0932745558588901
 2040,"S33","Fabricação de máquinas e equipamentos elétricos","investment",12.6298597289964
-2040,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",0.0176654046875716
-2040,"S33","Fabricação de máquinas e equipamentos elétricos","physical",-0.658450507378576
-2040,"S34","Fabricação de máquinas e equipamentos mecânicos","investment",73.1670908780138
-2040,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.107617627884569
-2040,"S34","Fabricação de máquinas e equipamentos mecânicos","physical",-0.763718687871404
+2040,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",0.0176654046875731
+2040,"S33","Fabricação de máquinas e equipamentos elétricos","physical",-0.658450507378579
+2040,"S34","Fabricação de máquinas e equipamentos mecânicos","investment",73.1670908780137
+2040,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.107617627884572
+2040,"S34","Fabricação de máquinas e equipamentos mecânicos","physical",-0.763718687871409
 2040,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","investment",1.01171311480416
-2040,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",0.000317123106513463
-2040,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.0138461643022656
-2040,"S36","Fabricação de peças e acessórios para veículos automotores","investment",4.13132720945385
-2040,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",0.00805749481158819
+2040,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",0.000317123106522862
+2040,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.0138461643022653
+2040,"S36","Fabricação de peças e acessórios para veículos automotores","investment",4.13132720945386
+2040,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",0.00805749481158637
 2040,"S36","Fabricação de peças e acessórios para veículos automotores","physical",-0.241539169994679
 2040,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","investment",0.122890776558129
 2040,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",-0.000196082178208902
 2040,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.0198288618687792
-2040,"S38","Fabricação de móveis e de produtos de indústrias diversas","investment",0.829552427855045
-2040,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.00409152958825022
-2040,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.094166866707236
+2040,"S38","Fabricação de móveis e de produtos de indústrias diversas","investment",0.829552427855042
+2040,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.00409152958824719
+2040,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.0941668667072366
 2040,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","investment",15.0353931659708
-2040,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.0394439495515659
+2040,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.0394439495515732
 2040,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","physical",-2.16623322048875
 2040,"S40","Geração centralizada de energia elétrica","investment",4.41153665910784
-2040,"S40","Geração centralizada de energia elétrica","rewiring",3.17658185628689
+2040,"S40","Geração centralizada de energia elétrica","rewiring",3.17658185628694
 2040,"S40","Geração centralizada de energia elétrica","physical",28.8583382876042
-2040,"S41","Geração distribuída de energia elétrica","investment",0.679442028340254
+2040,"S41","Geração distribuída de energia elétrica","investment",0.679442028340255
 2040,"S41","Geração distribuída de energia elétrica","rewiring",0.438565897790409
 2040,"S41","Geração distribuída de energia elétrica","physical",-0.563133583575069
 2040,"S42","Transmissão","investment",29.19806531535
@@ -789,320 +789,320 @@
 2040,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.00265239870610822
 2040,"S44","Água, esgoto e gestão de resíduos","physical",-1.14841286056544
 2040,"S45","Construção","investment",134.281503348096
-2040,"S45","Construção","rewiring",-0.108878689208257
-2040,"S45","Construção","physical",-0.760083924612511
+2040,"S45","Construção","rewiring",-0.108878689208199
+2040,"S45","Construção","physical",-0.760083924612482
 2040,"S46","Comércio e reparação de veículos automotores e motocicletas","investment",4.98111429627149
-2040,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.0112194367555276
-2040,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.59293643516321
-2040,"S47","Comércio por atacado e a varejo, exceto veículos automotores","investment",48.8223795320265
-2040,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",0.227675424908724
+2040,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.0112194367555239
+2040,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.592936435163199
+2040,"S47","Comércio por atacado e a varejo, exceto veículos automotores","investment",48.8223795320266
+2040,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",0.227675424908676
 2040,"S47","Comércio por atacado e a varejo, exceto veículos automotores","physical",-11.8783227761631
 2040,"S48","Transporte terrestre","investment",12.6703163947796
 2040,"S48","Transporte terrestre","rewiring",0.507009082309113
 2040,"S48","Transporte terrestre","physical",-5.68952727075946
-2040,"S49","Transporte aquaviário","investment",0.620511647212041
-2040,"S49","Transporte aquaviário","rewiring",-0.303080423186411
+2040,"S49","Transporte aquaviário","investment",0.620511647212042
+2040,"S49","Transporte aquaviário","rewiring",-0.303080423186413
 2040,"S49","Transporte aquaviário","physical",-1.26519267729373
 2040,"S50","Transporte aéreo","investment",0.539412430718602
-2040,"S50","Transporte aéreo","rewiring",-0.0569721067592224
-2040,"S50","Transporte aéreo","physical",-0.320055163209595
-2040,"S51","Armazenamento, atividades auxiliares dos transportes e correio","investment",4.65674253708246
-2040,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",0.00774714004415
+2040,"S50","Transporte aéreo","rewiring",-0.0569721067592209
+2040,"S50","Transporte aéreo","physical",-0.320055163209596
+2040,"S51","Armazenamento, atividades auxiliares dos transportes e correio","investment",4.65674253708247
+2040,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",0.00774714004413909
 2040,"S51","Armazenamento, atividades auxiliares dos transportes e correio","physical",-3.26920261835264
 2040,"S52","Alojamento","investment",0.898930325124247
-2040,"S52","Alojamento","rewiring",-0.00830159616690495
-2040,"S52","Alojamento","physical",-0.192570471549797
+2040,"S52","Alojamento","rewiring",-0.00830159616690859
+2040,"S52","Alojamento","physical",-0.192570471549796
 2040,"S53","Alimentação","investment",0.583100171576572
-2040,"S53","Alimentação","rewiring",-0.0157082885892402
-2040,"S53","Alimentação","physical",-0.246805449880007
+2040,"S53","Alimentação","rewiring",-0.0157082885892766
+2040,"S53","Alimentação","physical",-0.24680544988
 2040,"S54","Edição e edição integrada à impressão","investment",0.194668018218323
-2040,"S54","Edição e edição integrada à impressão","rewiring",0.00185042882675937
-2040,"S54","Edição e edição integrada à impressão","physical",-0.0656626493058681
+2040,"S54","Edição e edição integrada à impressão","rewiring",0.0018504288267615
+2040,"S54","Edição e edição integrada à impressão","physical",-0.0656626493058687
 2040,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","investment",1.19033107900615
-2040,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.0137231700767995
-2040,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.409750367527102
+2040,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.0137231700767946
+2040,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.409750367527101
 2040,"S56","Telecomunicações","investment",2.11102614202804
-2040,"S56","Telecomunicações","rewiring",0.0107370366496192
-2040,"S56","Telecomunicações","physical",-0.600121008110599
+2040,"S56","Telecomunicações","rewiring",0.010737036649607
+2040,"S56","Telecomunicações","physical",-0.600121008110607
 2040,"S57","Desenvolvimento de sistemas e outros serviços de informação","investment",18.5003225161848
-2040,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.0482246559357178
+2040,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.0482246559357275
 2040,"S57","Desenvolvimento de sistemas e outros serviços de informação","physical",-1.22376262539323
 2040,"S58","Intermediação financeira, seguros e previdência complementar","investment",19.4153105699778
-2040,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",0.524159460242813
-2040,"S58","Intermediação financeira, seguros e previdência complementar","physical",-7.37359297313621
-2040,"S59","Atividades imobiliárias","investment",6.02407561446764
-2040,"S59","Atividades imobiliárias","rewiring",0.0810112057428341
-2040,"S59","Atividades imobiliárias","physical",-1.938310461054
+2040,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",0.52415946024276
+2040,"S58","Intermediação financeira, seguros e previdência complementar","physical",-7.37359297313623
+2040,"S59","Atividades imobiliárias","investment",6.02407561446765
+2040,"S59","Atividades imobiliárias","rewiring",0.0810112057428729
+2040,"S59","Atividades imobiliárias","physical",-1.93831046105399
 2040,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","investment",15.4485462801241
-2040,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-0.768941927803629
+2040,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-0.768941927803627
 2040,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","physical",-7.32670846134764
 2040,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","investment",22.5101264709599
-2040,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",0.0268186929740356
+2040,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",0.0268186929740332
 2040,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","physical",-1.25117838433125
 2040,"S62","Outras atividades profissionais, científicas e técnicas","investment",3.1848697325462
-2040,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.037901216651136
+2040,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.0379012166511299
 2040,"S62","Outras atividades profissionais, científicas e técnicas","physical",-1.10827549658899
-2040,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","investment",2.74479623593254
-2040,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-0.427787979377992
+2040,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","investment",2.74479623593253
+2040,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-0.427787979377991
 2040,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","physical",-2.22476884078606
 2040,"S64","Outras atividades administrativas e serviços complementares","investment",11.5064180419969
-2040,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.247282639289614
-2040,"S64","Outras atividades administrativas e serviços complementares","physical",-3.11186830887455
+2040,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.247282639289612
+2040,"S64","Outras atividades administrativas e serviços complementares","physical",-3.11186830887454
 2040,"S65","Atividades de vigilância, segurança e investigação","investment",2.48864805075611
-2040,"S65","Atividades de vigilância, segurança e investigação","rewiring",0.00284843203722933
-2040,"S65","Atividades de vigilância, segurança e investigação","physical",-0.699016953049874
+2040,"S65","Atividades de vigilância, segurança e investigação","rewiring",0.00284843203722145
+2040,"S65","Atividades de vigilância, segurança e investigação","physical",-0.699016953049878
 2040,"S66","Administração pública, defesa e seguridade social","investment",2.133382927102
-2040,"S66","Administração pública, defesa e seguridade social","rewiring",0.00411607349142044
-2040,"S66","Administração pública, defesa e seguridade social","physical",-0.808981758786055
-2040,"S67","Educação pública","investment",0.293053005855196
-2040,"S67","Educação pública","rewiring",0.000975699084781809
-2040,"S67","Educação pública","physical",-0.0405663063625252
+2040,"S66","Administração pública, defesa e seguridade social","rewiring",0.00411607349136223
+2040,"S66","Administração pública, defesa e seguridade social","physical",-0.808981758786113
+2040,"S67","Educação pública","investment",0.293053005855191
+2040,"S67","Educação pública","rewiring",0.000975699084820614
+2040,"S67","Educação pública","physical",-0.0405663063625301
 2040,"S68","Educação privada","investment",1.03505252060608
-2040,"S68","Educação privada","rewiring",-0.00631344474806732
-2040,"S68","Educação privada","physical",-0.401307254996319
+2040,"S68","Educação privada","rewiring",-0.00631344474806489
+2040,"S68","Educação privada","physical",-0.40130725499631
 2040,"S69","Saúde pública","investment",0.0202053097262857
-2040,"S69","Saúde pública","rewiring",0.000103835054115431
-2040,"S69","Saúde pública","physical",-0.00197629982238626
-2040,"S70","Saúde privada","investment",0.0089014202451508
-2040,"S70","Saúde privada","rewiring",0.000115429765828594
-2040,"S70","Saúde privada","physical",-0.00280328711527545
+2040,"S69","Saúde pública","rewiring",0.000103835054122707
+2040,"S69","Saúde pública","physical",-0.00197629982237898
+2040,"S70","Saúde privada","investment",0.00890142024515565
+2040,"S70","Saúde privada","rewiring",0.000115429765862549
+2040,"S70","Saúde privada","physical",-0.0028032871152415
 2040,"S71","Atividades artísticas, criativas e de espetáculos","investment",0.237935516300752
-2040,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.00252017613311818
-2040,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.0824644004504062
+2040,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.00252017613312213
+2040,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.0824644004504068
 2040,"S72","Organizações associativas e outros serviços pessoais","investment",1.26476920227623
-2040,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.0224981500972475
-2040,"S72","Organizações associativas e outros serviços pessoais","physical",-0.565979379345795
+2040,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.0224981500972438
+2040,"S72","Organizações associativas e outros serviços pessoais","physical",-0.565979379345799
 2040,"S73","Serviços domésticos","investment",0
 2040,"S73","Serviços domésticos","rewiring",0
 2040,"S73","Serviços domésticos","physical",0
-2045,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",2.09020531399287
-2045,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",12.136720436616
+2045,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",2.09020531399286
+2045,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",12.1367204366161
 2045,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","physical",-12.5482293436143
-2045,"S02","Pecuária, inclusive o apoio à pecuária","investment",0.271459214361602
-2045,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.249166556497245
-2045,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.317947946086331
+2045,"S02","Pecuária, inclusive o apoio à pecuária","investment",0.271459214361599
+2045,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.249166556497243
+2045,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.317947946086333
 2045,"S03","Produção florestal; pesca e aquicultura","investment",3.74806980068027
-2045,"S03","Produção florestal; pesca e aquicultura","rewiring",0.0838533955888561
-2045,"S03","Produção florestal; pesca e aquicultura","physical",-0.427430144623831
+2045,"S03","Produção florestal; pesca e aquicultura","rewiring",0.083853395588847
+2045,"S03","Produção florestal; pesca e aquicultura","physical",-0.42743014462383
 2045,"S04","Extração de carvão mineral e de minerais não-metálicos","investment",1.55889151638327
-2045,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.0747863379761549
+2045,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.0747863379761553
 2045,"S04","Extração de carvão mineral e de minerais não-metálicos","physical",-0.900275874856045
 2045,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","investment",2.5471071651374
 2045,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","rewiring",-17.1381240346152
 2045,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","physical",-82.9883570568864
-2045,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","investment",1.05137401963821
-2045,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.0373308336282559
+2045,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","investment",1.05137401963822
+2045,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.0373308336282692
 2045,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","physical",-2.9510972784436
 2045,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","investment",2.53178225521327
-2045,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.00526563325998313
-2045,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.314766513804791
-2045,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0.0423043954982289
-2045,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.12788583055035
-2045,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.141872899500201
+2045,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.00526563325998389
+2045,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.314766513804792
+2045,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0.0423043954982301
+2045,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.127885830550348
+2045,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.1418728995002
 2045,"S09","Fabricação e refino de açúcar","investment",0.105014168632748
-2045,"S09","Fabricação e refino de açúcar","rewiring",-0.0912496169300924
+2045,"S09","Fabricação e refino de açúcar","rewiring",-0.0912496169300916
 2045,"S09","Fabricação e refino de açúcar","physical",-0.640797800712759
-2045,"S10","Outros produtos alimentares","investment",0.251260473742581
-2045,"S10","Outros produtos alimentares","rewiring",0.645018038128763
-2045,"S10","Outros produtos alimentares","physical",-0.9442378300844
-2045,"S11","Fabricação de bebidas","investment",0.043128015965863
-2045,"S11","Fabricação de bebidas","rewiring",-0.00271986286203598
-2045,"S11","Fabricação de bebidas","physical",-0.0446283135713481
+2045,"S10","Outros produtos alimentares","investment",0.25126047374258
+2045,"S10","Outros produtos alimentares","rewiring",0.645018038128748
+2045,"S10","Outros produtos alimentares","physical",-0.944237830084405
+2045,"S11","Fabricação de bebidas","investment",0.0431280159658624
+2045,"S11","Fabricação de bebidas","rewiring",-0.00271986286203294
+2045,"S11","Fabricação de bebidas","physical",-0.0446283135713468
 2045,"S12","Fabricação de produtos do fumo","investment",0.00256337405133513
 2045,"S12","Fabricação de produtos do fumo","rewiring",-0.0000629430347757989
 2045,"S12","Fabricação de produtos do fumo","physical",-0.00113061930977779
-2045,"S13","Fabricação de produtos têxteis","investment",0.16138208900297
-2045,"S13","Fabricação de produtos têxteis","rewiring",0.00548171157557651
-2045,"S13","Fabricação de produtos têxteis","physical",-0.0964261484814063
+2045,"S13","Fabricação de produtos têxteis","investment",0.161382089002971
+2045,"S13","Fabricação de produtos têxteis","rewiring",0.00548171157557681
+2045,"S13","Fabricação de produtos têxteis","physical",-0.096426148481406
 2045,"S14","Confecção de artefatos do vestuário e acessórios","investment",0.0581867781192838
-2045,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.00896141707215005
-2045,"S14","Confecção de artefatos do vestuário e acessórios","physical",-0.0695715194654288
-2045,"S15","Fabricação de calçados e de artefatos de couro","investment",0.0166425206233595
-2045,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.0043459892117847
-2045,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.0206383131974829
+2045,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.00896141707215186
+2045,"S14","Confecção de artefatos do vestuário e acessórios","physical",-0.069571519465427
+2045,"S15","Fabricação de calçados e de artefatos de couro","investment",0.0166425206233604
+2045,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.00434598921178561
+2045,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.0206383131974847
 2045,"S16","Fabricação de produtos da madeira","investment",0.936206734063166
-2045,"S16","Fabricação de produtos da madeira","rewiring",0.0246386454021379
-2045,"S16","Fabricação de produtos da madeira","physical",-0.160317592980579
-2045,"S17","Fabricação de celulose, papel e produtos de papel","investment",0.613064429543612
-2045,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.0375729936703131
-2045,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.424148746965861
+2045,"S16","Fabricação de produtos da madeira","rewiring",0.0246386454021382
+2045,"S16","Fabricação de produtos da madeira","physical",-0.16031759298058
+2045,"S17","Fabricação de celulose, papel e produtos de papel","investment",0.613064429543613
+2045,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.0375729936703125
+2045,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.424148746965862
 2045,"S18","Impressão e reprodução de gravações","investment",0.29901378679548
-2045,"S18","Impressão e reprodução de gravações","rewiring",0.00968560234252103
-2045,"S18","Impressão e reprodução de gravações","physical",-0.247149515279826
+2045,"S18","Impressão e reprodução de gravações","rewiring",0.00968560234252163
+2045,"S18","Impressão e reprodução de gravações","physical",-0.247149515279824
 2045,"S19","Derivados de petróleo","investment",1.88705355503369
-2045,"S19","Derivados de petróleo","rewiring",-6.62472289963337
+2045,"S19","Derivados de petróleo","rewiring",-6.62472289963336
 2045,"S19","Derivados de petróleo","physical",-18.3400135805282
-2045,"S20","Biodiesel","investment",0.0741087235880141
+2045,"S20","Biodiesel","investment",0.074108723588014
 2045,"S20","Biodiesel","rewiring",1.02484158837376
-2045,"S20","Biodiesel","physical",0.598168098031343
+2045,"S20","Biodiesel","physical",0.598168098031344
 2045,"S21","Coquerias","investment",0.0121973040680924
-2045,"S21","Coquerias","rewiring",-0.000967327071777776
+2045,"S21","Coquerias","rewiring",-0.00096732707177776
 2045,"S21","Coquerias","physical",-0.0271320611306694
-2045,"S22","Fabricação de biocombustíveis","investment",0.596417127304428
+2045,"S22","Fabricação de biocombustíveis","investment",0.596417127304427
 2045,"S22","Fabricação de biocombustíveis","rewiring",11.3271039762044
 2045,"S22","Fabricação de biocombustíveis","physical",-1.3487315095347
 2045,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","investment",1.09424999144133
-2045,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",0.448953005300707
+2045,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",0.448953005300713
 2045,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","physical",-1.70018835795318
 2045,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","investment",0.911081967258115
-2045,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.285067402302997
-2045,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.618828981361216
+2045,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.285067402302998
+2045,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.618828981361215
 2045,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","investment",0.100590230372287
-2045,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.00964802048610424
-2045,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","physical",-0.0959626606125779
-2045,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0.0689353941614596
-2045,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.0036896499310836
-2045,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","physical",-0.155573730348716
+2045,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.00964802048610454
+2045,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","physical",-0.0959626606125794
+2045,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0.0689353941614621
+2045,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.00368964993108299
+2045,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","physical",-0.155573730348715
 2045,"S27","Fabricação de produtos de borracha e de material plástico","investment",2.51404888589969
 2045,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.0551250514044641
-2045,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.638774805566725
+2045,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.638774805566727
 2045,"S28","Fabricação de produtos de minerais não-metálicos","investment",5.21262694795387
-2045,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.105167103211988
+2045,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.105167103211996
 2045,"S28","Fabricação de produtos de minerais não-metálicos","physical",11.7723656385239
 2045,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","investment",3.89422128987527
-2045,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.151571936801237
+2045,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.15157193680124
 2045,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","physical",17.3849579514355
 2045,"S30","Metalurgia de metais não-ferosos e a fundição de metais","investment",17.6911640455237
-2045,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.00936657693467017
-2045,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.478170863669437
-2045,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","investment",4.29669715547042
-2045,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",-0.0150809369338828
+2045,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.00936657693467108
+2045,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.478170863669436
+2045,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","investment",4.29669715547041
+2045,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",-0.0150809369338804
 2045,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-1.54397583945772
-2045,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","investment",0.554116361892034
-2045,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.00776060654015782
-2045,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.133978459915189
-2045,"S33","Fabricação de máquinas e equipamentos elétricos","investment",4.33526695694417
-2045,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",0.0494844303682439
-2045,"S33","Fabricação de máquinas e equipamentos elétricos","physical",-0.945945887664746
+2045,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","investment",0.554116361892032
+2045,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.00776060654016055
+2045,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.13397845991519
+2045,"S33","Fabricação de máquinas e equipamentos elétricos","investment",4.33526695694416
+2045,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",0.0494844303682421
+2045,"S33","Fabricação de máquinas e equipamentos elétricos","physical",-0.945945887664742
 2045,"S34","Fabricação de máquinas e equipamentos mecânicos","investment",19.9201933433931
-2045,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.155364682961155
+2045,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.155364682961146
 2045,"S34","Fabricação de máquinas e equipamentos mecânicos","physical",-1.09665732834201
-2045,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","investment",0.29633120680005
-2045,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",0.000694665996246234
-2045,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.019896422397355
+2045,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","investment",0.296331206800051
+2045,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",0.000694665996254723
+2045,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.0198964223973538
 2045,"S36","Fabricação de peças e acessórios para veículos automotores","investment",1.3177085345334
-2045,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",0.0130654237463702
-2045,"S36","Fabricação de peças e acessórios para veículos automotores","physical",-0.347158399539899
+2045,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",0.0130654237463671
+2045,"S36","Fabricação de peças e acessórios para veículos automotores","physical",-0.347158399539898
 2045,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","investment",0.0512204319372616
-2045,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",-0.000133553402053318
-2045,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.0284969698945639
-2045,"S38","Fabricação de móveis e de produtos de indústrias diversas","investment",0.354581276848229
-2045,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.00535545573114117
-2045,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.135293068731956
+2045,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",-0.000133553402056047
+2045,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.028496969894563
+2045,"S38","Fabricação de móveis e de produtos de indústrias diversas","investment",0.354581276848226
+2045,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.00535545573113632
+2045,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.135293068731959
 2045,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","investment",5.33611654785949
-2045,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.0662244359812491
+2045,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.0662244359812594
 2045,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","physical",-3.11384486749568
-2045,"S40","Geração centralizada de energia elétrica","investment",2.93538578553037
-2045,"S40","Geração centralizada de energia elétrica","rewiring",6.38595826758221
+2045,"S40","Geração centralizada de energia elétrica","investment",2.93538578553035
+2045,"S40","Geração centralizada de energia elétrica","rewiring",6.38595826758225
 2045,"S40","Geração centralizada de energia elétrica","physical",22.4648426954659
-2045,"S41","Geração distribuída de energia elétrica","investment",0.422935339293048
-2045,"S41","Geração distribuída de energia elétrica","rewiring",0.897381362295906
-2045,"S41","Geração distribuída de energia elétrica","physical",-0.814242168394974
+2045,"S41","Geração distribuída de energia elétrica","investment",0.422935339293047
+2045,"S41","Geração distribuída de energia elétrica","rewiring",0.897381362295908
+2045,"S41","Geração distribuída de energia elétrica","physical",-0.814242168394973
 2045,"S42","Transmissão","investment",3.74873245918153
-2045,"S42","Transmissão","rewiring",0.736920588678764
+2045,"S42","Transmissão","rewiring",0.736920588678762
 2045,"S42","Transmissão","physical",2.61593686593865
 2045,"S43","Gás Natural","investment",0.899239100618991
 2045,"S43","Gás Natural","rewiring",-6.11212587628098
 2045,"S43","Gás Natural","physical",13.037943158839
 2045,"S44","Água, esgoto e gestão de resíduos","investment",2.58797777653075
-2045,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.00563279518975954
-2045,"S44","Água, esgoto e gestão de resíduos","physical",-1.65057834704539
-2045,"S45","Construção","investment",87.9971680268523
-2045,"S45","Construção","rewiring",-0.158204023226169
-2045,"S45","Construção","physical",-1.09142778279915
-2045,"S46","Comércio e reparação de veículos automotores e motocicletas","investment",1.68721681118038
-2045,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.0201056004159351
-2045,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.852227846022249
+2045,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.00563279518974499
+2045,"S44","Água, esgoto e gestão de resíduos","physical",-1.6505783470454
+2045,"S45","Construção","investment",87.9971680268522
+2045,"S45","Construção","rewiring",-0.158204023226237
+2045,"S45","Construção","physical",-1.0914277827992
+2045,"S46","Comércio e reparação de veículos automotores e motocicletas","investment",1.68721681118037
+2045,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.0201056004159182
+2045,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-0.852227846022237
 2045,"S47","Comércio por atacado e a varejo, exceto veículos automotores","investment",23.0924239895271
 2045,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",0.16854573573403
 2045,"S47","Comércio por atacado e a varejo, exceto veículos automotores","physical",-17.0699119813691
 2045,"S48","Transporte terrestre","investment",6.02424357779124
-2045,"S48","Transporte terrestre","rewiring",0.720702812281486
-2045,"S48","Transporte terrestre","physical",-8.18015231751094
-2045,"S49","Transporte aquaviário","investment",0.27737506887625
-2045,"S49","Transporte aquaviário","rewiring",-0.443755234075405
+2045,"S48","Transporte terrestre","rewiring",0.720702812281461
+2045,"S48","Transporte terrestre","physical",-8.18015231751095
+2045,"S49","Transporte aquaviário","investment",0.277375068876251
+2045,"S49","Transporte aquaviário","rewiring",-0.443755234075404
 2045,"S49","Transporte aquaviário","physical",-1.81562253067818
 2045,"S50","Transporte aéreo","investment",0.241818906242094
-2045,"S50","Transporte aéreo","rewiring",-0.0823486759102922
-2045,"S50","Transporte aéreo","physical",-0.459376315130647
-2045,"S51","Armazenamento, atividades auxiliares dos transportes e correio","investment",2.14078057693123
-2045,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",0.00487808442197153
-2045,"S51","Armazenamento, atividades auxiliares dos transportes e correio","physical",-4.69828428786154
+2045,"S50","Transporte aéreo","rewiring",-0.082348675910294
+2045,"S50","Transporte aéreo","physical",-0.459376315130649
+2045,"S51","Armazenamento, atividades auxiliares dos transportes e correio","investment",2.14078057693122
+2045,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",0.00487808442194849
+2045,"S51","Armazenamento, atividades auxiliares dos transportes e correio","physical",-4.69828428786155
 2045,"S52","Alojamento","investment",0.402616227585677
-2045,"S52","Alojamento","rewiring",-0.0112735199674332
+2045,"S52","Alojamento","rewiring",-0.0112735199674347
 2045,"S52","Alojamento","physical",-0.276623508841276
-2045,"S53","Alimentação","investment",0.252751833452016
-2045,"S53","Alimentação","rewiring",-0.0208751673395867
-2045,"S53","Alimentação","physical",-0.3544706366043
-2045,"S54","Edição e edição integrada à impressão","investment",0.0824351193242032
-2045,"S54","Edição e edição integrada à impressão","rewiring",0.00364034995939028
-2045,"S54","Edição e edição integrada à impressão","physical",-0.0943554139986245
+2045,"S53","Alimentação","investment",0.252751833452021
+2045,"S53","Alimentação","rewiring",-0.0208751673395673
+2045,"S53","Alimentação","physical",-0.35447063660431
+2045,"S54","Edição e edição integrada à impressão","investment",0.0824351193242031
+2045,"S54","Edição e edição integrada à impressão","rewiring",0.00364034995939149
+2045,"S54","Edição e edição integrada à impressão","physical",-0.0943554139986246
 2045,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","investment",0.469865364888468
-2045,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.0288065787870382
-2045,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.589016014073672
-2045,"S56","Telecomunicações","investment",0.886715092714847
-2045,"S56","Telecomunicações","rewiring",0.0185701839717804
-2045,"S56","Telecomunicações","physical",-0.862547037077471
-2045,"S57","Desenvolvimento de sistemas e outros serviços de informação","investment",3.61097591719187
-2045,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.0952792642730371
-2045,"S57","Desenvolvimento de sistemas e outros serviços de informação","physical",-1.75921372617619
-2045,"S58","Intermediação financeira, seguros e previdência complementar","investment",9.12183556946272
-2045,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",0.829216357307809
-2045,"S58","Intermediação financeira, seguros e previdência complementar","physical",-10.6016141065291
-2045,"S59","Atividades imobiliárias","investment",2.66340617646691
-2045,"S59","Atividades imobiliárias","rewiring",0.129291102032041
-2045,"S59","Atividades imobiliárias","physical",-2.78627852835674
-2045,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","investment",7.11828883950742
-2045,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-1.17643113372258
+2045,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.028806578787037
+2045,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.58901601407367
+2045,"S56","Telecomunicações","investment",0.886715092714848
+2045,"S56","Telecomunicações","rewiring",0.0185701839717597
+2045,"S56","Telecomunicações","physical",-0.862547037077466
+2045,"S57","Desenvolvimento de sistemas e outros serviços de informação","investment",3.61097591719188
+2045,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.0952792642730249
+2045,"S57","Desenvolvimento de sistemas e outros serviços de informação","physical",-1.75921372617618
+2045,"S58","Intermediação financeira, seguros e previdência complementar","investment",9.12183556946268
+2045,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",0.829216357307683
+2045,"S58","Intermediação financeira, seguros e previdência complementar","physical",-10.6016141065292
+2045,"S59","Atividades imobiliárias","investment",2.66340617646698
+2045,"S59","Atividades imobiliárias","rewiring",0.129291102031993
+2045,"S59","Atividades imobiliárias","physical",-2.7862785283567
+2045,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","investment",7.11828883950743
+2045,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-1.17643113372254
 2045,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","physical",-10.5217844981131
 2045,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","investment",10.7397908997066
-2045,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",0.0642506539845848
+2045,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",0.064250653984589
 2045,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","physical",-1.79851296667202
 2045,"S62","Outras atividades profissionais, científicas e técnicas","investment",1.25190371317714
-2045,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.0799838257564667
+2045,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.0799838257564552
 2045,"S62","Outras atividades profissionais, científicas e técnicas","physical",-1.59315697658493
 2045,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","investment",1.3288014771469
 2045,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-0.622088380710164
 2045,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","physical",-3.19359085675794
 2045,"S64","Outras atividades administrativas e serviços complementares","investment",4.79038326797473
-2045,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.404435216781363
+2045,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.404435216781334
 2045,"S64","Outras atividades administrativas e serviços complementares","physical",-4.47453940586002
-2045,"S65","Atividades de vigilância, segurança e investigação","investment",1.11844353258149
-2045,"S65","Atividades de vigilância, segurança e investigação","rewiring",0.00808159712530687
+2045,"S65","Atividades de vigilância, segurança e investigação","investment",1.11844353258148
+2045,"S65","Atividades de vigilância, segurança e investigação","rewiring",0.00808159712529353
 2045,"S65","Atividades de vigilância, segurança e investigação","physical",-1.0045951396995
 2045,"S66","Administração pública, defesa e seguridade social","investment",1.04387683467179
 2045,"S66","Administração pública, defesa e seguridade social","rewiring",0.0116808988505121
 2045,"S66","Administração pública, defesa e seguridade social","physical",-1.16267609573136
-2045,"S67","Educação pública","investment",0.137429596072461
+2045,"S67","Educação pública","investment",0.137429596072475
 2045,"S67","Educação pública","rewiring",0.00219870043779277
-2045,"S67","Educação pública","physical",-0.0583114146119284
-2045,"S68","Educação privada","investment",0.505961066737165
-2045,"S68","Educação privada","rewiring",-0.00690466124956098
-2045,"S68","Educação privada","physical",-0.576686257770171
-2045,"S69","Saúde pública","investment",0.00961659294973651
-2045,"S69","Saúde pública","rewiring",0.000205265651617083
-2045,"S69","Saúde pública","physical",-0.00284141554904636
+2045,"S67","Educação pública","physical",-0.0583114146119721
+2045,"S68","Educação privada","investment",0.505961066737167
+2045,"S68","Educação privada","rewiring",-0.00690466124954401
+2045,"S68","Educação privada","physical",-0.576686257770176
+2045,"S69","Saúde pública","investment",0.00961659294973409
+2045,"S69","Saúde pública","rewiring",0.000205265651600106
+2045,"S69","Saúde pública","physical",-0.00284141554904151
 2045,"S70","Saúde privada","investment",0.00395295180911004
-2045,"S70","Saúde privada","rewiring",0.00018518181994538
-2045,"S70","Saúde privada","physical",-0.00402965639977386
-2045,"S71","Atividades artísticas, criativas e de espetáculos","investment",0.0944237670186261
-2045,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.00536857209419516
-2045,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.118540034852621
+2045,"S70","Saúde privada","rewiring",0.000185181819989036
+2045,"S70","Saúde privada","physical",-0.00402965639978841
+2045,"S71","Atividades artísticas, criativas e de espetáculos","investment",0.0944237670186285
+2045,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.00536857209420123
+2045,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.118540034852622
 2045,"S72","Organizações associativas e outros serviços pessoais","investment",0.502583801036325
-2045,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.0270838487121558
-2045,"S72","Organizações associativas e outros serviços pessoais","physical",-0.813215230990504
+2045,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.0270838487121485
+2045,"S72","Organizações associativas e outros serviços pessoais","physical",-0.813215230990512
 2045,"S73","Serviços domésticos","investment",0
 2045,"S73","Serviços domésticos","rewiring",0
 2045,"S73","Serviços domésticos","physical",0
-2050,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",5.12387191829505
+2050,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","investment",5.12387191829507
 2050,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","rewiring",27.7742032922744
 2050,"S01","Agricultura, inclusive o apoio à agricultura e a pós-colheita","physical",-20.4711868399721
 2050,"S02","Pecuária, inclusive o apoio à pecuária","investment",0.533035809761687
-2050,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.57132275710624
-2050,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.501505894498111
+2050,"S02","Pecuária, inclusive o apoio à pecuária","rewiring",0.571322757106175
+2050,"S02","Pecuária, inclusive o apoio à pecuária","physical",-0.501505894498119
 2050,"S03","Produção florestal; pesca e aquicultura","investment",4.26303703294744
-2050,"S03","Produção florestal; pesca e aquicultura","rewiring",0.193211108712746
-2050,"S03","Produção florestal; pesca e aquicultura","physical",-0.60098832874562
+2050,"S03","Produção florestal; pesca e aquicultura","rewiring",0.193211108712731
+2050,"S03","Produção florestal; pesca e aquicultura","physical",-0.60098832874561
 2050,"S04","Extração de carvão mineral e de minerais não-metálicos","investment",2.93645659144431
 2050,"S04","Extração de carvão mineral e de minerais não-metálicos","rewiring",0.176564766802862
 2050,"S04","Extração de carvão mineral e de minerais não-metálicos","physical",-1.23491515330802
@@ -1110,205 +1110,205 @@
 2050,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","rewiring",-38.1906876771088
 2050,"S05","Extração de petróleo e gás, inclusive as atividades de apoio","physical",-134.603496067101
 2050,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","investment",1.86346900766207
-2050,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.0812519734372108
+2050,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","rewiring",-0.081251973437223
 2050,"S06","Extração de minério de ferro, inclusive beneficiamentos e a aglomeração","physical",-3.97100210230067
 2050,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","investment",4.94236953241155
 2050,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","rewiring",-0.0106249750027797
-2050,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.423049977110201
-2050,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0.094358155026183
-2050,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.29347905600101
-2050,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.228370761372896
-2050,"S09","Fabricação e refino de açúcar","investment",0.280508164313513
+2050,"S07","Extração de minerais metálicos não-ferrosos, inclusive beneficiamentos","physical",-0.423049977110202
+2050,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","investment",0.0943581550261854
+2050,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","rewiring",0.293479056001013
+2050,"S08","Abate e produtos de carne, inclusive os produtos do laticínio e da pesca","physical",-0.228370761372894
+2050,"S09","Fabricação e refino de açúcar","investment",0.280508164313511
 2050,"S09","Fabricação e refino de açúcar","rewiring",-0.234087577275602
 2050,"S09","Fabricação e refino de açúcar","physical",-0.861740334995834
-2050,"S10","Outros produtos alimentares","investment",0.571406850778544
-2050,"S10","Outros produtos alimentares","rewiring",1.47086841005799
+2050,"S10","Outros produtos alimentares","investment",0.571406850778541
+2050,"S10","Outros produtos alimentares","rewiring",1.47086841005798
 2050,"S10","Outros produtos alimentares","physical",-1.4684476700093
-2050,"S11","Fabricação de bebidas","investment",0.0791464475523505
-2050,"S11","Fabricação de bebidas","rewiring",-0.00589549018711235
-2050,"S11","Fabricação de bebidas","physical",-0.0597364915393512
+2050,"S11","Fabricação de bebidas","investment",0.0791464475523535
+2050,"S11","Fabricação de bebidas","rewiring",-0.00589549018711841
+2050,"S11","Fabricação de bebidas","physical",-0.0597364915393518
 2050,"S12","Fabricação de produtos do fumo","investment",0.00447367546891511
-2050,"S12","Fabricação de produtos do fumo","rewiring",-0.000133119267966852
-2050,"S12","Fabricação de produtos do fumo","physical",-0.00151329843126708
+2050,"S12","Fabricação de produtos do fumo","rewiring",-0.000133119267967307
+2050,"S12","Fabricação de produtos do fumo","physical",-0.00151329843126662
 2050,"S13","Fabricação de produtos têxteis","investment",0.285892776292164
-2050,"S13","Fabricação de produtos têxteis","rewiring",0.0144476049482467
-2050,"S13","Fabricação de produtos têxteis","physical",-0.132335465247394
-2050,"S14","Confecção de artefatos do vestuário e acessórios","investment",0.106787830584769
-2050,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.0173330396083935
+2050,"S13","Fabricação de produtos têxteis","rewiring",0.0144476049482449
+2050,"S13","Fabricação de produtos têxteis","physical",-0.132335465247392
+2050,"S14","Confecção de artefatos do vestuário e acessórios","investment",0.106787830584767
+2050,"S14","Confecção de artefatos do vestuário e acessórios","rewiring",-0.017333039608399
 2050,"S14","Confecção de artefatos do vestuário e acessórios","physical",-0.0924747784224498
 2050,"S15","Fabricação de calçados e de artefatos de couro","investment",0.0299097858169134
-2050,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.00695566219967441
-2050,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.0278677635643307
+2050,"S15","Fabricação de calçados e de artefatos de couro","rewiring",-0.00695566219967259
+2050,"S15","Fabricação de calçados e de artefatos de couro","physical",-0.0278677635643289
 2050,"S16","Fabricação de produtos da madeira","investment",1.72668334620293
-2050,"S16","Fabricação de produtos da madeira","rewiring",0.0589987001009801
-2050,"S16","Fabricação de produtos da madeira","physical",-0.221334601080531
+2050,"S16","Fabricação de produtos da madeira","rewiring",0.0589987001009789
+2050,"S16","Fabricação de produtos da madeira","physical",-0.221334601080534
 2050,"S17","Fabricação de celulose, papel e produtos de papel","investment",1.14118776218332
-2050,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.089423053673631
-2050,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.583753105726534
-2050,"S18","Impressão e reprodução de gravações","investment",0.54394590974577
-2050,"S18","Impressão e reprodução de gravações","rewiring",0.02496959236978
-2050,"S18","Impressão e reprodução de gravações","physical",-0.336417552689912
-2050,"S19","Derivados de petróleo","investment",5.84458801831009
+2050,"S17","Fabricação de celulose, papel e produtos de papel","rewiring",0.0894230536736189
+2050,"S17","Fabricação de celulose, papel e produtos de papel","physical",-0.583753105726528
+2050,"S18","Impressão e reprodução de gravações","investment",0.543945909745771
+2050,"S18","Impressão e reprodução de gravações","rewiring",0.0249695923697803
+2050,"S18","Impressão e reprodução de gravações","physical",-0.336417552689911
+2050,"S19","Derivados de petróleo","investment",5.84458801831008
 2050,"S19","Derivados de petróleo","rewiring",-16.2399823702195
 2050,"S19","Derivados de petróleo","physical",-25.1963842501284
-2050,"S20","Biodiesel","investment",0.211915612170928
+2050,"S20","Biodiesel","investment",0.211915612170929
 2050,"S20","Biodiesel","rewiring",3.38754401129574
 2050,"S20","Biodiesel","physical",3.91940415794024
 2050,"S21","Coquerias","investment",0.0219788690555316
-2050,"S21","Coquerias","rewiring",-0.00138607210063961
+2050,"S21","Coquerias","rewiring",-0.00138607210063959
 2050,"S21","Coquerias","physical",-0.0362728703282038
 2050,"S22","Fabricação de biocombustíveis","investment",2.67642494462334
 2050,"S22","Fabricação de biocombustíveis","rewiring",25.9659272410633
-2050,"S22","Fabricação de biocombustíveis","physical",-2.85901574878309
+2050,"S22","Fabricação de biocombustíveis","physical",-2.85901574878308
 2050,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","investment",2.25110273356028
 2050,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","rewiring",1.03937454739541
-2050,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","physical",-2.4333054893967
+2050,"S23","Fabricação de químicos orgânicos e inorgânicos, resinas e elastômeros","physical",-2.43330548939671
 2050,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","investment",1.73923406267353
-2050,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.655014079615574
-2050,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.918910650160892
-2050,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","investment",0.190442828932539
-2050,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.0226050630432528
+2050,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","rewiring",0.655014079615571
+2050,"S24","Fabricação de defensivos, desinfestantes, tintas e químicos diversos","physical",-0.918910650160894
+2050,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","investment",0.190442828932538
+2050,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","rewiring",0.022605063043254
 2050,"S25","Fabricação de produtos de limpeza, cosméticos/perfumaria e higiene pessoal","physical",-0.132786795503713
 2050,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","investment",0.132569302613653
 2050,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","rewiring",-0.00645939665374074
 2050,"S26","Fabricação de produtos farmoquímicos e farmacêuticos","physical",-0.209492339218979
-2050,"S27","Fabricação de produtos de borracha e de material plástico","investment",6.02557710945032
-2050,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.131541938212629
-2050,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.877547795117297
-2050,"S28","Fabricação de produtos de minerais não-metálicos","investment",9.69019862854571
-2050,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.246216757407743
+2050,"S27","Fabricação de produtos de borracha e de material plástico","investment",6.02557710945031
+2050,"S27","Fabricação de produtos de borracha e de material plástico","rewiring",0.13154193821263
+2050,"S27","Fabricação de produtos de borracha e de material plástico","physical",-0.877547795117295
+2050,"S28","Fabricação de produtos de minerais não-metálicos","investment",9.69019862854572
+2050,"S28","Fabricação de produtos de minerais não-metálicos","rewiring",0.246216757407731
 2050,"S28","Fabricação de produtos de minerais não-metálicos","physical",11.713824001959
-2050,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","investment",6.84053318716607
-2050,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.330163231618962
+2050,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","investment",6.84053318716608
+2050,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","rewiring",-0.330163231618969
 2050,"S29","Produção de ferro-gusa/ferroligas, siderurgia e tubos de aço sem costura","physical",19.7312530874858
 2050,"S30","Metalurgia de metais não-ferosos e a fundição de metais","investment",34.6786506742197
-2050,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.0268442899180239
-2050,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.64653483710035
+2050,"S30","Metalurgia de metais não-ferosos e a fundição de metais","rewiring",0.0268442899180215
+2050,"S30","Metalurgia de metais não-ferosos e a fundição de metais","physical",-0.646534837100349
 2050,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","investment",7.66097487335546
 2050,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","rewiring",-0.0155495909623933
 2050,"S31","Fabricação de produtos de metal, exceto máquinas e equipamentos","physical",-2.06594876950446
 2050,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","investment",0.560747804920217
-2050,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.0151098656247856
+2050,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","rewiring",-0.0151098656247893
 2050,"S32","Fabricação de equipamentos de informática, produtos eletrônicos e ópticos","physical",-0.177990363604741
 2050,"S33","Fabricação de máquinas e equipamentos elétricos","investment",7.01173633215895
-2050,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",0.147474517771963
+2050,"S33","Fabricação de máquinas e equipamentos elétricos","rewiring",0.147474517771965
 2050,"S33","Fabricação de máquinas e equipamentos elétricos","physical",-1.27666592072967
 2050,"S34","Fabricação de máquinas e equipamentos mecânicos","investment",33.7263478257638
-2050,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.340660439934678
-2050,"S34","Fabricação de máquinas e equipamentos mecânicos","physical",-1.4372272971996
-2050,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","investment",0.100363054907163
-2050,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",0.00202390548089776
+2050,"S34","Fabricação de máquinas e equipamentos mecânicos","rewiring",-0.340660439934676
+2050,"S34","Fabricação de máquinas e equipamentos mecânicos","physical",-1.43722729719961
+2050,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","investment",0.100363054907165
+2050,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","rewiring",0.00202390548090322
 2050,"S35","Fabricação de automóveis, caminhões e ônibus, exceto peças","physical",-0.0269363591563791
 2050,"S36","Fabricação de peças e acessórios para veículos automotores","investment",1.03872319946559
-2050,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",0.0349024653817857
+2050,"S36","Fabricação de peças e acessórios para veículos automotores","rewiring",0.0349024653817748
 2050,"S36","Fabricação de peças e acessórios para veículos automotores","physical",-0.472104216996058
 2050,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","investment",0.0877174596487233
-2050,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",0.00000960885537218321
-2050,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.0383423376861562
-2050,"S38","Fabricação de móveis e de produtos de indústrias diversas","investment",0.630343716745793
-2050,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.0104553300728536
-2050,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.180860517805954
+2050,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","rewiring",0.00000960885537036424
+2050,"S37","Fabricação de outros equipamentos de transporte, exceto veículos automotores","physical",-0.0383423376861544
+2050,"S38","Fabricação de móveis e de produtos de indústrias diversas","investment",0.630343716745791
+2050,"S38","Fabricação de móveis e de produtos de indústrias diversas","rewiring",-0.0104553300728633
+2050,"S38","Fabricação de móveis e de produtos de indústrias diversas","physical",-0.180860517805949
 2050,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","investment",7.5442452001813
-2050,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.178347713483838
+2050,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","rewiring",0.178347713483847
 2050,"S39","Manutenção, reparação e instalação de máquinas e equipamentos","physical",-4.21827757843997
 2050,"S40","Geração centralizada de energia elétrica","investment",6.23045920657284
-2050,"S40","Geração centralizada de energia elétrica","rewiring",14.9644913803954
+2050,"S40","Geração centralizada de energia elétrica","rewiring",14.9644913803955
 2050,"S40","Geração centralizada de energia elétrica","physical",14.0298293787507
-2050,"S41","Geração distribuída de energia elétrica","investment",0.876818641913767
+2050,"S41","Geração distribuída de energia elétrica","investment",0.876818641913768
 2050,"S41","Geração distribuída de energia elétrica","rewiring",2.06093857127264
 2050,"S41","Geração distribuída de energia elétrica","physical",-1.13294905011681
 2050,"S42","Transmissão","investment",4.90685168256022
 2050,"S42","Transmissão","rewiring",1.72693427785155
 2050,"S42","Transmissão","physical",1.63857906902048
-2050,"S43","Gás Natural","investment",1.47272261001207
+2050,"S43","Gás Natural","investment",1.47272261001206
 2050,"S43","Gás Natural","rewiring",-11.3540889877559
 2050,"S43","Gás Natural","physical",21.9733912073242
 2050,"S44","Água, esgoto e gestão de resíduos","investment",4.95451180920138
-2050,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.00669529752884409
-2050,"S44","Água, esgoto e gestão de resíduos","physical",-2.22847484701532
+2050,"S44","Água, esgoto e gestão de resíduos","rewiring",-0.00669529752884046
+2050,"S44","Água, esgoto e gestão de resíduos","physical",-2.22847484701531
 2050,"S45","Construção","investment",163.949154605049
-2050,"S45","Construção","rewiring",-0.347605792816476
-2050,"S45","Construção","physical",-1.43018198817661
-2050,"S46","Comércio e reparação de veículos automotores e motocicletas","investment",2.74468312694275
-2050,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.0560702757469577
+2050,"S45","Construção","rewiring",-0.347605792816515
+2050,"S45","Construção","physical",-1.43018198817662
+2050,"S46","Comércio e reparação de veículos automotores e motocicletas","investment",2.74468312694276
+2050,"S46","Comércio e reparação de veículos automotores e motocicletas","rewiring",0.0560702757469504
 2050,"S46","Comércio e reparação de veículos automotores e motocicletas","physical",-1.15447806382292
 2050,"S47","Comércio por atacado e a varejo, exceto veículos automotores","investment",42.889983553857
-2050,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",0.486575794200743
-2050,"S47","Comércio por atacado e a varejo, exceto veículos automotores","physical",-23.2506335623918
+2050,"S47","Comércio por atacado e a varejo, exceto veículos automotores","rewiring",0.486575794200762
+2050,"S47","Comércio por atacado e a varejo, exceto veículos automotores","physical",-23.2506335623917
 2050,"S48","Transporte terrestre","investment",11.3417499727062
-2050,"S48","Transporte terrestre","rewiring",1.73612863147803
+2050,"S48","Transporte terrestre","rewiring",1.73612863147801
 2050,"S48","Transporte terrestre","physical",-11.281138184262
-2050,"S49","Transporte aquaviário","investment",0.549988261335647
-2050,"S49","Transporte aquaviário","rewiring",-0.986741942134081
+2050,"S49","Transporte aquaviário","investment",0.549988261335646
+2050,"S49","Transporte aquaviário","rewiring",-0.986741942134085
 2050,"S49","Transporte aquaviário","physical",-2.33120596142835
-2050,"S50","Transporte aéreo","investment",0.444866136568459
-2050,"S50","Transporte aéreo","rewiring",-0.178817719079323
-2050,"S50","Transporte aéreo","physical",-0.597871829334328
+2050,"S50","Transporte aéreo","investment",0.44486613656846
+2050,"S50","Transporte aéreo","rewiring",-0.17881771907932
+2050,"S50","Transporte aéreo","physical",-0.597871829334329
 2050,"S51","Armazenamento, atividades auxiliares dos transportes e correio","investment",3.98927008527091
 2050,"S51","Armazenamento, atividades auxiliares dos transportes e correio","rewiring",0.0634810245617943
-2050,"S51","Armazenamento, atividades auxiliares dos transportes e correio","physical",-6.35904298680709
-2050,"S52","Alojamento","investment",0.730866686263678
-2050,"S52","Alojamento","rewiring",-0.020864442802982
-2050,"S52","Alojamento","physical",-0.370411516605805
-2050,"S53","Alimentação","investment",0.459461003810182
-2050,"S53","Alimentação","rewiring",-0.0402565809123189
-2050,"S53","Alimentação","physical",-0.472193474583997
-2050,"S54","Edição e edição integrada à impressão","investment",0.150386502993931
-2050,"S54","Edição e edição integrada à impressão","rewiring",0.0104071279518081
+2050,"S51","Armazenamento, atividades auxiliares dos transportes e correio","physical",-6.3590429868071
+2050,"S52","Alojamento","investment",0.730866686263679
+2050,"S52","Alojamento","rewiring",-0.0208644428029796
+2050,"S52","Alojamento","physical",-0.370411516605808
+2050,"S53","Alimentação","investment",0.459461003810177
+2050,"S53","Alimentação","rewiring",-0.0402565809123528
+2050,"S53","Alimentação","physical",-0.472193474583987
+2050,"S54","Edição e edição integrada à impressão","investment",0.150386502993932
+2050,"S54","Edição e edição integrada à impressão","rewiring",0.0104071279518115
 2050,"S54","Edição e edição integrada à impressão","physical",-0.127966017098715
-2050,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","investment",0.837301120598165
-2050,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.0746116816722982
-2050,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.796762919997264
-2050,"S56","Telecomunicações","investment",1.58594730746482
-2050,"S56","Telecomunicações","rewiring",0.052574782180253
+2050,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","investment",0.837301120598163
+2050,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","rewiring",0.0746116816722939
+2050,"S55","Atividades de televisão, rádio, cinema e  gravação/edição de som e imagem","physical",-0.796762919997268
+2050,"S56","Telecomunicações","investment",1.58594730746481
+2050,"S56","Telecomunicações","rewiring",0.0525747821802603
 2050,"S56","Telecomunicações","physical",-1.16867581804136
 2050,"S57","Desenvolvimento de sistemas e outros serviços de informação","investment",4.85651730070751
-2050,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.242742175490297
+2050,"S57","Desenvolvimento de sistemas e outros serviços de informação","rewiring",0.242742175490326
 2050,"S57","Desenvolvimento de sistemas e outros serviços de informação","physical",-2.38323850627658
 2050,"S58","Intermediação financeira, seguros e previdência complementar","investment",16.9494968052803
-2050,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",2.01629214823706
+2050,"S58","Intermediação financeira, seguros e previdência complementar","rewiring",2.01629214823693
 2050,"S58","Intermediação financeira, seguros e previdência complementar","physical",-14.507827340607
-2050,"S59","Atividades imobiliárias","investment",4.91160408011925
-2050,"S59","Atividades imobiliárias","rewiring",0.326991571696494
-2050,"S59","Atividades imobiliárias","physical",-3.79281075570241
-2050,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","investment",13.3863250864056
-2050,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-2.58089496777302
+2050,"S59","Atividades imobiliárias","investment",4.91160408011929
+2050,"S59","Atividades imobiliárias","rewiring",0.3269915716963
+2050,"S59","Atividades imobiliárias","physical",-3.79281075570238
+2050,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","investment",13.3863250864055
+2050,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","rewiring",-2.58089496777306
 2050,"S60","Atividades jurídicas, contábeis, consultoria e sedes de empresas","physical",-13.9353424502002
 2050,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","investment",20.0130381502026
-2050,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",0.174431528282853
+2050,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","rewiring",0.174431528282848
 2050,"S61","Serviços de arquitetura, engenharia, testes/análises técnicas e P & D","physical",-2.42793951469125
 2050,"S62","Outras atividades profissionais, científicas e técnicas","investment",2.23005760063111
-2050,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.206793040303008
+2050,"S62","Outras atividades profissionais, científicas e técnicas","rewiring",0.206793040303003
 2050,"S62","Outras atividades profissionais, científicas e técnicas","physical",-2.15485437100609
-2050,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","investment",2.48657544453824
-2050,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-1.37580657292906
-2050,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","physical",-4.1405486287427
-2050,"S64","Outras atividades administrativas e serviços complementares","investment",8.69497631077373
-2050,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.981521926225289
+2050,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","investment",2.48657544453825
+2050,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","rewiring",-1.37580657292907
+2050,"S63","Aluguéis não-imobiliários e gestão de ativos de propriedade intelectual","physical",-4.14054862874271
+2050,"S64","Outras atividades administrativas e serviços complementares","investment",8.69497631077377
+2050,"S64","Outras atividades administrativas e serviços complementares","rewiring",0.981521926225221
 2050,"S64","Outras atividades administrativas e serviços complementares","physical",-6.12473992766631
 2050,"S65","Atividades de vigilância, segurança e investigação","investment",2.02848411085791
-2050,"S65","Atividades de vigilância, segurança e investigação","rewiring",0.0293441403897268
-2050,"S65","Atividades de vigilância, segurança e investigação","physical",-1.3566144881093
+2050,"S65","Atividades de vigilância, segurança e investigação","rewiring",0.0293441403897123
+2050,"S65","Atividades de vigilância, segurança e investigação","physical",-1.35661448810929
 2050,"S66","Administração pública, defesa e seguridade social","investment",1.9379235894102
-2050,"S66","Administração pública, defesa e seguridade social","rewiring",0.0400267996640759
-2050,"S66","Administração pública, defesa e seguridade social","physical",-1.5698702777935
-2050,"S67","Educação pública","investment",0.250801452889107
-2050,"S67","Educação pública","rewiring",0.00583738134990563
-2050,"S67","Educação pública","physical",-0.0787696257807256
-2050,"S68","Educação privada","investment",0.941036938669398
-2050,"S68","Educação privada","rewiring",-0.0095463209834949
-2050,"S68","Educação privada","physical",-0.775385195189762
-2050,"S69","Saúde pública","investment",0.0175319567748084
-2050,"S69","Saúde pública","rewiring",0.000511920318356715
-2050,"S69","Saúde pública","physical",-0.00385227664026024
+2050,"S66","Administração pública, defesa e seguridade social","rewiring",0.0400267996644834
+2050,"S66","Administração pública, defesa e seguridade social","physical",-1.56987027779344
+2050,"S67","Educação pública","investment",0.250801452889097
+2050,"S67","Educação pública","rewiring",0.00583738134986682
+2050,"S67","Educação pública","physical",-0.0787696257806771
+2050,"S68","Educação privada","investment",0.941036938669395
+2050,"S68","Educação privada","rewiring",-0.00954632098346822
+2050,"S68","Educação privada","physical",-0.775385195189772
+2050,"S69","Saúde pública","investment",0.0175319567748132
+2050,"S69","Saúde pública","rewiring",0.000511920318332462
+2050,"S69","Saúde pública","physical",-0.00385227664026994
 2050,"S70","Saúde privada","investment",0.00728745567297058
 2050,"S70","Saúde privada","rewiring",0.000468961759402494
 2050,"S70","Saúde privada","physical",-0.0054842269315947
-2050,"S71","Atividades artísticas, criativas e de espetáculos","investment",0.168631547868839
-2050,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.0140165432241301
-2050,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.160293353885192
-2050,"S72","Organizações associativas e outros serviços pessoais","investment",0.91238448572162
-2050,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.0507811329768131
+2050,"S71","Atividades artísticas, criativas e de espetáculos","investment",0.168631547868837
+2050,"S71","Atividades artísticas, criativas e de espetáculos","rewiring",0.0140165432241332
+2050,"S71","Atividades artísticas, criativas e de espetáculos","physical",-0.160293353885193
+2050,"S72","Organizações associativas e outros serviços pessoais","investment",0.912384485721627
+2050,"S72","Organizações associativas e outros serviços pessoais","rewiring",-0.0507811329768422
 2050,"S72","Organizações associativas e outros serviços pessoais","physical",-1.08670818774881
 2050,"S73","Serviços domésticos","investment",0
 2050,"S73","Serviços domésticos","rewiring",0

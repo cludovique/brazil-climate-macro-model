@@ -1,27 +1,27 @@
 "year","mechanism","group7","va_shapley_Rbn"
 2025,"investment","Agriculture",0
 2030,"investment","Agriculture",64.6944060331623
-2035,"investment","Agriculture",13.809594352389
-2040,"investment","Agriculture",7.77221543734108
-2045,"investment","Agriculture",6.10973432903474
-2050,"investment","Agriculture",9.91994476100418
-2025,"physical","Agriculture",-1.56585509651513
-2030,"physical","Agriculture",-2.55743350268538
-2035,"physical","Agriculture",-4.62063053017309
-2040,"physical","Agriculture",-9.19645175963388
+2035,"investment","Agriculture",13.8095943523891
+2040,"investment","Agriculture",7.77221543734107
+2045,"investment","Agriculture",6.10973432903473
+2050,"investment","Agriculture",9.9199447610042
+2025,"physical","Agriculture",-1.56585509651512
+2030,"physical","Agriculture",-2.55743350268537
+2035,"physical","Agriculture",-4.6206305301731
+2040,"physical","Agriculture",-9.19645175963387
 2045,"physical","Agriculture",-13.2936074343245
 2050,"physical","Agriculture",-21.5736810632158
-2025,"rewiring","Agriculture",0.460912314293785
-2030,"rewiring","Agriculture",0.166536298930579
-2035,"rewiring","Agriculture",1.04940346006073
+2025,"rewiring","Agriculture",0.46091231429378
+2030,"rewiring","Agriculture",0.166536298930589
+2035,"rewiring","Agriculture",1.04940346006076
 2040,"rewiring","Agriculture",8.59934309292001
-2045,"rewiring","Agriculture",12.4697403887021
-2050,"rewiring","Agriculture",28.5387371580934
+2045,"rewiring","Agriculture",12.4697403887022
+2050,"rewiring","Agriculture",28.5387371580933
 2025,"investment","Extractive industry",0
 2030,"investment","Extractive industry",9.30188313251259
 2035,"investment","Extractive industry",7.4392221499717
-2040,"investment","Extractive industry",7.02409711769883
-2045,"investment","Extractive industry",5.14204779123475
+2040,"investment","Extractive industry",7.02409711769884
+2045,"investment","Extractive industry",5.14204779123476
 2050,"investment","Extractive industry",9.74229513151793
 2025,"physical","Extractive industry",-0.598461779063463
 2030,"physical","Extractive industry",-1.06136386409965
@@ -29,16 +29,16 @@
 2040,"physical","Extractive industry",-2.89819716901865
 2045,"physical","Extractive industry",-4.16613966710444
 2050,"physical","Extractive industry",-5.62896723271889
-2025,"rewiring","Extractive industry",0.000446738290784194
-2030,"rewiring","Extractive industry",-0.000058070779269732
-2035,"rewiring","Extractive industry",0.00169785637956314
-2040,"rewiring","Extractive industry",0.019001688062454
-2045,"rewiring","Extractive industry",0.0321898710879159
-2050,"rewiring","Extractive industry",0.0846878183628715
+2025,"rewiring","Extractive industry",0.000446738290782833
+2030,"rewiring","Extractive industry",-0.000058070779272157
+2035,"rewiring","Extractive industry",0.00169785637956436
+2040,"rewiring","Extractive industry",0.0190016880624524
+2045,"rewiring","Extractive industry",0.0321898710879022
+2050,"rewiring","Extractive industry",0.0846878183628593
 2025,"investment","Fossil energy",0
 2030,"investment","Fossil energy",10.8230795810133
 2035,"investment","Fossil energy",10.3134357151064
-2040,"investment","Fossil energy",8.62555349533883
+2040,"investment","Fossil energy",8.62555349533881
 2045,"investment","Fossil energy",5.34559712485817
 2050,"investment","Fossil energy",13.5934275435642
 2025,"physical","Fossil energy",27.4596093331256
@@ -47,9 +47,9 @@
 2040,"physical","Fossil energy",-47.2537877879713
 2045,"physical","Fossil energy",-88.3175595397063
 2050,"physical","Fossil energy",-137.862761980233
-2025,"rewiring","Fossil energy",-0.983356748435825
+2025,"rewiring","Fossil energy",-0.983356748435819
 2030,"rewiring","Fossil energy",-1.13891759529497
-2035,"rewiring","Fossil energy",-3.54871742483427
+2035,"rewiring","Fossil energy",-3.54871742483425
 2040,"rewiring","Fossil energy",-19.2236952346948
 2045,"rewiring","Fossil energy",-29.8759401376013
 2050,"rewiring","Fossil energy",-65.7861451071848
@@ -57,20 +57,20 @@
 2030,"investment","Infrastructure",214.820386332517
 2035,"investment","Infrastructure",163.031453980132
 2040,"investment","Infrastructure",156.22546960489
-2045,"investment","Infrastructure",99.2693639332239
+2045,"investment","Infrastructure",99.2693639332237
 2050,"investment","Infrastructure",185.229540870132
-2025,"physical","Infrastructure",-2.57048434979081
+2025,"physical","Infrastructure",-2.5704843497908
 2030,"physical","Infrastructure",-4.55555683577376
-2035,"physical","Infrastructure",-7.96046630262553
-2040,"physical","Infrastructure",-12.4524745147934
-2045,"physical","Infrastructure",-17.8954415810258
+2035,"physical","Infrastructure",-7.96046630262554
+2040,"physical","Infrastructure",-12.4524745147933
+2045,"physical","Infrastructure",-17.8954415810259
 2050,"physical","Infrastructure",-24.2279157970237
-2025,"rewiring","Infrastructure",-0.00171306057137435
-2030,"rewiring","Infrastructure",-0.0271980993908821
-2035,"rewiring","Infrastructure",-0.0330482603654225
-2040,"rewiring","Infrastructure",0.0431726044932644
-2045,"rewiring","Infrastructure",0.0356401683018318
-2050,"rewiring","Infrastructure",0.2797489044811
+2025,"rewiring","Infrastructure",-0.0017130605713698
+2030,"rewiring","Infrastructure",-0.0271980993909434
+2035,"rewiring","Infrastructure",-0.0330482603653634
+2040,"rewiring","Infrastructure",0.043172604493311
+2045,"rewiring","Infrastructure",0.0356401683017295
+2050,"rewiring","Infrastructure",0.279748904481044
 2025,"investment","Manufacturing",0
 2030,"investment","Manufacturing",118.184713875308
 2035,"investment","Manufacturing",164.300080808505
@@ -79,49 +79,49 @@
 2050,"investment","Manufacturing",124.773808698274
 2025,"physical","Manufacturing",11.8195260963223
 2030,"physical","Manufacturing",15.9377742639561
-2035,"physical","Manufacturing",17.2924081691124
+2035,"physical","Manufacturing",17.2924081691123
 2040,"physical","Manufacturing",16.1920470716523
 2045,"physical","Manufacturing",15.3136576474594
 2050,"physical","Manufacturing",12.3181539987441
-2025,"rewiring","Manufacturing",0.0443353902647175
-2030,"rewiring","Manufacturing",0.00877356516276244
-2035,"rewiring","Manufacturing",0.0908529242940397
-2040,"rewiring","Manufacturing",0.967898211375161
-2045,"rewiring","Manufacturing",1.44678228599115
-2050,"rewiring","Manufacturing",3.45373856031196
+2025,"rewiring","Manufacturing",0.0443353902647125
+2030,"rewiring","Manufacturing",0.00877356516276321
+2035,"rewiring","Manufacturing",0.0908529242940269
+2040,"rewiring","Manufacturing",0.96789821137518
+2045,"rewiring","Manufacturing",1.44678228599118
+2050,"rewiring","Manufacturing",3.4537385603119
 2025,"investment","Renewable energy",0
 2030,"investment","Renewable energy",51.6102340418261
 2035,"investment","Renewable energy",33.9879364124844
 2040,"investment","Renewable energy",35.3803866928731
-2045,"investment","Renewable energy",7.77757943489739
+2045,"investment","Renewable energy",7.77757943489737
 2050,"investment","Renewable energy",14.9024700878411
-2025,"physical","Renewable energy",11.2774448644305
+2025,"physical","Renewable energy",11.2774448644304
 2030,"physical","Renewable energy",14.092506155217
 2035,"physical","Renewable energy",12.0158624420705
 2040,"physical","Renewable energy",29.8944682886761
 2045,"physical","Renewable energy",23.5159739815062
 2050,"physical","Renewable energy",15.5958478068115
-2025,"rewiring","Renewable energy",0.483748061974829
-2030,"rewiring","Renewable energy",0.705700203357187
-2035,"rewiring","Renewable energy",2.00219416563025
+2025,"rewiring","Renewable energy",0.483748061974837
+2030,"rewiring","Renewable energy",0.705700203357195
+2035,"rewiring","Renewable energy",2.00219416563026
 2040,"rewiring","Renewable energy",12.375864480879
-2045,"rewiring","Renewable energy",20.372205783135
-2050,"rewiring","Renewable energy",48.1058354818786
+2045,"rewiring","Renewable energy",20.3722057831351
+2050,"rewiring","Renewable energy",48.1058354818787
 2025,"investment","Services",0
 2030,"investment","Services",162.562178848503
 2035,"investment","Services",164.272081477277
 2040,"investment","Services",165.597962979309
 2045,"investment","Services",70.9156984421837
 2050,"investment","Services",129.191301618454
-2025,"physical","Services",-8.71443813999412
+2025,"physical","Services",-8.71443813999409
 2030,"physical","Services",-15.455504026202
-2035,"physical","Services",-26.99700723573
+2035,"physical","Services",-26.9970072357299
 2040,"physical","Services",-42.1477303491403
-2045,"physical","Services",-60.5687387486416
-2050,"physical","Services",-81.8454004995135
-2025,"rewiring","Services",-0.0235020694951079
-2030,"rewiring","Services",-0.0575797776389531
-2035,"rewiring","Services",-0.119663614789543
-2040,"rewiring","Services",-0.00826837316300703
-2045,"rewiring","Services",0.0051883732813643
-2050,"rewiring","Services",0.641067780314969
+2045,"physical","Services",-60.5687387486417
+2050,"physical","Services",-81.8454004995133
+2025,"rewiring","Services",-0.0235020694950966
+2030,"rewiring","Services",-0.0575797776390535
+2035,"rewiring","Services",-0.119663614789768
+2040,"rewiring","Services",-0.00826837316310178
+2045,"rewiring","Services",0.00518837328120573
+2050,"rewiring","Services",0.641067780314864
