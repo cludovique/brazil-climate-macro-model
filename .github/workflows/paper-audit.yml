@@ -8,6 +8,7 @@ on:
       - paper/model_audit.R
       - paper/summarize_audit.R
       - paper/baseline_levels.R
+      - paper/constraint_audit.R
       - .github/workflows/paper-audit.yml
 
 permissions:
@@ -45,6 +46,9 @@ jobs:
 
       - name: Calculate baseline levels and percentages
         run: Rscript paper/baseline_levels.R
+
+      - name: Run NDC physical constraint audit
+        run: Rscript paper/constraint_audit.R
 
       - name: Commit generated audit results
         run: |
