@@ -9,6 +9,7 @@ on:
       - paper/summarize_audit.R
       - paper/baseline_levels.R
       - paper/constraint_audit.R
+      - paper/capex_supplier_audit.R
       - .github/workflows/paper-audit.yml
 
 permissions:
@@ -49,6 +50,9 @@ jobs:
 
       - name: Run NDC physical constraint audit
         run: Rscript paper/constraint_audit.R
+
+      - name: Run CAPEX purchaser-supplier audit
+        run: Rscript paper/capex_supplier_audit.R
 
       - name: Commit generated audit results
         run: |
