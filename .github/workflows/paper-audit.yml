@@ -12,6 +12,7 @@ on:
       - paper/capex_supplier_audit.R
       - paper/engine2_price_validation.R
       - paper/engine2_mapping_audit.R
+      - paper/s51_energy_audit.R
       - paper/load_paper_model.R
       - paper/data/engine2_price_bridge_2018.csv
       - paper/data/engine2_price_bridge_2018.md
@@ -64,6 +65,9 @@ jobs:
 
       - name: Run Engine 2 sector mapping audit
         run: Rscript paper/engine2_mapping_audit.R
+
+      - name: Run S51 energy-use audit
+        run: Rscript paper/s51_energy_audit.R
 
       - name: Commit generated audit results
         run: |
