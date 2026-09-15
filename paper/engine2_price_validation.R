@@ -27,14 +27,8 @@ setwd(repo_root)
 outdir <- file.path("paper", "results")
 dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
 
-# Source model while replacing the local Windows setwd only at runtime.
-model_text <- readLines("code/mma_shock_engines.R", warn = FALSE, encoding = "UTF-8")
-model_text <- gsub(
-  'setwd\\("C:/Users/Camila Ludovique/Documents/GitHub/brazil-climate-macro-model"\\)',
-  'setwd(Sys.getenv("GITHUB_WORKSPACE", unset=getwd()))',
-  model_text
-)
-eval(parse(text = paste(model_text, collapse = "\n")), envir = .GlobalEnv)
+# Use the paper loader so validation follows the exact paper-branch sector map.
+source("paper/load_paper_model.R")
 
 prices <- read.csv("paper/data/engine2_price_bridge_2018.csv", check.names = FALSE,
                    stringsAsFactors = FALSE)
@@ -100,7 +94,9 @@ groups <- list(
     fossil_proxy = p_fuel_oil
   ),
   road_transport = list(
-    sectors = c("S48", "S52"),
+    # Paper specification: the aggregate road-fuel trajectory is a direct
+    # technological recipe for land transport (S48) only. S51 is network-mediated.
+    sectors = c("S48"),
     base = c(elec = BASE2020$elec_tra,
              bio = BASE2020$bio_tra,
              foss = max(1 - BASE2020$elec_tra - BASE2020$bio_tra, 0)),
@@ -230,7 +226,9 @@ report <- c(
   "",
   sprintf("Maximum numerical difference between the current formula and the explicit implied-price formulation across tested 100D sectors/years: **%s**.", fmt(max_err, 12)),
   "",
-  "Therefore the ANP/MME/EPE 2018 prices should **not** be multiplied into the current Engine 2 formula as an additional factor. That would count relative prices twice.",
+  "The normalization is a separate closure assumption: it holds the total modeled monetary energy-input coefficient fixed while only the carrier composition changes. It should not be described as holding physical energy intensity constant.",
+  "",
+  "Therefore the ANP/MME/EPE 2018 prices should **not** be multiplied into the current normalized Engine 2 formula as an additional factor. That would count relative prices twice. External prices are used here as a benchmark for the relative valuations implied by the base IO/MMA bridge.",
   "",
   "## External price benchmark",
   "",
@@ -243,7 +241,7 @@ report <- c(
   "",
   "## Scope",
   "",
-  "This audit covers the blocks that use the normalized `rebalancear()` closure: steel, cement, chemicals, other industry, road transport and cities/buildings. Electricity generation, refining, shipping, aviation, biodiesel and biomethane use separate direct indicators in Engine 2 and require their own calibration checks.",
+  "This audit covers the blocks that use the normalized `rebalancear()` closure: steel, cement, chemicals, other industry, road transport (S48 only) and cities/buildings. Electricity generation, refining, shipping, aviation, biodiesel and biomethane use separate direct indicators in Engine 2 and require their own calibration checks.",
   "",
   "## Files",
   "",
