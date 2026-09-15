@@ -1,0 +1,6 @@
+"sector","protected_row","base_coefficient","rationale"
+"S23","S19",0.0605771570343527,"petroleum-derived petrochemical material/feedstock may be embedded in S19 purchases"
+"S25","S20",0.000442380354757686,"bio-based material/feedstock may be embedded in S20 purchases"
+"S25","S22",0.024839702429744,"bio-based material/feedstock may be embedded in S22 purchases"
+"S26","S20",0.000199732760912105,"bio-based material/feedstock may be embedded in S20 purchases"
+"S26","S22",0.0093633883136543,"bio-based material/feedstock may be embedded in S22 purchases"
