@@ -1,0 +1,16 @@
+"block_1","block_2","overlap","n_overlap"
+"steel","cement","",0
+"steel","chemicals","",0
+"steel","other_industry","",0
+"steel","road_transport","",0
+"steel","cities_buildings","",0
+"cement","chemicals","",0
+"cement","other_industry","",0
+"cement","road_transport","",0
+"cement","cities_buildings","",0
+"chemicals","other_industry","",0
+"chemicals","road_transport","",0
+"chemicals","cities_buildings","",0
+"other_industry","road_transport","",0
+"other_industry","cities_buildings","",0
+"road_transport","cities_buildings","",0
