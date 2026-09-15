@@ -38,14 +38,8 @@ setwd(repo_root)
 outdir <- file.path("paper", "results")
 dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
 
-# Source scientific model without editing its local-path line.
-model_text <- readLines("code/mma_shock_engines.R", warn = FALSE, encoding = "UTF-8")
-model_text <- gsub(
-  'setwd\\("C:/Users/Camila Ludovique/Documents/GitHub/brazil-climate-macro-model"\\)',
-  'setwd(Sys.getenv("GITHUB_WORKSPACE", unset=getwd()))',
-  model_text
-)
-eval(parse(text = paste(model_text, collapse = "\n")), envir = .GlobalEnv)
+# Load paper-branch model with transparent publication corrections.
+source("paper/load_paper_model.R")
 
 all_sector_gdp_shock <- function(ano) {
   g <- gdp_rel_2018[as.character(ano)]
