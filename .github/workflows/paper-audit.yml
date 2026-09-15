@@ -10,6 +10,9 @@ on:
       - paper/baseline_levels.R
       - paper/constraint_audit.R
       - paper/capex_supplier_audit.R
+      - paper/engine2_price_validation.R
+      - paper/data/engine2_price_bridge_2018.csv
+      - paper/data/engine2_price_bridge_2018.md
       - .github/workflows/paper-audit.yml
 
 permissions:
@@ -53,6 +56,9 @@ jobs:
 
       - name: Run CAPEX purchaser-supplier audit
         run: Rscript paper/capex_supplier_audit.R
+
+      - name: Run Engine 2 constant-price validation
+        run: Rscript paper/engine2_price_validation.R
 
       - name: Commit generated audit results
         run: |
