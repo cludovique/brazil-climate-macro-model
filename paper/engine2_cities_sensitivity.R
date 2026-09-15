@@ -89,8 +89,8 @@ engine1_gdp_all <- function(ano) {
   f_base * (g - 1)
 }
 
-# VA coefficients.
-va_coef <- as.numeric(VA / pmax(x, 1e-12)); names(va_coef) <- names(x)
+# VA coefficients are the model's satellite value-added coefficients.
+va_coef <- as.numeric(sat_gdp[setores$cod]); names(va_coef) <- setores$cod
 
 variants <- c("current","no_real_estate","hospitality_only")
 rows <- list(); k <- 1
