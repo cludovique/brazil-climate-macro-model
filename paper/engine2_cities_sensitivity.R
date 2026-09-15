@@ -151,10 +151,11 @@ diffs$delta_hard_output_Rbn <- diffs$hard_output_diff_Rbn - diffs$hard_output_di
 diffs$delta_hard_va_Rbn <- diffs$hard_va_diff_Rbn - diffs$hard_va_diff_Rbn_current
 write.csv(diffs, "paper/results/engine2_cities_sensitivity_differences.csv", row.names=FALSE)
 
-r2050 <- diffs[diffs$year==2050,]
+r2050 <- diffs[diffs$year==2050,,drop=FALSE]
 get2050 <- function(variant, field) {
-  z <- r2050[r2050$variant == variant, field]
-  if (length(z) == 0) NA_real_ else as.numeric(z[[1]])
+  if (!(field %in% names(r2050))) return(NA_real_)
+  z <- r2050[[field]][r2050$variant == variant]
+  if (!length(z)) NA_real_ else as.numeric(z[1])
 }
 fmt <- function(x) {
   if (length(x) == 0 || is.na(x)) return("NA")
