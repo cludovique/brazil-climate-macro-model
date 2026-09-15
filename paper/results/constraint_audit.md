@@ -17,26 +17,26 @@ Maximum numerical hard-constraint error across constrained sectors/years: **0 R$
 
 ## 2050 aggregate sequential decomposition
 
-- Energy-input rewiring relative to the GDP-only baseline: **R$ 16.1 bn value added**.
+- Energy-input rewiring relative to the GDP-only baseline: **R$ 16.3 bn value added**.
 - Transition investment added after rewiring: **R$ 488.9 bn value added**.
-- NDC physical-consistency adjustment: **R$ -560.1 bn value added**.
-- Final hard-constrained transition differential: **R$ -55.1 bn value added**.
+- NDC physical-consistency adjustment: **R$ -560.2 bn value added**.
+- Final hard-constrained transition differential: **R$ -55 bn value added**.
 
 This sequential decomposition is intentionally not presented as an order-invariant causal attribution. It answers a structural question: what the IO network implies after rewiring and investment, and how much residual adjustment is then required to make selected outputs consistent with the NDC pathway.
 
 ## Oil and gas extraction (S05), 2050
 
 - GDP-only output change: **R$ 284.3 bn**.
-- Effect of energy rewiring before investment: **R$ -102.5 bn**.
+- Effect of energy rewiring before investment: **R$ -102.6 bn**.
 - Additional investment/network effect after rewiring: **R$ 6.7 bn**.
-- Unconstrained output change after rewiring + investment: **R$ 188.5 bn**.
+- Unconstrained output change after rewiring + investment: **R$ 188.4 bn**.
 - NDC physical target: **R$ -130.7 bn**.
-- Required output adjustment to reach the NDC target: **R$ -319.2 bn**.
+- Required output adjustment to reach the NDC target: **R$ -319.1 bn**.
 - Residual final-demand/export balancing term applied to S05: **R$ -275.6 bn**.
 
 ## Diagnostic on the current Engine 3 implementation
 
-The existing implementation does not impose the physical trajectory as an exact hard constraint once investment and network effects are added. Across the constrained sectors/years, the largest discrepancy between the current Engine-3 solution and the NDC target is **R$ 197 bn of sectoral output change**.
+The existing implementation does not impose the physical trajectory as an exact hard constraint once investment and network effects are added. Across the constrained sectors/years, the largest discrepancy between the current Engine-3 solution and the NDC target is **R$ 200.1 bn of sectoral output change**.
 
 This does not make the existing results unusable; it means Engine 3 is currently an additive calibration term rather than a strict constraint. The hard-constraint formulation is more faithful to the intended interpretation and should be evaluated before freezing paper results.
 
