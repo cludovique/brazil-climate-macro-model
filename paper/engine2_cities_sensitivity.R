@@ -100,7 +100,7 @@ for (ano in ANOS_MMA) {
   cen <- "100D"
 
   df_gdp <- engine1_gdp_all(ano)
-  df_inv <- engine1_invest(cen, ano)
+  df_inv <- engine1_inv(cen, ano)
   df_total <- df_gdp + df_inv
   dx_target <- engine3_delta_x(cen, ano)
 
