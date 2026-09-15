@@ -91,7 +91,8 @@ engine1_gdp_all <- function(ano) {
   f_base * (g - 1)
 }
 
-va_coef <- as.numeric(VA / pmax(x, 1e-12)); names(va_coef) <- names(x)
+# Use the same value-added satellite coefficient as the core paper audits.
+va_coef <- as.numeric(sat_gdp[setores$cod]); names(va_coef) <- setores$cod
 L0 <- solve(diag(nrow(A)) - A)
 
 agg_rows <- list(); ka <- 1
