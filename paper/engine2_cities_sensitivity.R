@@ -22,6 +22,14 @@ dir.create("paper/results", showWarnings = FALSE, recursive = TRUE)
 
 ENERGY_ROWS <- intersect(c("S19","S20","S22","S40","S41","S43"), rownames(A))
 CITY_SECTORS <- intersect(GRUPOS$cidades, colnames(A))
+sector_label <- function(j) {
+  z <- setores$nome[match(j, setores$cod)]
+  if (length(z) == 0 || is.na(z)) j else as.character(z[[1]])
+}
+scalar_named <- function(v, nm, default = NA_real_) {
+  z <- v[nm]
+  if (length(z) == 0 || is.na(z[[1]])) default else as.numeric(z[[1]])
+}
 
 # Baseline direct energy structure by city proxy sector.
 city_structure <- do.call(rbind, lapply(CITY_SECTORS, function(j) {
@@ -30,7 +38,7 @@ city_structure <- do.call(rbind, lapply(CITY_SECTORS, function(j) {
   foss <- sum(A[intersect(c("S19","S43"), rownames(A)), j, drop=FALSE])
   data.frame(
     sector = j,
-    sector_name = setores$nome[match(j, setores$cod)],
+    sector_name = sector_label(j),
     electricity_coef = elec,
     bio_coef = bio,
     fossil_coef = foss,
@@ -89,7 +97,6 @@ rows <- list(); k <- 1
 sector_rows <- list(); ks <- 1
 
 for (ano in ANOS_MMA) {
-  a <- as.character(ano)
   cen <- "100D"
 
   df_gdp <- engine1_gdp_all(ano)
@@ -110,7 +117,7 @@ for (ano in ANOS_MMA) {
     dx_h <- hard_constraint_solution(Av, df_total, dx_target)
 
     rows[[k]] <- data.frame(
-      year=ano, variant=v,
+      year=as.integer(ano), variant=v,
       unconstrained_output_diff_Rbn=(sum(dx_u)-out_base)/1000,
       unconstrained_va_diff_Rbn=(sum(va_coef*dx_u)-va_base)/1000,
       hard_output_diff_Rbn=(sum(dx_h)-out_base)/1000,
@@ -120,10 +127,10 @@ for (ano in ANOS_MMA) {
 
     for (j in CITY_SECTORS) {
       sector_rows[[ks]] <- data.frame(
-        year=ano, variant=v, sector=j,
-        sector_name=setores$nome[match(j,setores$cod)],
-        unconstrained_output_change_Rbn=dx_u[j]/1000,
-        hard_output_change_Rbn=dx_h[j]/1000,
+        year=as.integer(ano), variant=v, sector=j,
+        sector_name=sector_label(j),
+        unconstrained_output_change_Rbn=scalar_named(dx_u, j)/1000,
+        hard_output_change_Rbn=scalar_named(dx_h, j)/1000,
         stringsAsFactors=FALSE
       ); ks <- ks + 1
     }
@@ -145,7 +152,14 @@ diffs$delta_hard_va_Rbn <- diffs$hard_va_diff_Rbn - diffs$hard_va_diff_Rbn_curre
 write.csv(diffs, "paper/results/engine2_cities_sensitivity_differences.csv", row.names=FALSE)
 
 r2050 <- diffs[diffs$year==2050,]
-fmt <- function(x) format(round(x,3), nsmall=3, trim=TRUE)
+get2050 <- function(variant, field) {
+  z <- r2050[r2050$variant == variant, field]
+  if (length(z) == 0) NA_real_ else as.numeric(z[[1]])
+}
+fmt <- function(x) {
+  if (length(x) == 0 || is.na(x)) return("NA")
+  format(round(x,3), nsmall=3, trim=TRUE)
+}
 md <- c(
   "# Engine 2 cities/buildings sensitivity",
   "",
@@ -157,8 +171,8 @@ md <- c(
   "",
   "## 2050 sensitivity relative to current specification",
   "",
-  paste0("- Excluding S59 (real estate) from direct cities rewiring: unconstrained VA **", fmt(r2050$delta_unconstrained_va_Rbn[r2050$variant=="no_real_estate"]), " R$bn**; hard-constrained VA **", fmt(r2050$delta_hard_va_Rbn[r2050$variant=="no_real_estate"]), " R$bn**."),
-  paste0("- Extreme hospitality-only stress test (only S52/S53 rewired): unconstrained VA **", fmt(r2050$delta_unconstrained_va_Rbn[r2050$variant=="hospitality_only"]), " R$bn**; hard-constrained VA **", fmt(r2050$delta_hard_va_Rbn[r2050$variant=="hospitality_only"]), " R$bn**."),
+  paste0("- Excluding S59 (real estate) from direct cities rewiring: unconstrained VA **", fmt(get2050("no_real_estate", "delta_unconstrained_va_Rbn")), " R$bn**; hard-constrained VA **", fmt(get2050("no_real_estate", "delta_hard_va_Rbn")), " R$bn**."),
+  paste0("- Extreme hospitality-only stress test (only S52/S53 rewired): unconstrained VA **", fmt(get2050("hospitality_only", "delta_unconstrained_va_Rbn")), " R$bn**; hard-constrained VA **", fmt(get2050("hospitality_only", "delta_hard_va_Rbn")), " R$bn**."),
   "",
   "The hospitality-only case is deliberately conservative and should be interpreted as a bound on the cities/buildings mapping assumption, not as a preferred scenario.",
   "",
