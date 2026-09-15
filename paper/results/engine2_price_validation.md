@@ -10,20 +10,22 @@ followed by normalization to the original total energy coefficient is algebraica
 
 Maximum numerical difference between the current formula and the explicit implied-price formulation across tested 100D sectors/years: **0**.
 
-Therefore the ANP/MME/EPE 2018 prices should **not** be multiplied into the current Engine 2 formula as an additional factor. That would count relative prices twice.
+The normalization is a separate closure assumption: it holds the total modeled monetary energy-input coefficient fixed while only the carrier composition changes. It should not be described as holding physical energy intensity constant.
+
+Therefore the ANP/MME/EPE 2018 prices should **not** be multiplied into the current normalized Engine 2 formula as an additional factor. That would count relative prices twice. External prices are used here as a benchmark for the relative valuations implied by the base IO/MMA bridge.
 
 ## External price benchmark
 
 The external price bridge is instead used to ask whether the relative prices implicitly embedded by the IO/MMA base-year mapping are broadly compatible with observed 2018 energy-price evidence.
 
-Across the tested normalized Engine-2 columns, the median implicit electricity/fossil relative-price ratio is **0.6**, compared with a median external benchmark of **2.62**.
-The median implicit bio/fossil ratio is **0.09**, compared with an external benchmark of **1.66** using biodiesel as the bioenergy proxy.
+Across the tested normalized Engine-2 columns, the median implicit electricity/fossil relative-price ratio is **0.59**, compared with a median external benchmark of **2.62**.
+The median implicit bio/fossil ratio is **0.08**, compared with an external benchmark of **1.66** using biodiesel as the bioenergy proxy.
 
 These comparisons are diagnostics, not calibration targets. Differences can arise because the IO rows aggregate multiple products, MMA physical shares use 2020 while the IO table is 2018, and observed market-stage prices differ across carriers.
 
 ## Scope
 
-This audit covers the blocks that use the normalized `rebalancear()` closure: steel, cement, chemicals, other industry, road transport and cities/buildings. Electricity generation, refining, shipping, aviation, biodiesel and biomethane use separate direct indicators in Engine 2 and require their own calibration checks.
+This audit covers the blocks that use the normalized `rebalancear()` closure: steel, cement, chemicals, other industry, road transport (S48 only) and cities/buildings. Electricity generation, refining, shipping, aviation, biodiesel and biomethane use separate direct indicators in Engine 2 and require their own calibration checks.
 
 ## Files
 

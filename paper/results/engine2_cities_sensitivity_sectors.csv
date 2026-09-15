@@ -1,0 +1,145 @@
+"year","variant","sector","sector_name","unconstrained_output_change_Rbn","hard_output_change_Rbn"
+2025,"current","S52","Alojamento",3.51447474222137,3.63760770293863
+2025,"current","S53","Alimentação",35.0582936692204,35.2239868294525
+2025,"current","S59","Atividades imobiliárias",80.9906548870698,81.709363607728
+2025,"current","S66","Administração pública, defesa e seguridade social",108.711612700504,109.096079786433
+2025,"current","S67","Educação pública",44.4523604175093,44.4691160627767
+2025,"current","S68","Educação privada",18.1535452365886,18.3379049876395
+2025,"current","S69","Saúde pública",25.6665266849559,25.6675344945524
+2025,"current","S70","Saúde privada",38.3478498802422,38.349554115186
+2025,"no_real_estate","S52","Alojamento",3.51447391945425,3.63760697926587
+2025,"no_real_estate","S53","Alimentação",35.0582910460421,35.2239854602695
+2025,"no_real_estate","S59","Atividades imobiliárias",80.9906451222183,81.7093585267856
+2025,"no_real_estate","S66","Administração pública, defesa e seguridade social",108.711607564065,109.096076771472
+2025,"no_real_estate","S67","Educação pública",44.4523597418925,44.469115888683
+2025,"no_real_estate","S68","Educação privada",18.1535428905002,18.3379038464186
+2025,"no_real_estate","S69","Saúde pública",25.6665266248898,25.6675344811764
+2025,"no_real_estate","S70","Saúde privada",38.3478498562561,38.3495541029987
+2025,"hospitality_only","S52","Alojamento",3.51445031359796,3.63759581978395
+2025,"hospitality_only","S53","Alimentação",35.058217367801,35.2239643466209
+2025,"hospitality_only","S59","Atividades imobiliárias",80.9904487797445,81.7092801755086
+2025,"hospitality_only","S66","Administração pública, defesa e seguridade social",108.711502911156,109.096030278896
+2025,"hospitality_only","S67","Educação pública",44.4523431714473,44.4691132040505
+2025,"hospitality_only","S68","Educação privada",18.1534913386466,18.3378862480867
+2025,"hospitality_only","S69","Saúde pública",25.6665251279145,25.6675342749093
+2025,"hospitality_only","S70","Saúde privada",38.3478493686075,38.3495539150621
+2030,"current","S52","Alojamento",7.82288437335672,7.69668603936442
+2030,"current","S53","Alimentação",63.3852016663738,63.1952509878716
+2030,"current","S59","Atividades imobiliárias",150.174620511722,149.226190853098
+2030,"current","S66","Administração pública, defesa e seguridade social",195.925301834029,195.540354111582
+2030,"current","S67","Educação pública",79.1829444238472,79.1518211725116
+2030,"current","S68","Educação privada",33.6845049696081,33.469379012811
+2030,"current","S69","Saúde pública",45.5636920497966,45.5612503773736
+2030,"current","S70","Saúde privada",68.0502016692389,68.047943421081
+2030,"no_real_estate","S52","Alojamento",7.82288146321704,7.69668345668231
+2030,"no_real_estate","S53","Alimentação",63.3851923332241,63.1952461014581
+2030,"no_real_estate","S59","Atividades imobiliárias",150.174584642165,149.226172719959
+2030,"no_real_estate","S66","Administração pública, defesa e seguridade social",195.9252832817,195.540343351625
+2030,"no_real_estate","S67","Educação pública",79.1829419729753,79.1518205511967
+2030,"no_real_estate","S68","Educação privada",33.6844965593382,33.4693749399609
+2030,"no_real_estate","S69","Saúde pública",45.5636918314573,45.5612503296364
+2030,"no_real_estate","S70","Saúde privada",68.0502015811993,68.0479433775861
+2030,"hospitality_only","S52","Alojamento",7.82279757038633,7.69664326091059
+2030,"hospitality_only","S53","Alimentação",63.3849283642212,63.1951700513865
+2030,"hospitality_only","S59","Atividades imobiliárias",150.173866597685,149.225890503449
+2030,"hospitality_only","S66","Administração pública, defesa e seguridade social",195.924907881853,195.540175888211
+2030,"hospitality_only","S67","Educação pública",79.1828817198808,79.1518108813144
+2030,"hospitality_only","S68","Educação privada",33.6843121488169,33.4693115518451
+2030,"hospitality_only","S69","Saúde pública",45.5636863746295,45.5612495866751
+2030,"hospitality_only","S70","Saúde privada",68.0501997987896,68.04794270065
+2035,"current","S52","Alojamento",12.5703746018846,12.3015096596471
+2035,"current","S53","Alimentação",109.962330513852,109.578398914958
+2035,"current","S59","Atividades imobiliárias",257.660857519864,255.799806118682
+2035,"current","S66","Administração pública, defesa e seguridade social",340.110368037475,339.253074627176
+2035,"current","S67","Educação pública",138.196159711733,138.153588003347
+2035,"current","S68","Educação privada",57.7468067248555,57.3016498880999
+2035,"current","S69","Saúde pública",79.6227068140759,79.6199359938571
+2035,"current","S70","Saúde privada",118.932736917996,118.928333227095
+2035,"no_real_estate","S52","Alojamento",12.570367987464,12.3015036339611
+2035,"no_real_estate","S53","Alimentação",109.962309046232,109.578387514409
+2035,"no_real_estate","S59","Atividades imobiliárias",257.660774522861,255.799763812041
+2035,"no_real_estate","S66","Administração pública, defesa e seguridade social",340.110324747191,339.253049522995
+2035,"no_real_estate","S67","Educação pública",138.196154014892,138.15358655375
+2035,"no_real_estate","S68","Educação privada",57.7467871425908,57.3016403856853
+2035,"no_real_estate","S69","Saúde pública",79.6227063068309,79.6199358824809
+2035,"no_real_estate","S70","Saúde privada",118.932736714216,118.928333125617
+2035,"hospitality_only","S52","Alojamento",12.5701745344046,12.3014082275999
+2035,"hospitality_only","S53","Alimentação",109.961694565283,109.578207006353
+2035,"hospitality_only","S59","Atividades imobiliárias",257.65906028731,255.799093959239
+2035,"hospitality_only","S66","Administração pública, defesa e seguridade social",340.109426905192,339.252652041512
+2035,"hospitality_only","S67","Educação pública",138.19601114692,138.153563601876
+2035,"hospitality_only","S68","Educação privada",57.7463515019163,57.3014899313164
+2035,"hospitality_only","S69","Saúde pública",79.6226933654693,79.6199341190307
+2035,"hospitality_only","S70","Saúde privada",118.932732460367,118.928331518881
+2040,"current","S52","Alojamento",18.6775934923865,18.1914166875711
+2040,"current","S53","Alimentação",170.846442078748,170.156705778145
+2040,"current","S59","Atividades imobiliárias",398.533848059832,395.323743936135
+2040,"current","S66","Administração pública, defesa e seguridade social",529.009644952084,527.465891156868
+2040,"current","S67","Educação pública",215.443373085436,215.379439997746
+2040,"current","S68","Educação privada",89.2764950839724,88.5151824344549
+2040,"current","S69","Saúde pública",124.224380805329,124.220677056811
+2040,"current","S70","Saúde privada",185.571448818371,185.563866657682
+2040,"no_real_estate","S52","Alojamento",18.6775774590893,18.1914029141512
+2040,"no_real_estate","S53","Alimentação",170.846391391135,170.156679718947
+2040,"no_real_estate","S59","Atividades imobiliárias",398.533658956412,395.32364723227
+2040,"no_real_estate","S66","Administração pública, defesa e seguridade social",529.009540968288,527.465833774118
+2040,"no_real_estate","S67","Educação pública",215.443360109604,215.379436684279
+2040,"no_real_estate","S68","Educação privada",89.276447843047,88.5151607139828
+2040,"no_real_estate","S69","Saúde pública",124.224379661889,124.220676802229
+2040,"no_real_estate","S70","Saúde privada",185.57144835382,185.563866425724
+2040,"hospitality_only","S52","Alojamento",18.677127830704,18.191194610924
+2040,"hospitality_only","S53","Alimentação",170.8450353951,170.156285610943
+2040,"hospitality_only","S59","Atividades imobiliárias",398.529577281765,395.322184724963
+2040,"hospitality_only","S66","Administração pública, defesa e seguridade social",529.007322407447,527.464965942303
+2040,"hospitality_only","S67","Educação pública",215.443046719869,215.379386572847
+2040,"hospitality_only","S68","Educação privada",89.2754247254755,88.5148322229868
+2040,"hospitality_only","S69","Saúde pública",124.224351594533,124.220672952042
+2040,"hospitality_only","S70","Saúde privada",185.571438267784,185.563862917694
+2045,"current","S52","Alojamento",25.1818246051724,24.5365017896124
+2045,"current","S53","Alimentação",244.348841239269,243.394164288783
+2045,"current","S59","Atividades imobiliárias",566.374630362782,562.347153421017
+2045,"current","S66","Administração pública, defesa e seguridade social",757.628032251898,755.602634240263
+2045,"current","S67","Educação pública",309.358579321439,309.282430549508
+2045,"current","S68","Educação privada",126.96693178577,126.01821480203
+2045,"current","S69","Saúde pública",178.540654279002,178.536603361731
+2045,"current","S70","Saúde privada",266.739276381296,266.729766553234
+2045,"no_real_estate","S52","Alojamento",25.1817945120979,24.5364761250577
+2045,"no_real_estate","S53","Alimentação",244.348745820018,243.394115731655
+2045,"no_real_estate","S59","Atividades imobiliárias",566.374286297383,562.346973228904
+2045,"no_real_estate","S66","Administração pública, defesa e seguridade social",757.627840399413,755.60252731673
+2045,"no_real_estate","S67","Educação pública",309.358555216355,309.282424375396
+2045,"no_real_estate","S68","Educação privada",126.966844096333,126.018174329421
+2045,"no_real_estate","S69","Saúde pública",178.540652154805,178.536602887358
+2045,"no_real_estate","S70","Saúde privada",266.739275535039,266.729766121018
+2045,"hospitality_only","S52","Alojamento",25.1809154665821,24.5360725441842
+2045,"hospitality_only","S53","Alimentação",244.346075104031,243.39335215994
+2045,"hospitality_only","S59","Atividades imobiliárias",566.366634789414,562.34413966754
+2045,"hospitality_only","S66","Administração pública, defesa e seguridade social",757.62360914226,755.600845920207
+2045,"hospitality_only","S67","Educação pública",309.357946661867,309.282327286091
+2045,"hospitality_only","S68","Educação privada",126.964870501641,126.01753788857
+2045,"hospitality_only","S69","Saúde pública",178.540597602438,178.536595427743
+2045,"hospitality_only","S70","Saúde privada",266.73925658628,266.729759324322
+2050,"current","S52","Alojamento",34.3146775204654,33.2377461631798
+2050,"current","S53","Alimentação",329.923033951779,328.35907569302
+2050,"current","S59","Atividades imobiliárias",765.869347926773,759.079936927499
+2050,"current","S66","Administração pública, defesa e seguridade social",1023.0732674833,1019.62524547918
+2050,"current","S67","Educação pública",417.512078093272,417.374881079454
+2050,"current","S68","Educação privada",171.677918548163,170.071967255138
+2050,"current","S69","Saúde pública",240.919825317761,240.911984273754
+2050,"current","S70","Saúde privada",359.926705340867,359.91065266986
+2050,"no_real_estate","S52","Alojamento",34.3146244067716,33.2377075370827
+2050,"no_real_estate","S53","Alimentação",329.922871707912,328.35900261276
+2050,"no_real_estate","S59","Atividades imobiliárias",765.868874059029,759.079665731753
+2050,"no_real_estate","S66","Administração pública, defesa e seguridade social",1023.07297671096,1019.62508455533
+2050,"no_real_estate","S67","Educação pública",417.512041776266,417.374871787187
+2050,"no_real_estate","S68","Educação privada",171.677779924525,170.071906342375
+2050,"no_real_estate","S69","Saúde pública",240.919822146018,240.911983559805
+2050,"no_real_estate","S70","Saúde privada",359.926704168542,359.910652019359
+2050,"hospitality_only","S52","Alojamento",34.3130604117181,33.2370996938361
+2050,"hospitality_only","S53","Alimentação",329.91828741604,328.357852578305
+2050,"hospitality_only","S59","Atividades imobiliárias",765.858597011697,759.07539803412
+2050,"hospitality_only","S66","Administração pública, defesa e seguridade social",1023.06651169773,1019.62255216198
+2050,"hospitality_only","S67","Educação pública",417.511123083418,417.374725558557
+2050,"hospitality_only","S68","Educação privada",171.674606577113,170.070947782893
+2050,"hospitality_only","S69","Saúde pública",240.919740650347,240.911972324692
+2050,"hospitality_only","S70","Saúde privada",359.926678499569,359.910641782684
