@@ -15,6 +15,7 @@ on:
       - paper/s51_energy_audit.R
       - paper/engine2_other_industry_sensitivity.R
       - paper/engine2_cities_sensitivity.R
+      - paper/engine2_transport_fuels_audit.R
       - paper/load_paper_model.R
       - paper/data/engine2_price_bridge_2018.csv
       - paper/data/engine2_price_bridge_2018.md
@@ -76,6 +77,9 @@ jobs:
 
       - name: Run Engine 2 cities/buildings sensitivity
         run: Rscript paper/engine2_cities_sensitivity.R
+
+      - name: Run Engine 2 aviation/maritime fuel valuation audit
+        run: Rscript paper/engine2_transport_fuels_audit.R
 
       - name: Commit generated audit results
         run: |
